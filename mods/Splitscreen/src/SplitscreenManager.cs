@@ -279,8 +279,10 @@ internal sealed class SplitscreenManager : MonoBehaviour
                 var p1Pi = _p1InputManager.GetComponent<PlayerInput>();
                 if (p1Pi != null)
                 {
+                    // Clone the asset: PlayerInputs sharing one asset steal each other's
+                    // device bindings, which leaves P1's keyboard/gamepad dead.
                     p2PlayerInput = p2InputGo.AddComponent<PlayerInput>();
-                    p2PlayerInput.actions = p1Pi.actions;
+                    p2PlayerInput.actions = UnityEngine.Object.Instantiate(p1Pi.actions);
                     SplitPlugin.Log.LogInfo("[Splitscreen] Added PlayerInput to P2 input GameObject");
                     
                     // Try to configure for P2's gamepad, but don't fail if scheme doesn't exist
@@ -319,6 +321,9 @@ internal sealed class SplitscreenManager : MonoBehaviour
                 {
                     inputField.SetValue(_p2InputManager, p2PlayerInput);
                     _p2InputManager.AssignActions();
+                    // Split-keyboard mode polls Keyboard directly; keep P2's PlayerInput
+                    // from claiming any devices.
+                    if (_p2ZeroGamepadMode) p2PlayerInput.DeactivateInput();
                     SplitPlugin.Log.LogInfo("[Splitscreen] P2 sInputManager re-initialized with PlayerInput");
                 }
             }
