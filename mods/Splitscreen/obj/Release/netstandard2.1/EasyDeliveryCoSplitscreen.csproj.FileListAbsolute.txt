@@ -1,0 +1,13 @@
+D:\github\EasyDeliveryMods\mods\Splitscreen\obj\Release\netstandard2.1\EasyDeliveryCoSplitscreen.csproj.AssemblyReference.cache
+D:\github\EasyDeliveryMods\mods\Splitscreen\obj\Release\netstandard2.1\EasyDeliveryCoSplitscreen.GeneratedMSBuildEditorConfig.editorconfig
+D:\github\EasyDeliveryMods\mods\Splitscreen\obj\Release\netstandard2.1\EasyDeliveryCoSplitscreen.AssemblyInfoInputs.cache
+D:\github\EasyDeliveryMods\mods\Splitscreen\obj\Release\netstandard2.1\EasyDeliveryCoSplitscreen.AssemblyInfo.cs
+D:\github\EasyDeliveryMods\mods\Splitscreen\obj\Release\netstandard2.1\EasyDeliveryCoSplitscreen.csproj.CoreCompileInputs.cache
+D:\github\EasyDeliveryMods\mods\Splitscreen\bin\Release\netstandard2.1\EasyDeliveryCoSplitscreen.deps.json
+D:\github\EasyDeliveryMods\mods\Splitscreen\bin\Release\netstandard2.1\EasyDeliveryCoSplitscreen.dll
+D:\github\EasyDeliveryMods\mods\Splitscreen\bin\Release\netstandard2.1\EasyDeliveryCoSplitscreen.pdb
+D:\github\EasyDeliveryMods\mods\Splitscreen\bin\Release\netstandard2.1\EasyDeliveryCo.Shared.dll
+D:\github\EasyDeliveryMods\mods\Splitscreen\bin\Release\netstandard2.1\EasyDeliveryCo.Shared.pdb
+D:\github\EasyDeliveryMods\mods\Splitscreen\obj\Release\netstandard2.1\EasyDeli.FAD2D027.Up2Date
+D:\github\EasyDeliveryMods\mods\Splitscreen\obj\Release\netstandard2.1\EasyDeliveryCoSplitscreen.dll
+D:\github\EasyDeliveryMods\mods\Splitscreen\obj\Release\netstandard2.1\EasyDeliveryCoSplitscreen.pdb

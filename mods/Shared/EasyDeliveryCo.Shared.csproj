@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>EasyDeliveryCo.Shared</AssemblyName>
+    <RootNamespace>EasyDeliveryCo.Shared</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Game DLLs via the mods\EasyDeliveryCo_Data junction created by Build.ps1
+         (points at $(GameDir)\EasyDeliveryCo_Data). -->
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>..\EasyDeliveryCo_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.PhysicsModule">
+      <HintPath>..\EasyDeliveryCo_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+</Project>

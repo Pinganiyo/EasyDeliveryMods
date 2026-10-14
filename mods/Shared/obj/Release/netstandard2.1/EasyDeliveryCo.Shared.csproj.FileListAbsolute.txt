@@ -1,0 +1,10 @@
+D:\github\EasyDeliveryMods\mods\Shared\bin\Release\netstandard2.1\EasyDeliveryCo.Shared.deps.json
+D:\github\EasyDeliveryMods\mods\Shared\bin\Release\netstandard2.1\EasyDeliveryCo.Shared.dll
+D:\github\EasyDeliveryMods\mods\Shared\bin\Release\netstandard2.1\EasyDeliveryCo.Shared.pdb
+D:\github\EasyDeliveryMods\mods\Shared\obj\Release\netstandard2.1\EasyDeliveryCo.Shared.csproj.AssemblyReference.cache
+D:\github\EasyDeliveryMods\mods\Shared\obj\Release\netstandard2.1\EasyDeliveryCo.Shared.GeneratedMSBuildEditorConfig.editorconfig
+D:\github\EasyDeliveryMods\mods\Shared\obj\Release\netstandard2.1\EasyDeliveryCo.Shared.AssemblyInfoInputs.cache
+D:\github\EasyDeliveryMods\mods\Shared\obj\Release\netstandard2.1\EasyDeliveryCo.Shared.AssemblyInfo.cs
+D:\github\EasyDeliveryMods\mods\Shared\obj\Release\netstandard2.1\EasyDeliveryCo.Shared.csproj.CoreCompileInputs.cache
+D:\github\EasyDeliveryMods\mods\Shared\obj\Release\netstandard2.1\EasyDeliveryCo.Shared.dll
+D:\github\EasyDeliveryMods\mods\Shared\obj\Release\netstandard2.1\EasyDeliveryCo.Shared.pdb

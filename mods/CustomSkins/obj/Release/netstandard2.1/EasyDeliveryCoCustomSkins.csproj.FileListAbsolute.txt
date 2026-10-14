@@ -1,0 +1,10 @@
+D:\github\EasyDeliveryMods\mods\CustomSkins\obj\Release\netstandard2.1\EasyDeliveryCoCustomSkins.csproj.AssemblyReference.cache
+D:\github\EasyDeliveryMods\mods\CustomSkins\obj\Release\netstandard2.1\EasyDeliveryCoCustomSkins.GeneratedMSBuildEditorConfig.editorconfig
+D:\github\EasyDeliveryMods\mods\CustomSkins\obj\Release\netstandard2.1\EasyDeliveryCoCustomSkins.AssemblyInfoInputs.cache
+D:\github\EasyDeliveryMods\mods\CustomSkins\obj\Release\netstandard2.1\EasyDeliveryCoCustomSkins.AssemblyInfo.cs
+D:\github\EasyDeliveryMods\mods\CustomSkins\obj\Release\netstandard2.1\EasyDeliveryCoCustomSkins.csproj.CoreCompileInputs.cache
+D:\github\EasyDeliveryMods\mods\CustomSkins\bin\Release\netstandard2.1\EasyDeliveryCoCustomSkins.deps.json
+D:\github\EasyDeliveryMods\mods\CustomSkins\bin\Release\netstandard2.1\EasyDeliveryCoCustomSkins.dll
+D:\github\EasyDeliveryMods\mods\CustomSkins\bin\Release\netstandard2.1\EasyDeliveryCoCustomSkins.pdb
+D:\github\EasyDeliveryMods\mods\CustomSkins\obj\Release\netstandard2.1\EasyDeliveryCoCustomSkins.dll
+D:\github\EasyDeliveryMods\mods\CustomSkins\obj\Release\netstandard2.1\EasyDeliveryCoCustomSkins.pdb

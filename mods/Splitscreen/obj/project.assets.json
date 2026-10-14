@@ -1,0 +1,94 @@
+{
+  "version": 3,
+  "targets": {
+    ".NETStandard,Version=v2.1": {
+      "EasyDeliveryCo.Shared/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.1",
+        "compile": {
+          "bin/placeholder/EasyDeliveryCo.Shared.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/EasyDeliveryCo.Shared.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "EasyDeliveryCo.Shared/1.0.0": {
+      "type": "project",
+      "path": "../Shared/EasyDeliveryCo.Shared.csproj",
+      "msbuildProject": "../Shared/EasyDeliveryCo.Shared.csproj"
+    }
+  },
+  "projectFileDependencyGroups": {
+    ".NETStandard,Version=v2.1": [
+      "EasyDeliveryCo.Shared >= 1.0.0"
+    ]
+  },
+  "packageFolders": {
+    "C:\\Users\\Ruben\\.nuget\\packages\\": {}
+  },
+  "project": {
+    "version": "1.0.0",
+    "restore": {
+      "projectUniqueName": "D:\\github\\EasyDeliveryMods\\mods\\Splitscreen\\EasyDeliveryCoSplitscreen.csproj",
+      "projectName": "EasyDeliveryCoSplitscreen",
+      "projectPath": "D:\\github\\EasyDeliveryMods\\mods\\Splitscreen\\EasyDeliveryCoSplitscreen.csproj",
+      "packagesPath": "C:\\Users\\Ruben\\.nuget\\packages\\",
+      "outputPath": "D:\\github\\EasyDeliveryMods\\mods\\Splitscreen\\obj\\",
+      "projectStyle": "PackageReference",
+      "configFilePaths": [
+        "C:\\Users\\Ruben\\AppData\\Roaming\\NuGet\\NuGet.Config"
+      ],
+      "originalTargetFrameworks": [
+        "netstandard2.1"
+      ],
+      "sources": {
+        "https://api.nuget.org/v3/index.json": {}
+      },
+      "frameworks": {
+        "netstandard2.1": {
+          "targetAlias": "netstandard2.1",
+          "projectReferences": {
+            "D:\\github\\EasyDeliveryMods\\mods\\Shared\\EasyDeliveryCo.Shared.csproj": {
+              "projectPath": "D:\\github\\EasyDeliveryMods\\mods\\Shared\\EasyDeliveryCo.Shared.csproj"
+            }
+          }
+        }
+      },
+      "warningProperties": {
+        "warnAsError": [
+          "NU1605"
+        ]
+      },
+      "restoreAuditProperties": {
+        "enableAudit": "true",
+        "auditLevel": "low",
+        "auditMode": "direct"
+      }
+    },
+    "frameworks": {
+      "netstandard2.1": {
+        "targetAlias": "netstandard2.1",
+        "imports": [
+          "net461",
+          "net462",
+          "net47",
+          "net471",
+          "net472",
+          "net48",
+          "net481"
+        ],
+        "assetTargetFallback": true,
+        "warn": true,
+        "frameworkReferences": {
+          "NETStandard.Library": {
+            "privateAssets": "all"
+          }
+        },
+        "runtimeIdentifierGraphPath": "C:\\GOG Games\\Easy Delivery Co\\EasyDeliveryCoLanCoop-src\\.dotnet\\sdk\\8.0.425\\RuntimeIdentifierGraph.json"
+      }
+    }
+  }
+}
