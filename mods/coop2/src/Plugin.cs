@@ -71,6 +71,8 @@ public sealed class Plugin : BaseUnityPlugin
     internal static ConfigEntry<float> CustomColorG = null!;
     internal static ConfigEntry<float> CustomColorB = null!;
     internal static ConfigEntry<KeyCode> CustomMenuKey = null!;
+    internal static ConfigEntry<string> SpeciesP1 = null!;
+    internal static ConfigEntry<string> SpeciesP2 = null!;
 
     // ── Splitscreen ───────────────────────────────────────────────────────
     internal static ConfigEntry<KeyCode>? SplitscreenToggleKey;
@@ -286,6 +288,13 @@ public sealed class Plugin : BaseUnityPlugin
             "Blue component of your player avatar tint color (0.0 – 1.0).");
         CustomMenuKey = Config.Bind("Customization", "MenuKey", KeyCode.F7,
             "Keyboard key to open the in-game character customization panel.");
+
+        SpeciesP1 = Config.Bind("Customization", "Player1Species", "Cat",
+            new ConfigDescription("What Player 1 is: Cat or Dog (the dog model of the game's dog NPC).",
+                new AcceptableValueList<string>("Cat", "Dog")));
+        SpeciesP2 = Config.Bind("Customization", "Player2Species", "Cat",
+            new ConfigDescription("What Player 2 is: Cat or Dog (the dog model of the game's dog NPC).",
+                new AcceptableValueList<string>("Cat", "Dog")));
 
         // ── Splitscreen ────────────────────────────────────────────────────
         SplitscreenToggleKey = Config.Bind(

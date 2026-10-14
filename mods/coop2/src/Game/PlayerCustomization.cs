@@ -18,9 +18,16 @@ internal static class PlayerCustomization
     public static string Player2TexturePath => Path.Combine(CustomPlayerDir, "player2.png");
     public static string DefaultTexturePath => Path.Combine(CustomPlayerDir, "player.png");
 
+    // Dog skins (same 64x64 layout as the game's dog texture): dog1.png / dog2.png / dog.png
+    public static string Dog1TexturePath => Path.Combine(CustomPlayerDir, "dog1.png");
+    public static string Dog2TexturePath => Path.Combine(CustomPlayerDir, "dog2.png");
+    public static string DogDefaultTexturePath => Path.Combine(CustomPlayerDir, "dog.png");
+
     // Cached loaded textures
     public static Texture2D? TextureP1 { get; private set; }
     public static Texture2D? TextureP2 { get; private set; }
+    public static Texture2D? DogTextureP1 { get; private set; }
+    public static Texture2D? DogTextureP2 { get; private set; }
 
     public static bool HasTextureP1 => TextureP1 != null;
     public static bool HasTextureP2 => TextureP2 != null;
@@ -73,6 +80,13 @@ internal static class PlayerCustomization
 
         TextureP1 = p1;
         TextureP2 = p2;
+
+        Texture2D? d1 = File.Exists(Dog1TexturePath) ? LoadTexture(Dog1TexturePath)
+                      : File.Exists(DogDefaultTexturePath) ? LoadTexture(DogDefaultTexturePath) : null;
+        Texture2D? d2 = File.Exists(Dog2TexturePath) ? LoadTexture(Dog2TexturePath)
+                      : File.Exists(DogDefaultTexturePath) ? LoadTexture(DogDefaultTexturePath) : null;
+        DogTextureP1 = d1;
+        DogTextureP2 = d2;
 
         Plugin.Log.LogInfo($"[PlayerCustomization] Loaded skins - P1: {(TextureP1 != null ? "Custom" : "Default")}, P2: {(TextureP2 != null ? "Custom" : "Default")}");
 
@@ -131,8 +145,19 @@ internal static class PlayerCustomization
         }
     }
 
+    private static bool _dogApplied;
+
     public static void UpdateTick()
     {
+        // A dog player needs the dog NPC's model, which only exists once the world is loaded:
+        // apply it as soon as it can be found (and again after the scene changes).
+        if (!PlayerSpecies.DogReady) _dogApplied = false;
+        if ((PlayerSpecies.IsDog(1) || PlayerSpecies.IsDog(2)) && !_dogApplied && PlayerSpecies.EnsureDogAssets())
+        {
+            _dogApplied = true;
+            ApplyToAllActivePlayers();
+        }
+
         if (_pendingReload)
         {
             _pendingReload = false;
@@ -159,8 +184,18 @@ internal static class PlayerCustomization
             playerIndex = isP2 ? 2 : 1;
         }
 
+        // Cat or dog: the dog is a different head and body mesh plus its own texture
+        bool dog = PlayerSpecies.IsDog(playerIndex) && PlayerSpecies.EnsureDogAssets();
+        PlayerSpecies.Apply(appearance, dog);
+
         Texture2D? targetTex = playerIndex == 2 ? TextureP2 : TextureP1;
-        if (targetTex == null && !_reloading && _initialized &&
+        Texture? useTex = targetTex;
+        if (dog)
+        {
+            // the player's own dog skin, or the dog NPC's skin from the game
+            useTex = (playerIndex == 2 ? DogTextureP2 : DogTextureP1) ?? (Texture?)PlayerSpecies.DogTexture;
+        }
+        else if (targetTex == null && !_reloading && _initialized &&
             (File.Exists(Player1TexturePath) || File.Exists(Player2TexturePath) || File.Exists(DefaultTexturePath)))
         {
             // The textures were unloaded (level change) or never loaded: load them again, once
@@ -168,57 +203,40 @@ internal static class PlayerCustomization
             try { ReloadTextures(); }
             finally { _reloading = false; }
             targetTex = playerIndex == 2 ? TextureP2 : TextureP1;
+            useTex = targetTex;
         }
-        if (targetTex == null) return;
+        if (useTex == null) return;
 
-        targetTex.filterMode = FilterMode.Point;
+        useTex.filterMode = FilterMode.Point;
         int applied = 0;
 
-        // Apply to head/head
         Transform head = appearance.transform.Find("head");
         if (head != null)
         {
             Transform head2 = head.Find("head");
-            if (head2 != null)
-            {
-                MeshRenderer r = head2.GetComponent<MeshRenderer>();
-                if (r != null)
-                {
-                    foreach (Material m in r.materials)
-                    {
-                        if (m != null)
-                        {
-                            m.SetTexture("_BaseMap", targetTex);
-                            m.SetTexture("_MainTex", targetTex);
-                            applied++;
-                        }
-                    }
-                }
-            }
+            if (head2 != null) applied += SetTexture(head2.GetComponent<MeshRenderer>(), useTex);
         }
 
-        // Apply to cylinder (body)
         Transform cylinder = appearance.transform.Find("cylinder");
-        if (cylinder != null)
-        {
-            MeshRenderer r2 = cylinder.GetComponent<MeshRenderer>();
-            if (r2 != null)
-            {
-                foreach (Material m in r2.materials)
-                {
-                    if (m != null)
-                    {
-                        m.SetTexture("_BaseMap", targetTex);
-                        m.SetTexture("_MainTex", targetTex);
-                        applied++;
-                    }
-                }
-            }
-        }
+        if (cylinder != null) applied += SetTexture(cylinder.GetComponent<MeshRenderer>(), useTex);
 
         int id = appearance.GetInstanceID();
         if (applied == 0 || _loggedSkinFor.Add(id))
-            Plugin.Log.LogInfo($"[PlayerCustomization] Skin P{playerIndex} applied to {applied} material(s) on '{appearance.gameObject.name}'.");
+            Plugin.Log.LogInfo($"[PlayerCustomization] Skin P{playerIndex} ({(dog ? "dog" : "cat")}) applied to {applied} material(s) on '{appearance.gameObject.name}'.");
+    }
+
+    private static int SetTexture(MeshRenderer? r, Texture tex)
+    {
+        if (r == null) return 0;
+        int n = 0;
+        foreach (Material m in r.materials)
+        {
+            if (m == null) continue;
+            m.SetTexture("_BaseMap", tex);
+            m.SetTexture("_MainTex", tex);
+            n++;
+        }
+        return n;
     }
 
     private static readonly System.Collections.Generic.HashSet<int> _loggedSkinFor = new();

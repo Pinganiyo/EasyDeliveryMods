@@ -13,7 +13,7 @@ namespace EasyDeliveryCoLanCoop;
 internal sealed class CustomizationMenu : MonoBehaviour
 {
     private bool _visible;
-    private Rect _windowRect = new Rect(30f, 30f, 400f, 340f);
+    private Rect _windowRect = new Rect(30f, 30f, 400f, 430f);
 
     private GUIStyle? _windowStyle;
     private GUIStyle? _headerStyle;
@@ -79,7 +79,9 @@ internal sealed class CustomizationMenu : MonoBehaviour
             : (File.Exists(PlayerCustomization.DefaultTexturePath) ? "CustomPlayer/player.png (Shared)" : "None");
         GUI.Label(new Rect(pad, y, 70f, 20f), "Source:", _labelStyle);
         GUI.Label(new Rect(pad + 75f, y, w - 75f, 20f), p1Path, _valueStyle);
-        y += 26f;
+        y += 22f;
+        DrawSpeciesRow(1, pad, ref y, w);
+        y += 8f;
 
         // Player 2 Status
         GUI.Label(new Rect(pad, y, w, 20f), "PLAYER 2 SKIN", _headerStyle);
@@ -95,7 +97,9 @@ internal sealed class CustomizationMenu : MonoBehaviour
             : (File.Exists(PlayerCustomization.DefaultTexturePath) ? "CustomPlayer/player.png (Shared)" : "None");
         GUI.Label(new Rect(pad, y, 70f, 20f), "Source:", _labelStyle);
         GUI.Label(new Rect(pad + 75f, y, w - 75f, 20f), p2Path, _valueStyle);
-        y += 30f;
+        y += 22f;
+        DrawSpeciesRow(2, pad, ref y, w);
+        y += 12f;
 
         // Action Buttons
         if (GUI.Button(new Rect(pad, y, (w - 8f) * 0.5f, 30f), "Reload Skins Now"))
@@ -122,12 +126,13 @@ internal sealed class CustomizationMenu : MonoBehaviour
         y += 38f;
 
         // Guide / Instructions
-        GUI.Label(new Rect(pad, y, w, 70f),
+        GUI.Label(new Rect(pad, y, w, 84f),
             "Tips:\n" +
             "• Use EasySkin Studio (skin-editor/index.html) to draw or recolor skins.\n" +
             "• Save 'player1.png' for P1, 'player2.png' for P2, or 'player.png' for both.\n" +
+            "• Dog skins use the dog layout: 'dog1.png', 'dog2.png' or 'dog.png'.\n" +
             "• Changes automatically hot-reload when saved to CustomPlayer!", _infoStyle);
-        y += 74f;
+        y += 88f;
 
         // Close Button
         if (GUI.Button(new Rect(pad, y, w, 28f), "Close [F7]"))
@@ -136,6 +141,31 @@ internal sealed class CustomizationMenu : MonoBehaviour
         }
 
         GUI.DragWindow(new Rect(0, 0, _windowRect.width, 24f));
+    }
+
+    /// <summary>"Species:  [Cat] [Dog]" for one player; the chosen one is highlighted.</summary>
+    private void DrawSpeciesRow(int player, float pad, ref float y, float w)
+    {
+        bool dog = PlayerSpecies.IsDog(player);
+        GUI.Label(new Rect(pad, y, 70f, 22f), "Species:", _labelStyle);
+
+        float bw = (w - 75f - 8f) * 0.5f;
+        var previous = GUI.backgroundColor;
+
+        GUI.backgroundColor = !dog ? new Color(0.45f, 0.9f, 0.5f) : previous;
+        if (GUI.Button(new Rect(pad + 75f, y, bw, 22f), "Cat") && dog)
+            PlayerSpecies.Set(player, dog: false);
+
+        GUI.backgroundColor = dog ? new Color(0.45f, 0.9f, 0.5f) : previous;
+        if (GUI.Button(new Rect(pad + 75f + bw + 8f, y, bw, 22f), "Dog") && !dog)
+        {
+            PlayerSpecies.Set(player, dog: true);
+            if (!PlayerSpecies.EnsureDogAssets())
+                Plugin.Log.LogInfo("[CustomizationMenu] Dog chosen; it appears as soon as the world (with the dog NPC) is loaded.");
+        }
+
+        GUI.backgroundColor = previous;
+        y += 24f;
     }
 
     private void BuildStyles()

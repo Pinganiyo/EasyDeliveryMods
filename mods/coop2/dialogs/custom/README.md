@@ -9,9 +9,12 @@ Every NPC has 5 lines for each of two situations (120 lines in total):
 | `duo`     | Both players are in the same shop when the NPC is talked to. |
 
 Keys per situation: `greeting`, `sendoff`, `interaction_1` .. `interaction_3`.
-Columns: `npc_id` (the game's SDxx id), `name`, `workplace`, `situation`, `key`, `text`.
+Columns: `npc_id` (the game's SDxx id), `name`, `workplace`, `situation`, `key`, `text` (English, also the
+fallback) and `text_es` (Latin American Spanish). The line shown follows the language chosen in the game; any
+language without its own column (or with an empty cell) shows the English line. More languages can be added as
+`text_<code>` columns: jp, sch, kor, de, fr, rus, es, pl, uk, tr, pt.
 Gus's interaction lines keep the game's `$price` placeholder (he is the fuel seller).
-All text is plain ASCII, no line is longer than 148 characters.
+English lines are plain ASCII and no longer than 148 characters. The game's pixel font has the Spanish accents and ¿ ¡.
 
 ## Voice notes (what each line imitates)
 

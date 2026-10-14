@@ -8,7 +8,10 @@ namespace EasyDeliveryCoLanCoop;
 
 /// <summary>
 /// The custom two-player NPC lines (dialogs\custom\coop_lines.csv, compiled into the plugin).
-/// To change them without rebuilding, put an edited copy at BepInEx\config\coop_lines.csv:
+/// The CSV has one column per language: "text" is English (and the fallback), "text_es" is Latin American
+/// Spanish; the line shown follows the language chosen in the game. Other languages can be added as
+/// "text_<code>" columns (codes: jp, sch, kor, de, fr, rus, es, pl, uk, tr, pt).
+/// To change lines without rebuilding, put an edited copy at BepInEx\config\coop_lines.csv:
 /// it is used instead of the built-in one the next time the game starts.
 /// </summary>
 internal static class CoopDialogs
@@ -20,14 +23,37 @@ internal static class CoopDialogs
         public readonly List<string> Interactions = new();
     }
 
-    private static Dictionary<string, Set>? _p2;
-    private static Dictionary<string, Set>? _duo;
+    private sealed class Tables
+    {
+        public readonly Dictionary<string, Set> P2 = new();
+        public readonly Dictionary<string, Set> Duo = new();
+    }
+
+    // The game's language numbers (LocalizationDictionary.selectedLanguage), in the order of its sheets.
+    private static readonly string[] LanguageCodes =
+        { "en", "jp", "sch", "kor", "de", "fr", "rus", "es", "pl", "uk", "tr", "pt" };
+
+    private static List<List<string>>? _rows;
+    private static readonly Dictionary<string, Tables> ByLanguage = new();
     private static readonly Dictionary<string, int> Counters = new();
+
+    private static string CurrentLanguage()
+    {
+        try
+        {
+            int i = LocalizationDictionary.localization.selectedLanguage;
+            return i >= 0 && i < LanguageCodes.Length ? LanguageCodes[i] : "en";
+        }
+        catch
+        {
+            return "en";
+        }
+    }
 
     internal static Set? Get(string npcName, bool duo)
     {
-        EnsureLoaded();
-        var table = duo ? _duo! : _p2!;
+        var tables = TablesFor(CurrentLanguage());
+        var table = duo ? tables.Duo : tables.P2;
         return table.TryGetValue(npcName.Trim().ToLowerInvariant(), out var set) ? set : null;
     }
 
@@ -42,21 +68,36 @@ internal static class CoopDialogs
         return set.Interactions[n % set.Interactions.Count];
     }
 
-    private static void EnsureLoaded()
+    private static Tables TablesFor(string language)
     {
-        if (_p2 != null) return;
-        _p2 = new Dictionary<string, Set>();
-        _duo = new Dictionary<string, Set>();
+        if (ByLanguage.TryGetValue(language, out var cached)) return cached;
 
-        string text = ReadSource(out string source);
-        var rows = ParseCsv(text);
-        int used = 0;
-        for (int i = 1; i < rows.Count; i++) // row 0 is the header
+        if (_rows == null)
         {
-            var r = rows[i];
+            string text = ReadSource(out string source);
+            _rows = ParseCsv(text);
+            Plugin.Log.LogInfo($"[CoopDialogs] {Math.Max(0, _rows.Count - 1)} rows read from {source}.");
+        }
+
+        var tables = new Tables();
+        int column = -1;
+        if (_rows.Count > 0 && language != "en")
+            column = _rows[0].IndexOf("text_" + language);
+
+        int used = 0, translated = 0;
+        for (int i = 1; i < _rows.Count; i++) // row 0 is the header
+        {
+            var r = _rows[i];
             if (r.Count < 6) continue;
-            var table = r[3] == "duo" ? _duo : r[3] == "p2" ? _p2 : null;
+            var table = r[3] == "duo" ? tables.Duo : r[3] == "p2" ? tables.P2 : null;
             if (table == null) continue;
+
+            string line = r[5];
+            if (column >= 0 && column < r.Count && r[column].Length > 0)
+            {
+                line = r[column];
+                translated++;
+            }
 
             string name = r[1].Trim().ToLowerInvariant();
             if (!table.TryGetValue(name, out var set))
@@ -64,15 +105,18 @@ internal static class CoopDialogs
 
             switch (r[4])
             {
-                case "greeting": set.Greeting = r[5]; break;
-                case "sendoff": set.Sendoff = r[5]; break;
+                case "greeting": set.Greeting = line; break;
+                case "sendoff": set.Sendoff = line; break;
                 default:
-                    if (r[4].StartsWith("interaction")) set.Interactions.Add(r[5]);
+                    if (r[4].StartsWith("interaction")) set.Interactions.Add(line);
                     break;
             }
             used++;
         }
-        Plugin.Log.LogInfo($"[CoopDialogs] {used} lines for {_p2.Count} NPCs loaded from {source}.");
+
+        ByLanguage[language] = tables;
+        Plugin.Log.LogInfo($"[CoopDialogs] Language '{language}': {used} lines for {tables.P2.Count} NPCs ({translated} translated, the rest in English).");
+        return tables;
     }
 
     private static string ReadSource(out string source)

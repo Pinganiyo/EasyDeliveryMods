@@ -271,6 +271,10 @@ internal sealed class SplitscreenManager : MonoBehaviour
             }
         }
 
+        var carryGuy = _p2Character.GetComponent<sCharacterInteraction>();
+        if (carryGuy != null && carryGuy.packagePlatform != null)
+            carryGuy.holdingPackage = carryGuy.packagePlatform.activeSelf; // lifts P2's hands like P1's
+
         P2Stats.Tick(Time.deltaTime, _p2InCar, _p2Character.transform.position);
         UpdateP2Death();
         if (!P2Dead) CheckP2AutoTeleport();
@@ -1840,8 +1844,13 @@ internal sealed class SplitscreenManager : MonoBehaviour
 
             // Ensure CharacterController & renderers are active and enabled
             clone.SetActive(true);
-            foreach (var r in clone.GetComponentsInChildren<Renderer>(includeInactive: true))
-                r.enabled = true;
+
+            // The clone is an exact copy of P1, so each renderer keeps P1's enabled state. (Forcing them all on
+            // also switched on P1's invisible PackagePlatform cube, a grey block under the carried box.)
+            var sourceRenderers = source.GetComponentsInChildren<Renderer>(includeInactive: true);
+            var cloneRenderers = clone.GetComponentsInChildren<Renderer>(includeInactive: true);
+            for (int i = 0; i < cloneRenderers.Length; i++)
+                cloneRenderers[i].enabled = i < sourceRenderers.Length ? sourceRenderers[i].enabled : true;
 
             var charCtrl = clone.GetComponent<CharacterController>();
             if (charCtrl != null) charCtrl.enabled = true;
