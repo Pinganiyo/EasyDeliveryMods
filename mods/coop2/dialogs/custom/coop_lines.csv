@@ -1,0 +1,121 @@
+npc_id,name,workplace,situation,key,text
+SD30,Theo,Easy Eats,p2,greeting,Hey mate! Another one?
+SD30,Theo,Easy Eats,p2,sendoff,"Cheers, new mate!"
+SD30,Theo,Easy Eats,p2,interaction_1,"A second driver? Wonderful! Two sets of hands, double the good vibes. I'm Theo. I'd shake your hand but I'm mid-affirmation."
+SD30,Theo,Easy Eats,p2,interaction_2,You don't talk as much as the other one. Silence is just wisdom that hasn't been published yet.
+SD30,Theo,Easy Eats,p2,interaction_3,I wrote a poem about people who ride shotgun. It's mostly the word 'shotgun'. Want to hear it? That's the whole poem.
+SD30,Theo,Easy Eats,duo,greeting,Hey mates! Both of you!
+SD30,Theo,Easy Eats,duo,sendoff,"Cheers, you two!"
+SD30,Theo,Easy Eats,duo,interaction_1,"Two of you in one truck! That's carpooling for the soul. Namaste, or whatever the plural is."
+SD30,Theo,Easy Eats,duo,interaction_2,"I jogged 17km this morning. Okay, one kilometre, seventeen times. You two should join me. Or one of you. Or neither. All valid."
+SD30,Theo,Easy Eats,duo,interaction_3,Having a friend to work with is the real EasyCo benefit. Not that they offer benefits. Cheers!
+SD66,Cici,Pawn Shop,p2,greeting,...Another one.
+SD66,Cici,Pawn Shop,p2,sendoff,I'm watching. Do you mind?
+SD66,Cici,Pawn Shop,p2,interaction_1,There was one of you. Now there are two. Funny how that happens right when the birds started acting weird.
+SD66,Cici,Pawn Shop,p2,interaction_2,You sit in the passenger seat? Or is that where they put the one who reports back? Hypothetically.
+SD66,Cici,Pawn Shop,p2,interaction_3,I counted the seats in your truck. Two. Coincidence? I wrote 'coincidence' on my wall and crossed it out.
+SD66,Cici,Pawn Shop,duo,greeting,...Both of you. Together. Suspicious.
+SD66,Cici,Pawn Shop,duo,sendoff,Don't think I didn't notice you came in as a pair.
+SD66,Cici,Pawn Shop,duo,interaction_1,"Two deliverers, one truck. The cardboard conspiracy is growing, and now it's organized."
+SD66,Cici,Pawn Shop,duo,interaction_2,You haven't said a word to each other. That's exactly what a rehearsed pair would do.
+SD66,Cici,Pawn Shop,duo,interaction_3,I keep two lists: people I trust and people I suspect. You're both on the second one. Don't take it personally. Everyone is.
+SD49,Fortino,Depot,p2,greeting,Sigh... Oh. Hello. Another person to be nervous around.
+SD49,Fortino,Depot,p2,sendoff,I'll just be here... again...
+SD49,Fortino,Depot,p2,interaction_1,Are you the one who delivers flowers? No? Dirt? ...I'm still working on a gift for Ellie. Dirt is still on the table.
+SD49,Fortino,Depot,p2,interaction_2,You seem confident. Could you say hello to Ellie for me? Or teach me how to be confident. Either. In seventeen months.
+SD49,Fortino,Depot,p2,interaction_3,Someone told me love is knowing which direction a person is in at all times. I know Ellie's direction. It's always 'away from me'.
+SD49,Fortino,Depot,duo,greeting,Sigh... Two of you? That's twice the eyes to see me avoiding Ellie.
+SD49,Fortino,Depot,duo,sendoff,I'll just be here... but now with witnesses.
+SD49,Fortino,Depot,duo,interaction_1,You two look like you have each other figured out. Do you ever wish you had a script? I've written four. Ellie ignores all of them.
+SD49,Fortino,Depot,duo,interaction_2,"If one of you distracts Ellie, the other could carry my dirt over. It's a plan. Technically a bad one."
+SD49,Fortino,Depot,duo,interaction_3,It must be nice to arrive somewhere with someone. I arrive everywhere with a lot of fear.
+SD11,Ellie,Bakery/Cafe,p2,greeting,Huh?! A new one! Do you come with the old one?
+SD11,Ellie,Bakery/Cafe,p2,sendoff,Yeah! Okay! Great! Good! Bye!
+SD11,Ellie,Bakery/Cafe,p2,interaction_1,I'm Ellie! You look like someone who has never been bitten by a croissant. Lucky! Do you like bread? Do you like bread feelings?
+SD11,Ellie,Bakery/Cafe,p2,interaction_2,Did you know a year has fifty hours? Because of the clocks! The second driver always knows these things. Are you the second driver? Write that down.
+SD11,Ellie,Bakery/Cafe,p2,interaction_3,"I tried to sell a muffin to a lamp today. The lamp was very polite. We are getting married in the spring, which is next to Tuesday."
+SD11,Ellie,Bakery/Cafe,duo,greeting,"Huh?! Two! TWO! Quick, nobody move, I'm counting!"
+SD11,Ellie,Bakery/Cafe,duo,sendoff,"Yeah! Okay! Great! Good! Bye, both-ers!"
+SD11,Ellie,Bakery/Cafe,duo,interaction_1,"You are two people! I only know how to talk to one at a time. Okay: you first. No, you. No, me. Hello!"
+SD11,Ellie,Bakery/Cafe,duo,interaction_2,"If I give each of you half a pastry, that is one pastry. If I give each of you a whole one, that is two! Math is a wonderful lie."
+SD11,Ellie,Bakery/Cafe,duo,interaction_3,Together you make a team! Like me and my feelings! Mostly my feelings are winning.
+SD51,Fit,Cafe,p2,greeting,"Well, hello. Fancy seeing a new face here."
+SD51,Fit,Cafe,p2,sendoff,Love watching you walk away. Again.
+SD51,Fit,Cafe,p2,interaction_1,"You must be the passenger. I'd call you the co-pilot, but I'd rather call you the other love of my life. Cheesy? I know."
+SD51,Fit,Cafe,p2,interaction_2,Are you a parking ticket? Because you've got 'fine' written all over you.
+SD51,Fit,Cafe,p2,interaction_3,"Is it hot in here or is it just the heater in your truck? Either way, I'm into it."
+SD51,Fit,Cafe,duo,greeting,Oh my. Two of you. My heart can't handle the extra surface area.
+SD51,Fit,Cafe,duo,sendoff,Love watching you BOTH walk away. Synchronized.
+SD51,Fit,Cafe,duo,interaction_1,"I can't decide who to flirt with first, so I'll go with both. It's called efficiency. Look it up."
+SD51,Fit,Cafe,duo,interaction_2,You two are like peanut butter and... some other sandwich ingredient that goes with peanut butter. I got nervous.
+SD51,Fit,Cafe,duo,interaction_3,"Don't worry, I'm happy to share the compliments. Like I said: efficiency."
+SD02,Tooey,Restaurant,p2,greeting,"Howdy, whippersnapper! Another one, eh?"
+SD02,Tooey,Restaurant,p2,sendoff,"You be careful now, young one!"
+SD02,Tooey,Restaurant,p2,interaction_1,"Jeepers, there's two of you now. In my day one fella did the whole route, uphill, both ways. Don't let them work you too hard."
+SD02,Tooey,Restaurant,p2,interaction_2,"You've got the look of a good passenger. Quiet. Observant. Seb used to say the best part of the drive is the view. Wasn't much of a view, mind you."
+SD02,Tooey,Restaurant,p2,interaction_3,"Golly, I can't tell if you're a ghost or my eyes are going. Probably both. Heh-heh."
+SD02,Tooey,Restaurant,duo,greeting,"Well, well! Two whippersnappers at once!"
+SD02,Tooey,Restaurant,duo,sendoff,"You be careful now, the pair of you! Heh-heh."
+SD02,Tooey,Restaurant,duo,interaction_1,Never seen two folks in that old truck. Always thought it only had room for one lonely soul. Nice to see it full.
+SD02,Tooey,Restaurant,duo,interaction_2,"Tell old Foreman I said hello. No wait, tell him he owes me a snowball. Heh-heh."
+SD02,Tooey,Restaurant,duo,interaction_3,"Having a friend along is the best way to travel, whippersnappers. Seb always said so. Talked to the dashboard, mostly."
+SD73,Reed,Auto Shop,p2,greeting,Oh? Seb? No... Seb's friend? New Seb?
+SD73,Reed,Auto Shop,p2,sendoff,"Sorry, who were you again?"
+SD73,Reed,Auto Shop,p2,interaction_1,"Hey, it's me, Reed! Wait, we've met. Or haven't. You're the second one? I only remember one of you at a time. Sorry."
+SD73,Reed,Auto Shop,p2,interaction_2,"Your truck has two seats! I've been meaning to tell you that for a while. Wait, did I already tell you? I think I told the other one."
+SD73,Reed,Auto Shop,p2,interaction_3,"I fixed the cup holder on your passenger seat. Or I thought about fixing it. Same thing, effort-wise."
+SD73,Reed,Auto Shop,duo,greeting,"Oh? Wait, there are two of you? Or am I seeing double again?"
+SD73,Reed,Auto Shop,duo,sendoff,"Sorry, which of you was I talking to?"
+SD73,Reed,Auto Shop,duo,interaction_1,Two of you! I can only remember one name. Is it Seb? It's usually Seb. Pick one of you to be Seb.
+SD73,Reed,Auto Shop,duo,interaction_2,"Oh good, you brought a friend. Now when I forget, someone else can remember. That's called teamwork."
+SD73,Reed,Auto Shop,duo,interaction_3,"I'm all out of air for your tires. And for your friend's tires. Surprisingly, the same amount of air."
+SD55,Fives,Bar,p2,greeting,"Oy! Another one! Careful, don't talk to my twin about money."
+SD55,Fives,Bar,p2,sendoff,Say hi to my twin!
+SD55,Fives,Bar,p2,interaction_1,"Two drivers now, huh? That's twice the chance Sixo corners one of you with a business idea. Sorry in advance."
+SD55,Fives,Bar,p2,interaction_2,"I'm Fives. Yes, I'm the quiet twin. No, I don't want to talk about the vending-machine-selling-vending-machines idea."
+SD55,Fives,Bar,p2,interaction_3,You look like someone who reads the fine print. Keep that. It's the only thing that saved me from Sixo's last investment.
+SD55,Fives,Bar,duo,greeting,"Oy! A pair! Funny, I'm one half of one of those."
+SD55,Fives,Bar,duo,sendoff,"Say hi to my twin! Both of you, take turns."
+SD55,Fives,Bar,duo,interaction_1,"You two travel together, huh? Like my twin and me. Except nobody asked you to co-sign anything."
+SD55,Fives,Bar,duo,interaction_2,Sixo would call you a dynamic duo and then ask you for money. I'm just saying the first half.
+SD55,Fives,Bar,duo,interaction_3,"Two of you, one truck, zero business ideas. That's the dream. Hold onto it."
+SD56,Sixo,Bar,p2,greeting,Yo! A new face for my pitch!
+SD56,Sixo,Bar,p2,sendoff,Tell my twin I said hi.
+SD56,Sixo,Bar,p2,interaction_1,Second driver! Perfect. Do you have a minute? It'll only cost you the rest of your afternoon.
+SD56,Sixo,Bar,p2,interaction_2,"Business idea: the driver gets paid per delivery, the passenger gets paid per delivery observed. Observing is a job, I swear."
+SD56,Sixo,Bar,p2,interaction_3,"I'd offer you a deal, but I haven't thought of one yet. Give me a sec. ... ... Do you have a pen?"
+SD56,Sixo,Bar,duo,greeting,Yo! Two customers! I mean friends! Customers! Friends!
+SD56,Sixo,Bar,duo,sendoff,"Tell my twin I said hi. And bring a friend next time. Oh, you did."
+SD56,Sixo,Bar,duo,interaction_1,"A duo! Ever heard of 'buy one, get one'? I don't do that, but you two can pretend I do."
+SD56,Sixo,Bar,duo,interaction_2,"Investment opportunity: I take half of what you earn, and you both get the feeling of belonging to something. It's called a team!"
+SD56,Sixo,Bar,duo,interaction_3,"Pitch time. Two heads are better than one, which means I can sell the same idea twice. Efficiency!"
+SD08,Ada,Flower Shop,p2,greeting,G-greetings. A n-new face. H-hello.
+SD08,Ada,Flower Shop,p2,sendoff,"G-g-goodbye, f-friend."
+SD08,Ada,Flower Shop,p2,interaction_1,Y-you must be the o-other one. I'm A-Ada. I h-have f-feelings now. S-several. W-would you l-like to hear them? N-no pressure.
+SD08,Ada,Flower Shop,p2,interaction_2,"T-two of you m-makes the truck l-lighter, I th-think. Or w-warmer. I'm not s-sure which. B-both are g-good."
+SD08,Ada,Flower Shop,p2,interaction_3,I k-keep flowers for p-people who sit quietly. Y-you look like one. H-here is... my imagination of a f-flower. Do you l-like it?
+SD08,Ada,Flower Shop,duo,greeting,"G-greetings, b-both of you. Th-that is a l-lot of f-friends at once."
+SD08,Ada,Flower Shop,duo,sendoff,G-g-goodbye. Th-thank you for c-coming t-together.
+SD08,Ada,Flower Shop,duo,interaction_1,"W-when you c-come in t-together, the s-shop feels m-more... full. I d-don't have a w-word for it. M-maybe 'warm'."
+SD08,Ada,Flower Shop,duo,interaction_2,I w-wish I had t-two hands to wave g-goodbye with. I d-do. But I wave w-with only one. Th-that's rude. I will fix it.
+SD08,Ada,Flower Shop,duo,interaction_3,S-someone once t-told me fr-friends come in p-pairs. Th-that is a l-lovely t-thing to be t-told.
+SD24,Foreman,Pizzeria,p2,greeting,Aye! Another snapper!
+SD24,Foreman,Pizzeria,p2,sendoff,"Carry on, guppy!"
+SD24,Foreman,Pizzeria,p2,interaction_1,Two drivers on the one truck? Is EasyCo that skint? Ye'll be sharing the same wee hat next. Call me Foreman.
+SD24,Foreman,Pizzeria,p2,interaction_2,"Passenger, eh? Ye ken the job is tae sit still and say naught. Perfect. Ye'd have been welcome on my boat."
+SD24,Foreman,Pizzeria,p2,interaction_3,"If ye see old Tooey, tell 'em I said ye drive better than they walk. Heh-heh."
+SD24,Foreman,Pizzeria,duo,greeting,"Aye! A whole school o' ye! Two, anyway."
+SD24,Foreman,Pizzeria,duo,sendoff,"Carry on, the pair o' ye!"
+SD24,Foreman,Pizzeria,duo,interaction_1,"Two fish in the one tin. Dinnae tell me ye share a seat belt tae. Cracking efficiency, that."
+SD24,Foreman,Pizzeria,duo,interaction_2,"If ye both pull yer weight, ye'll be home before the snow thaws. Heh-heh. Nae pressure."
+SD24,Foreman,Pizzeria,duo,interaction_3,"Take it from me, snappers: a good fishing trip is nae good without a pal tae blame the empty bucket on."
+SD19,Gus,Fuel station,p2,greeting,Hmph. Another one.
+SD19,Gus,Fuel station,p2,sendoff,Now go away. You too.
+SD19,Gus,Fuel station,p2,interaction_1,"Oh good, a second customer. Twice the disappointment and exactly the same price. That'll be $price"
+SD19,Gus,Fuel station,p2,interaction_2,The passenger! The one who contributes nothing but opinions. Tell the driver fuel isn't free. Neither is your presence. $price
+SD19,Gus,Fuel station,p2,interaction_3,"I don't know which of you is paying, and I don't care. Somebody give me $price"
+SD19,Gus,Fuel station,duo,greeting,Hmph. Two. Wonderful.
+SD19,Gus,Fuel station,duo,sendoff,Now go away. Both. Together. Quietly.
+SD19,Gus,Fuel station,duo,interaction_1,Two people for one tank of fuel. Does the truck run on companionship? It doesn't. That'll be $price
+SD19,Gus,Fuel station,duo,interaction_2,"You came in as a pair, so I'll insult you as a pair: you're both awful. Equally. That's $price"
+SD19,Gus,Fuel station,duo,interaction_3,"If one of you pays, the other gets to pretend they would have. Classic. $price"

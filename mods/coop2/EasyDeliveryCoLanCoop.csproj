@@ -84,4 +84,7 @@
       <Private>false</Private>
     </Reference>
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="dialogs\custom\coop_lines.csv" LogicalName="coop_lines.csv" />
+  </ItemGroup>
 </Project>

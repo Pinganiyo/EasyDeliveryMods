@@ -139,6 +139,16 @@ internal sealed class SplitscreenManager : MonoBehaviour
     internal static bool P1Inside { get; private set; }
     internal static bool P2Inside { get; private set; }
     internal static bool MergedView => P1Inside && P2Inside;
+
+    /// <summary>True when both players are within radius metres of a point (e.g. both at a shopkeeper).</summary>
+    internal static bool BothNear(Vector3 pos, float radius = 15f)
+    {
+        var p1 = P1CharacterObject;
+        var p2 = P2CharacterObject;
+        return SplitActive && p1 != null && p2 != null &&
+               Vector3.Distance(pos, p1.transform.position) < radius &&
+               Vector3.Distance(pos, p2.transform.position) < radius;
+    }
     private static bool _loggedMerged;
 
     /// <summary>The camera that shows Player 2's world (their half, or the shared full-screen one).</summary>
@@ -217,6 +227,9 @@ internal sealed class SplitscreenManager : MonoBehaviour
             }
         }
 
+        if (Plugin.DumpTextKey != null && Input.GetKeyDown(Plugin.DumpTextKey.Value))
+            GameTextDump.Run();
+
         if (_active && Plugin.SplitscreenSwapControlKey != null && Input.GetKeyDown(Plugin.SplitscreenSwapControlKey.Value))
         {
             ControlP2 = !ControlP2;
@@ -227,7 +240,13 @@ internal sealed class SplitscreenManager : MonoBehaviour
         if (!_active || _p2Character == null) return;
 
         // Check P2 Interact (E / A / Cross / RT)
-        if (!P2Dead && GetP2InteractPressed())
+        if (P2Dialog.Active)
+        {
+            P2Dialog.Tick(Time.unscaledDeltaTime);
+            if (!P2Dead && GetP2InteractPressed()) P2Dialog.OnInteract();
+            if (GetP2BackPressed()) P2Dialog.OnInteract(); // Skip and Continue are the same in the game's dialog
+        }
+        else if (!P2Dead && GetP2InteractPressed())
         {
             try
             {
@@ -240,7 +259,7 @@ internal sealed class SplitscreenManager : MonoBehaviour
         }
 
         // Check P2 Back / Drop (Space / B / Circle / LT)
-        if (!P2Dead && GetP2BackPressed())
+        if (!P2Dialog.Active && !P2Dead && GetP2BackPressed())
         {
             try
             {
@@ -481,6 +500,7 @@ internal sealed class SplitscreenManager : MonoBehaviour
         _active = false;
         _activeState = false;
         P2Dead = false;
+        P2Dialog.Cancel();
         P2Stats.Shutdown();
         OwnModelHider.Shutdown();
         ViewModeVisibility.Shutdown();
@@ -1275,6 +1295,14 @@ internal sealed class SplitscreenManager : MonoBehaviour
                 return;
             }
 
+            // Shopkeepers: the game's talk flow freezes and charges Player 1, so P2 gets its own conversation
+            if (bestIP.callback == "ButtonPressed" && bestIP.listener != null)
+            {
+                var npc = bestIP.listener.GetComponent<sTransactionNPC>();
+                if (npc != null && P2Dialog.Start(npc))
+                    return;
+            }
+
             // Building doors ("enter" / "leave"): the game's sTeleporter only knows Player 1
             if (bestIP.callback == "Teleport" && bestIP.listener != null)
             {
@@ -1569,7 +1597,7 @@ internal sealed class SplitscreenManager : MonoBehaviour
     {
         if (_p2InCar) return;
 
-        Vector2 input = GetP2MovementInput();
+        Vector2 input = P2Dialog.Active ? Vector2.zero : GetP2MovementInput();
 
         // Calculate world movement relative to Player 2's camera facing
         Vector3 fwd = P2CameraTransform != null ? P2CameraTransform.forward : cc.transform.forward;

@@ -58,6 +58,8 @@ internal sealed class SplitscreenHud : MonoBehaviour
             DrawTag("P2", 10, cy + 10);
         }
 
+        P2Dialog.Draw();
+
         // ── Native World-Space Floating Markers for Player 2 ────────────────
         var interaction = SplitscreenManager.GetP2WorldInteraction();
         var p2Cam = SplitscreenManager.P2ViewCamera;

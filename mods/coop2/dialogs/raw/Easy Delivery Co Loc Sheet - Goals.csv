@@ -1,0 +1,185 @@
+Goals,English Strings,JP,SCH,KOR,DE,FR,RUS,LATAM,POL,UKR,TURK,BRPR
+title,Make a Delivery,配達する,送货,배달 개시,Führe eine Lieferung durch,Effectuer une livraison,Доставь груз,Completa una entrega,Dostarcz coś,Зроби доставлення,Teslimat Yap,Faça uma entrega
+line1,"Select and complete one delivery job
+ It's okay if some of the payload breaks","配達を１件選んで完了する
+ 積荷は少しくらい落としても大丈夫","选择一份运单，把货物送到目的地
+货物有破损没关系，只要不是全损就行","배달 임무 하나를 선택 및 완료하십시오.
+화물의 일부가 망가져도 괜찮습니다.","Such dir einen Lieferauftrag aus und erledige ihn
+Es ist in Ordnung, wenn ein Teil der Ladung kaputtgeht","Sélectionnez une livraison et effectuez-la.
+Ce n’est pas grave si quelques parties de votre chargement se cassent.
+","Выбери груз и доставь его
+ Не бойся, если что-то сломается по дороге","Selecciona una entrega y complétala.
+ Si la carga se rompe, no pasa nada.","Wybierz i wykonaj jedno zlecenie na dostawę
+Nic się nie stanie, jeśli część ładunku zostanie zniszczona","Вибери і виконай одне доставлення
+Не біда, якщо частина вантажу пошкодиться","Bir teslimat işi seç ve tamamla
+ Kargolardan bazıları kırılsa da sorun olmaz","Selecione e conclua um serviço de entrega
+ Não tem problema se quebrar parte da carga"
+title,Energy Drink,エナドリ,能量饮料,에너지 드링크,Energy-Drink,Boisson énergisante,Энергетик,Bebida energizante,Napój energetyczny,Енергетик,Enerji İçeceği,Energético
+line1,"Buy an energy drink from the vending machine and bring it to the dog
+ You might have to take another delivery","自販機でエナジードリンクを買い、犬のところに持って行く
+ これもある意味配達と言えるかも","去自动贩卖机买一罐能量饮料，带给狗子。
+你可能需要再送一单。","자판기에서 에너지 드링크 1개를 산 후 강아지에게 가져다 주십시오.
+배달을 더 완료해야 할 수도 있습니다.","Kauf einen Energy-Drink aus dem Automaten und bring ihn dem Hund
+Möglicherweise ist eine weitere Lieferung nötig","Achetez une boisson énergisante au distributeur automatique et apportez-la au chien.
+Vous devrez peut-être effectuer une nouvelle livraison.","Купи энергетик в автомате и принеси его собачке
+ Возможно, придётся выполнить ещё один заказ","Compra una bebida energizante en la expendedora y llévasela al perro.
+ Puede que necesites hacer otra entrega.","Kup napój energetyczny z maszyny z napojami i dostarcz go psu
+Może będzie konieczne wzięcie kolejnego zlecenia","Купи енергетик з автомата і принеси його песику
+Можливо, тобі доведеться взяти ще одну доставку","İçecek otomatından bir enerji içeceği al ve köpeğe getir
+ Bunun için başka bir teslimat yapman gerekebilir","Compre um energético da máquina automática e leve-o até o cachorro
+ Talvez você tenha que fazer outra entrega"
+title,Lighter,ライター,打火机,라이터,Feuerzeug,Briquet,Зажигалка,Encendedor,Zapalniczka,Запальничка,Çakmak,Isqueiro
+line1,"Buy a lighter from the Depot
+ You'll have to earn some more money first","ディスカウントストアでライターを買う
+ そのためにもっとお金を稼ごう","去仓库买一只打火机
+你需要先再挣一点钱","보급고에서 라이터를 구입하십시오.
+먼저 돈을 더 마련해야 할 것입니다.","Kaufe ein Feuerzeug im Depot
+Du musst erst noch etwas mehr Geld verdienen","Achetez un briquet au magasin de bricolage
+Vous devez d’abord gagner un peu d’argent","Купи зажигалку на Продскладе
+ Но для начала надо немного заработать","Compra un encendedor en la tienda.
+ Primero, debes ganar dinero.","Kup zapalniczkę w sklepie wielobranżowym
+Najpierw musisz zarobić trochę pieniędzy","Купи запальничку на Складі
+Але спочатку треба заробити трохи грошей","Depo'dan  bir çakmak satın al
+Önce biraz daha para kazanmalısın","Compre um isqueiro no Armazém
+ Você vai precisar juntar um pouco de dinheiro antes"
+title,Cabin in Snowy Peaks,スノーリーピークスの山小屋,雪山上的小屋,스노이 픽스의 오두막,Hütte in Snowy Peaks,La cabane à Pics-Enneigés,Домик в Снежных Пиках,Cabaña en Cumbres Nevosas,Chatka w Śnieżnych Szczytach,Хатина в Снігових вершинах,Karlı Tepeler'deki Kulübe,Cabana na Serra Branca
+line1,"Visit the cabin in Snowy Peaks
+ Try an intercity delivery on the way","スノーリーピークスの山小屋を訪れる
+ ついでに地域間での配達を試してみよう","去雪山上的小屋
+顺路接一份村际运单试试","스노이 픽스의 오두막에 들러보십시오.
+가는 김에 도시간 배달을 시도해 보십시오.","Besuche die Hütte in Snowy Peaks
+Versuche unterwegs eine Intercity-Lieferung zwischen Städten","Rendez-vous à la cabane à Pics-Enneigés.
+Essayez d’effectuer une livraison interurbaine.","Попади в домик в Снежных Пиках
+ Можешь по пути ещё и межгород доставить","Visita la cabaña de Cumbres Nevosas.
+ Aprovecha y haz una entrega interurbana.","Odwiedź chatkę w Śnieżnych Szczytach
+Spróbuj przeprowadzić po drodze międzymiastową dostawę","Відвідай хатину в Снігових вершинах
+Спробуй зробити міжміську доставку по дорозі","Karlı Tepeler'deki kulübeyi ziyaret et
+Yol üstünde şehirlerarası bir teslimat dene","Visite a cabana na Serra Branca
+ Tente fazer uma entrega intermunicipal no caminho"
+title,Snow Tires,スノータイヤ,雪地胎,스노우 타이어,Winterreifen,Pneus neige,Зимняя резина,Neumáticos de invierno,Zimowe opony,Зимові шини,Kar Lastiği,Pneus de inverno
+line1,"Purchase snow tires from the Auto Shop
+ You'll need them to leave or access the rest of Snowy Peaks","オートショップでスノータイヤを買う
+  スノーリーピークスを行き来するのに不可欠なタイヤ","去汽配店买雪地胎
+车子换上雪地胎，才能出入雪山其他地方","자동차 용품점에서 스노우 타이어를 구입하십시오.
+스노이 픽스의 다른 지역을 진입 혹은 퇴장할 때 필요할 것입니다.","Kauf Winterreifen in der Autowerkstatt
+Du brauchst sie, um Snowy Peaks zu verlassen oder den Rest davon zu erreichen","Achetez des pneus neige au magasin de pièces auto.
+Vous en aurez besoin pour sortir ou accéder au reste de Pics-Enneigés.","Купи зимнюю резину в Автомастерской
+ Она понадобится, чтобы передвигаться по Снежным Пикам","Compra neumáticos de invierno en el taller mecánico.
+Los necesitas para salir de Cumbres Nevosas o recorrer la ciudad.","Kup zimowe opony w Sklepie Samochodowym
+Będą ci potrzebne, by móc opuścić Śnieżne Szczyty lub odwiedzić ich dalszy obszar","Придбай зимові шини в Автомагазині
+Вони знадобляться, щоб потрапити в інші частини Снігових вершин","Araba Servisi'nden kar lastiği satın al
+Bunlara, Karlı Doruklar'dan ayrılmak veya bölgenin geri kalanına erişmek için ihtiyacın olacak","Compre pneus de inverno na Oficina
+ Eles serão necessários para sair ou acessar o restante da Serra Branca"
+title,Fishing Town,フィッシングタウン,渔村,피싱 타운,Fishing Town,Ville-de-Pêche,Рыбацкое,Pueblo Pesquero,Miasteczko rybackie,Рибальське,Balıkçı Kasabası ,Vale da Pesca
+line1,"Meet MK in Fishing Town
+ The tunnel is east of Mountain Town","フィッシングタウンでエム・ケーに会う
+ マウンテンタウンの東にあるトンネルに向かう","去渔村见MK
+隧道在山屯东边","피싱 타운에서 MK를 만나십시오.
+피싱 타운으로 가는 터널은 마운틴 타운 동쪽에 있습니다.","Triff MK in Fishing Town
+Der Tunnel ist östlich von Mountain Town","Retrouvez MC à Ville-de-Pêche.
+Le tunnel se trouve à l’est de Ville-sur-Montagne.","Встреться с ПК в Рыбацком
+ Туннель на востоке от Горного","Ve a ver a MK en Pueblo Pesquero.
+ El túnel está al este de Pueblo Montés.","Spotkaj się z MK w miasteczku rybackim
+Tunel znajduje się na wschód od górskiego miasteczka","Зустрінься з ТК у Рибальському
+Тунель знаходиться на схід від Гірного","MK ile Balıkçı Kasabası'nda buluş.
+Tünel, Dağ Kasabası'nın doğusunda","Encontre AM no Vale da Pesca
+ O túnel fica a leste de Subida da Serra"
+title,Radio Towers,電波塔,无线电塔,무전탑,Funktürme,Tours radio,Радиовышки,Torres de radio,Wieże radiowe,Радіовежі,Radyo Kuleleri,Torres de rádio
+line1,"Find and activate the radio towers, they might also have something to listen to","電波塔を見つけてスイッチを入れる
+ 中には近づくのに注意が必要な電波塔もあるかも",找到无线电塔，逐一启动。那边或许还有可以听的东西,무전탑을 찾아서 작동시키십시오. 들을 만한 게 있을지도 모릅니다.,"Finde und aktiviere die Funktürme, vielleicht gibt es da auch etwas zu hören","Trouvez et activez les tours radio, elles diffusent peut-être quelque chose à écouter.","Найди и активируй радиовышки. Может, даже получится что-нибудь поймать",Busca las torres de radio y actívalas. Tal vez haya algo interesante para oír.,Znajdź i aktywuj wieże radiowe. Może pozwoli ci to posłuchać czegoś ciekawego,"Знайди і активуй радіовежі, можливо ти щось зможеш навіть почути","Radyo kulelerini bul ve çalıştır, bakarsın dinleyecek şeyler bile bulabilirsin","Encontre e ative as torres de rádio, pode ser que tenham algo para se escutar"
+title,Security Gate,セキュリティゲート,安保大门,보안문,Sicherheitstor,Portail de sécurité,Проходная,Puerta de seguridad,Brama zabezpieczająca,Захисні ворота,Güvenlik Kapısı,Portão de segurança
+line1,Head to Fishing Town and open the security gate,フィッシングタウンへ向かい、セキュリティゲートを開く,去渔村，打开安保大门,피싱 타운으로 가서 보안문을 여십시오.,Öffne in Fishing Town das Sicherheitstor,Rendez-vous à Ville-de-Pêche et ouvrez le portail de sécurité.,Направляйся в Рыбацкое и открой охранные ворота,Ve a Pueblo Pesquero y abre la puerta de seguridad.,Udaj się do miasteczka rybackiego i otwórz bramę zabezpieczającą,Прямуй до Рибальського і відчини захисні ворота,Balıkçı Kasabası'na git ve güvenlik kapısını aç,Vá para o Vale da Pesca e abra o portão de segurança
+title,Bumper Bar,バンパーガード,保险杠,자동차 범퍼,Stoßstange,Pare-buffle,Кенгурятник,Barra parachoques,Zderzak,Кенгурятник,Koruma Demiri,Quebra-mato
+line1,"Purchase a bumper bar from the Auto Shop
+ Use it to smash through gates and trees","オートショップでバンパーガードを買う
+ これがあれば金網シャッターや木にぶつかって倒すことができる","去汽配店买保险杠
+车子装上保险杠才能撞开树木和大门","자동차 용품점에서 자동차 범퍼를 구입하십시오.
+대문과 나무를 파괴할 때 사용할 수 있습니다.","Kaufe eine Stoßstange in der Autowerkstatt
+Benutze sie, um durch Tore und Bäume zu brechen","Achetez un pare-buffle au magasin de pièces auto.
+Utilisez-le pour percuter des portails et des arbres.","Купи кенгурятник в Автомастерской
+ Он поможет тебе сбивать ворота и деревья","Compra una barra parachoques en el taller mecánico.
+ Úsala para romper puertas y árboles.","Kup zderzak w sklepie samochodowym
+Użyj go, by przebijać się przez bramy i drzewa","Придбай кенгурятник в Автомагазині
+Скористайся ним, щоб пробиватися крізь ворота та дерева","Araba Servisi'nden koruma demiri satın al
+Bunu kapıları ve ağaçları parçalayarak geçmek için kullan","Compre um quebra-mato na Oficina
+ Use-o para atravessar portões e árvores"
+title,Hydro Dam,水力発電ダム,水电大坝,수력발전용 댐,Wasserkraftwerk,Barrage hydraulique,ГЭС,Dique,Zapora wodna,ГЕС,Elektrik Santrali,Represa hidráulica
+line1,Infiltrate the hydro dam in Fishing Town and retrieve the supplies,フィッシングタウンの水力発電ダムに潜入して必要な物を回収しよう,进入渔村的水电大坝，拿到物资,피싱 타운의 수력발전용 댐에 잡입하여 물품을 회수하십시오.,Infiltriere das Wasserkraftwerk in Fishing Town und hole die Vorräte,Infiltrez le barrage hydraulique à Ville-de-Pêche et récupérez le matériel.,Проберись на ГЭС в Рыбацком и достань припасы,Cuélate en el dique de Pueblo Pesquero y recupera las provisiones.,Zbadaj zaporę wodną w miasteczku rybackim i odzyskaj zasoby,Проникни на ГЕС у Рибальському та вивези припаси,Balıkçı Kasabası'ndaki elektrik santraline sız ve erzakları topla,Infiltre-se na represa hidrelétrica do Vale da Pesca e colete os suprimentos
+title,Supplies,必要な物,物资,물품,Vorräte,Matériel,Припасы,Provisiones,Zasoby,Припаси,Erzaklar,Suprimentos
+line1,Bring the supplies to MK at the security gate,必要な物をセキュリティゲートにいるエム・ケーに届けよう,带着物资去安保大门见MK,물품을 보안문 옆에 있는 MK에게 전달하십시오.,Bring die Vorräte zu MK am Sicherheitstor,Apportez le matériel à MC au portail de sécurité.,Отвези припасы ПК к охранным воротам,"Llévale las provisiones a MK, en la puerta de seguridad.",Dostarcz zasoby MK koło bramy zabezpieczającej,Достав припаси до ТК біля захисних воріт,Erzakları güvenlik kapısındaki MK'ye götür.,Leve os suprimentos para AM no portão de segurança
+title,Ice Chains,タイヤチェーン,防滑胎链,아이스 체인,Eisketten,Chaînes à neige,Колёсные цепи,Cadenas antideslizantes,Łańcuchy przeciwślizgowe,Ланцюги проти ковзання,Kar Zinciri,Correntes de pneu
+line1,"Purchase the ice chains from the Auto Shop
+ Ice Chains help keep your grip on ice","オートショップでタイヤチェーンを購入する
+ これがあれば氷の上でもグリップを保てる","去汽配店买防滑胎链
+防滑胎链有助于增加轮胎在冰上的摩擦力","자동차 용품점에서 아이스 체인을 구입하십시오.
+얼음 위에서 미끄러지지 않게 도와줄 것입니다.","Kaufe die Eisketten in der Autowerkstatt
+Eisketten helfen dir, auf Eis Halt zu finden","Achetez des chaînes à neige au magasin de pièces auto.
+Les chaînes à neige évitent de glisser sur la glace.","Купи колёсные цепи в Автомастерской
+ Цепи помогут не буксовать на льду","Compra cadenas antideslizantes en el taller mecánico.
+ Con ellas, no te resbalarás en el hielo.","Kup łańcuchy przeciwślizgowe ze sklepu samochodowego
+Łańcuchy przeciwślizgowe pomagają ci utrzymać się na śliskich drogach","Придбай ланцюги проти ковзання в автомагазині
+Ланцюги проти ковзання допомагають триматися на льоду","Araba Servisi'nden buz zinciri satın al
+Buz zinciri, buz üzerinde tutunmanızı sağlamaya yardımcı olur","Compre as correntes de pneu na Oficina
+ Correntes de pneu ajudam a manter a tração no gelo"
+title,Factory,工場,工厂,공장,Fabrik,Usine,Завод,Fábrica,Fabryka,Завод,Fabrika,Fábrica
+line1,Head to the factory just west of Mountain Town,マウンテンタウンのすぐ西にある工場へ向かう,去工厂，就在山屯西边,마운틴 타운 서쪽에 있는 공장으로 가십시오.,Finde die Fabrik westlich von Mountain Town,Rendez-vous à l’usine à l’ouest de Ville-sur-Montagne.,Направляйся на завод к западу от Горного,"Ve a la fábrica, al oeste de Pueblo Montés.",Udaj się do fabryki na zachód od górskiego miasteczka,"Прямуй до заводу, що розташований на захід від Гірного",Dağ Kasabası'nın batısındaki fabrikaya git,Vá para a fábrica logo a oeste de Subida da Serra
+title,Restore,リストア,还原,복원,Wiederherstellen,Réparation,Восстановление,Restauración,Przywróć,Відновлення,Tamir Et,Restauração
+line1,Repair the SD Units and tell MK,店主ドローン個体をリストアし、エム・ケーと話す,还原SD单元，然后告诉MK,SD 개체들을 복원하고 MK와 대화하십시오.,Repariere die SD-Einheiten und sag MK Bescheid.,Réparez les unités RE et prévenez MC.,Почини ПД-юниты и расскажи об этом ПК,Repara las unidades SD y avísale a MK.,Napraw jednostki DS i powiedz o tym MK,Відремонтуй ДП-юніти та повідом ТК,SD Birimlerini tamir et ve MK'ye söyle,Conserte as unidades DL e avise AM
+title,Cooking Pot,お鍋,锅,솥,Kochtopf,Marmite,Кастрюлька,Olla,Garnek,Казанок,Tencere,Panela
+line1,"Purchase the cooking pot from the Depot in Snowy Peaks
+ Coffee is more cost effective than energy drinks","スノーリーピークスのディスカウントストアでお鍋を買う
+  コーヒーはエナジードリンクよりもコスパがいい","去雪山的仓库买一口锅
+咖啡比能量饮料的性价比高","스노이 픽스의 보급고에서 솥을 구입하십시오.
+커피는 에너지 드링크보다 가성비가 좋습니다.","Kaufe im Depot von Snowy Peaks den Kochtopf.
+Kaffee ist kostengünstiger als Energy-Drinks","Achetez une marmite au magasin de bricolage de Pics-Enneigés.
+Le café est plus rentable que les boissons énergisantes.","Купи кастрюльку на Продскладе в Снежных Пиках
+ Выгоднее покупать кофе, а не энергетики","Compra la olla en la tienda de Cumbres Nevosas.
+ El café rinde más que las bebidas energizantes.","Kup garnek w sklepie wielobranżowym w Śnieżnych Szczytach
+Kawa jest skuteczniejsza niż napoje energetyczne","Придбай казанок на Складі в Снігових вершинах
+Кава більш вигідна за ціною ніж енергетики","Karlı Tepeler'deki Depo'dan tencere satın al
+Kahve, enerji içeceklerinden daha uygun maliyetlidir","Compre a panela no Armazém em Serra Branca
+ O custo-benefício de café é melhor do que de energéticos"
+title,Brew Coffee,コーヒーを淹れる,煮咖啡,커피 끓이기,Kaffee kochen,Préparer du café,Варка кофе,Prepara café,Zaparz kawę,Заварювання кави,Kahve Demle,Prepare café
+line1,"Brew coffee in a cooking pot
+ Place the coffee powder in a cooking pot over a lit fire","お鍋でコーヒーを淹れる
+ 火をつけた薪の上にお鍋を置いてコーヒー粉を入れよう","在锅里煮咖啡
+把咖啡粉倒进架在火上的锅里","솥에서 커피를 끓이십시오.
+불 위에 놓인 솥 안에 커피 가루를 넣으면 됩니다.","Brühe in einem Kochtopf Kaffee
+Gib das Kaffeepulver in einen Kochtopf über einem brennenden Feuer","Préparez du café dans la marmite.
+Placez le café moulu dans la marmite au-dessus du feu.
+","Свари кофе в кастрюльке
+ Поставь кастрюльку на огонь и насыпь туда молотый кофе","Prepara café en una olla.
+ Coloca el café en polvo en una olla sobre fuego.","Zaparz kawę w garnku
+Wsyp kawę w proszku do stojącego na ogniu garnka","Звари каву в казанку
+Поклади мелену каву в казанок над розпаленим вогнем","Tencerede kahve demle
+Kahve tozunu yanan bir ateşin üzerindeki tencereye koy","Prepare café na panela
+ Coloque café em pó na panela em cima de uma chama."
+title,Fishing Rod,釣り竿,鱼竿,낚싯대,Angel,Canne à pêche,Удочка,Caña de pescar,Wędka,Вудка,Olta,Vara de pesca
+line1,"Purchase a fishing rod from the Depot in Fishing Town
+ Intercity deliveries are a stronger source of income","フィッシングタウンのディスカウントストアで釣り竿を買う
+ 地域間配達はより大きな収入源になる","去渔村的仓库买一根鱼竿
+村际快递的收入更多","피싱 타운의 보급고에서 낚싯대를 구입하십시오.
+도시간 배달으로 수입을 더 얻을 수 있습니다.","Kaufe im Depot von Fishing Town eine Angel
+Intercity-Lieferungen zwischen den Städten sind eine höhere Einnahmequelle","Achetez une canne à pêche au magasin de bricolage de Ville-de-Pêche.
+Les livraisons interurbaines sont une source de revenus plus rentable.","Купи удочку на Продскладе в Рыбацком
+ За междугородние доставки платят больше","Compra una caña de pescar en la tienda de Pueblo Pesquero.
+ Las entregas interurbanas te dan más dinero.","Kup wędkę w sklepie wielobranżowym w miasteczku rybackim
+Dostawy międzymiastowe są bardziej opłacalne","Придбай вудку на Складі в Рибальському
+Міжміські доставки є більш надійним джерелом доходу","Balıkçı Kasabası'ndaki Depo'dan olta satın al
+Şehirlerarası teslimatlar daha güçlü bir gelir kaynağıdır","Compre uma vara de pesca no Armazém em Vale da Pesca
+ Entregas intermunicipais são uma fonte de renda melhor."
+title,Fish Soup,お魚スープ,鱼汤,물고기 수프,Fischsuppe,Soupe de poisson,Уха,Sopa de pescado,Zupa rybna,Уха,Balık Çorbası,Sopa de peixe
+line1,"Brew some fish soup
+ Ice fish in a hut on the Fishing Town lake, you'll need firewood and a cooking pot","お鍋で煮込んでお魚スープを作る
+  フィッシングタウンの湖畔の小屋で氷上釣りをする
+あと薪とお鍋が必要","煮一份鱼汤
+在渔村湖上的小屋冰钓。你需要柴火和一口锅","물고기 수프를 끓이십시오.
+피싱 타운의 호수에 있는 오두막에서 물고기를 낚으십시오. 장작과 솥이 필요할 것입니다.","Koche etwas Fischsuppe
+In einer Hütte am See von Fishing Town kannst du eisfischen, du benötigst Brennholz und einen Kochtopf","Préparez de la soupe de poisson. 
+Pêchez sous la glace dans une cabane au lac de Ville-de-Pêche, vous aurez besoin de bûches de bois et d’une marmite.","Свари уху
+ Поймай рыбу во времянке на озере в Рыбацком. Также понадобятся дрова и кастрюлька","Prepara sopa de pescado.
+ Pesca en hielo en una cabaña junto al lago de Pueblo Pesquero. Necesitas leña y una olla.","Ugotuj zupę rybną
+Złów ryby koło chaty na jeziorze w miasteczku rybackim. Będzie ci też potrzebne drewno na opał i garnek","Звари уху
+Злови рибу в хатині на озері у Рибальському. Тобі також знадобляться дрова та казанок","Balık çorbası demle
+Balıkçı Kasabası gölündeki bir kulübede buzda balık avla, yakacak odun ve tencereye ihtiyacın olacak","Prepare uma sopa de peixe.
+ Pesque no gelo em uma cabana no lago do Vale da Pesca, você vai precisar de lenha e uma panela."

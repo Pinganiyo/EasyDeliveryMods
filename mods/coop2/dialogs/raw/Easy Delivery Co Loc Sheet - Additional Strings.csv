@@ -1,0 +1,913 @@
+Description,English Strings,JP,SCH,KOR: 100%,DE,FR,RUS,LATAM,POL,UKR,TURK,BRPR
+,,,,,,,,,,,,
+delivery progress,Pickup from [shop name],[shop name]で荷物を受け取る,去[shop name]取件,[shop name]에서 화물을 수령하십시오.,Abholung: [shop name],Récupérer un colis à [shop name],Забрать из: [shop name],Encargo en [shop name],Odbierz towar ze sklepu [shop name],Звідки забрати: [shop name],Şuradan teslim al: [shop name],Colete em [shop name]
+,Deliver the package to [town name],[town name]へ荷物を配達する,将货物送到[town name],[town name](으)로 배달하십시오.,Ladungslieferung: [town name],Livrer le colis à [town name],Привезти в [town name],Entrega el paquete en [town name].,Dostarcz ładunek do: [town name],Куди доставити: [town name],Kargoyu şuraya teslim et: [town name],Entregue o pacote em [town name]
+,Head to [town name],[town name]へ向かう,去[town name],[town name](으)로 이동하십시오.,Ziel: [town name],Aller à [town name],Езжай в [town name],Ve a [town name],Udaj się do: [town name],Їдь у місто [town name],Git: [town name],Vá para [town name]
+,Pickup the package,荷物を積む,搬起货物,화물을 수령하십시오,Ladung aufsammeln,Récupérer le colis,Подними груз,Recoge el paquete.,Podnieś ładunek,Забери вантаж,Kargoyu Teslim Al,Colete o pacote
+,"Running out of fuel.
+ Head to the nearest fueling station","もうすぐ燃料切れ。
+ 最寄りの給油所に向かう","燃油即将用完。
+去距离最近的加油站加油","연료가 부족합니다.
+가장 가까운 주유소로 이동하십시오.","Niedriger Treibstoff.
+Nächstgelegene Tankstelle finden","Niveau d’essence faible.
+Aller à la station essence la plus proche.
+","Бензин заканчивается.
+ Поезжай на ближайшую заправку.","Se acaba el combustible
+Ve a la estación de servicio más cercana.","Kończy ci się paliwo.
+  Udaj się na najbliższą stację benzynową","Закінчується паливо.
+Прямуй до найближчої заправки.","Yakıt bitiyor.
+En yakın benzin istasyonuna git.","Combustível acabando.
+ Vá para o posto mais próximo"
+,,,,,,,,,,,,
+warnings,tailgate open,荷台が開きっぱなし,尾板没关,화물칸이 열렸습니다,Heckklappe offen,hayon ouvert,багажник открыт,puerta de caja abierta,otwarta klapa tylna,багажник відкритий,bagaj kapağı açık,traseira aberta
+,pick up payload,荷物を積み込もう,搬起货物,화물을 수령하십시오,Paket aufnehmen,récupérer le chargement,подними груз,recoger carga,weź ładunek,забери вантаж,Yükü al,pegar pacote
+,truck temperature low,軽トラの温度が低い,卡车温度过低,트럭 난방이 약합니다,Truck-Temperatur niedrig,température du véhicule basse,в салоне холодно,baja temperatura de vehículo,niska temperatura w ciężarówce,темпер. вантажівки низька,Araç sıcaklığı düşük,caminhão: temperatura baixa
+,low energy,体がヘトヘト,精力太差,기력이 부족합니다,Niedrige Energie,énergie faible,нет сил,baja energía,mało energii,втома,Enerji düşük,energia baixa
+,low fuel,燃料が切れそう,燃油不足,연료가 부족합니다,Niedriger Treibstoffstand,niveau d’essence faible,мало бензина,poco combustible,mało paliwa,мало пального,Yakıt az,combustível baixo
+,,,,,,,,,,,,
+settings,Volume,音源ボリューム,音量,음량,Lautstärke,Volume,Громкость,Volumen,Głośność,Гучність,Ses,Volume
+,master,主音源,主音量,주 음량,Gesamt,principal,общая,general,ogólna,загальна,ana,geral
+,sfx,効果音,音效音量,효과음,SFX,effets sonores,эффекты,efectos,efekty dźwiękowe,ефекти,ses efekti,efeitos
+,music,音楽,音乐音量,배경음악,Musik,musique,музыка,música,muzyka,музика,müzik,música
+,speed chime,キンコン音,超速警报,과속 경고음,Geschwindigkeitssignal,alerte de survitesse,звоночек разгона,alarma de velocidad,sygnał prędkości,сигнал швидкості,hız zil sesi,alerta de velocidade
+,Graphics,画質,图形,그래픽,Grafik,Graphismes,Графика,Gráficos,Grafika,Графіка,Grafikler,Gráficos
+,resolution,解像度,分辨率,해상도,Auflösung,résolution,разрешение,resolución,rozdzielczość,роздільна здатність,çözünürlük,resolução
+,fullscreen,フルスクリーン,全屏,전체화면,Vollbild,plein écran,полный экран,pantalla completa,pełny ekran,повний екран,tam ekran,tela cheia
+,CRT effect,ＣＲＴ効果,显像管效果,CRT 효과,CRT-Effekt,effet CRT,ЭЛТ-эффект,efecto catódico,Efekt monitora CRT,ефект ЕПТ,CRT etkisi,efeito CRT
+,Controls,操作,操作键位,조작법,Steuerung,Contrôles,Управление,Controles,Sterowanie,Керування,Kontroller,Controles
+,steering,ステアリング,转向灵敏度,운전,Lenken,sensibilité volant,вождение,dirección,kierowanie,кермо,direksiyon,direção
+,confirm/back,確認／戻る,确认/返回,확인/뒤로,Bestätigen/Zurück,confirmer/retour,принять/назад,confirmar/atrás,potwierdź/wróć,підтвердити/назад,onayla/geri,confirmar/voltar
+,quit to menu,終了してメニューに戻る,退回主菜单,메뉴로 이동,Zurück zum Menü,retour au menu,выйти в меню,salir al menú,wyjdź do menu,вийти в меню,menüye dön,sair para o menu
+,quit to desktop,終了してデスクトップに戻る,退回桌面,게임 종료,Zurück zum Desktop,retour au bureau,выйти на рабочий стол,salir al escritorio,wyjdź do pulpitu,вийти на робочий стіл,masaüstüne çık,sair para o desktop
+,,,,,,,,,,,,
+file names,jobs,オシゴト,运单,임무,Aufträge,missions,заказы,encargos,zlecenia,доставлення,işler,serviços
+,goals,ゴール,目标,목표,Ziele,objectifs,цели,objetivos,cele,цілі,hedefler,objetivos
+,options,オプション,游戏设置,설정,Optionen,options,настройки,opciones,ustawienia,налаштування,seçenekler,opções
+,mail,メール,邮件,우편함,Nachrichten,e-mail,почта,correo,poczta,пошта,posta,mensagens
+,controls,コントロール,操作键位,조작법,Steuerung,contrôles,управление,controles,sterowanie,керування,kontroller,controles
+,cam,カメラ,拍照,카메라,Kamera,caméra,фотик,cám,kamera,камера,kamera,câmera
+,,,,,,,,,,,,
+controls,interact/ok,インタラクト／ＯＫ,互动/好,상호작용/확인,Interagieren/OK,interagir/OK,действие/ок,interactuar/ok,interakcja/ok,взаємодія/ок,etkileşim/tamam,interagir/ok
+,brake/back,ブレーキ／戻る,刹车/返回,브레이크/후진,Bremsen/Zurück,freiner/retour,тормоз/назад,freno/reversa,hamowanie/powrót,гальмо/назад,fren/geri,freio/voltar
+,map/items,地図／アイテム,地图/物品,지도/아이템,Karte/Gegenstände,carte/objets,карта/карманы,mapa/objetos,mapa/przedmioty,мапа/речі,harita/eşyalar,mapa/itens
+,pause,ポーズ,暂停,일시 정지,Pause,mettre en pause,пауза,pausa,pauza,пауза,duraklat,pausar
+,job selection,おしごと選択,选择运单,임무 선택,Auftragsauswahl,sélection de mission,выбор заказа,selección de encargo,wybór zlecenia,вибір доставлення,iş seçimi,seleção de serviço
+,drive,運転,开车,운전,Fahren,conduire,вождение,conducir,jazda,їхати,sür,dirigir
+,steer/move,ステアリング／移動,转向/行动,핸들 방향/이동,Lenkung/Bewegen,diriger/se déplacer,поворот/движение,doblar/moverse,kierowanie/poruszanie się,кермо/рух,direksiyon/hareket et,manobrar/mover-se
+,camera,カメラ,视角,카메라,Kamera,caméra,камера,cámara,kamera,камера,kamera,câmera
+,reset (hold),リセット（長押し）,重置（长按）,초기화 (쭉 누르기),Zurücksetzen (halten),réinitialiser (maintenir),сброс (удерживай),restablecer (mantener),zresetuj (przytrzymaj),скинути (утрим.),sıfırla (basılı tut),resetar (segure)
+,lights,ライト,灯,조명,Licht,phares,фары,luces,światła,фари,ışıklar,faróis
+,radio on,ラジオをつける,开收音机,라디오 켜기,Radio ein,allumer la radio,вкл радио,encender radio,włączenie radia,радіо увімк.,radyo aç,rádio
+,channels,チャンネル,换频道,채널 변경,Kanäle,stations,станции,diales,stacje,станції,kanallar,estações
+,scan,スキャン,扫描,채널 스캔,Suchen,scanner,сканировать,analizar,skanuj,пошук,tara,scan
+,,,,,,,,,,,,
+main menu,play,遊ぶ,开始游戏,플레이,Spielen,jouer,играть,jugar,zagraj,грати,oyna,jogar
+,options,オプション,游戏设置,설정,Einstellungen,options,настройки,opciones,ustawienia,налаштування,seçenekler,opções
+,quit,終了,退出,종료,Beenden,quitter,выйти,salir,wyjdź,вийти,çık,sair
+file select,file #,ファイル #,#号文件,파일 #,Datei #,fichier #,файл #,archivo #,plik #,файл #,dosya #,arquivo #
+,back,戻る,返回,뒤로,Zurück,retour,назад,atrás,powrót,назад,geri,voltar
+resume game,resume?,また始める？,继续？,계속하시겠습니까?,Fortsetzen?,continuer ?,продолжить?,¿continuar?,wznowić grę?,продовжити?,devam et?,continuar?
+,resume game,ゲーム再開,继续游戏,계속하기,Spiel fortsetzen,continuer la partie,продолжить играть,reanudar partida,wznów grę,продовжити гру,oyunu devam ettir,continuar jogo
+,#L fuel,燃料#L,#升油,연료 #L,# l Benzin,#L d’essence,бензин: #л,# L de combustible,#l paliwa,паливо: #л,#L yakıt,#L combustível
+,# deliveries,#件配達,完成#单,배달 #건,# Lieferungen,# livraisons,доставок: # ,# entregas,# dostaw,доставлення: #,# teslimat,# entregas
+,day #,#日目,第#天,#일차,Tag #,jour #,день #,día #,dzień #,день #,gün #,dia #
+delete prompt,delete,削除,删除,삭제,Löschen,supprimer,удалить,eliminar,usuń,видалити,sil,excluir
+,delete save?,セーブを削除する？,删除存档？,저장 내역을 삭제하시겠습니까?,Speicherstand löschen?,supprimer la sauvegarde ?,удалить сохранение?,¿eliminar partida?,usunąć zapis?,видалити збереження?,kaydı sil?,excluir arquivo?
+,Are you sure?,本当に？,确定吗？,확실하십니까?,Bist du sicher?,confirmer ?,точно?,¿Confirmas?,Na pewno?,впевнені?,Emin misiniz?,Tem certeza?
+,no,いいえ,不,아니오,Nein,non,нет,no,nie,ні,hayır,não
+,back to safety,ここから安全に離れる,安全返回,안전 모드로 돌아갑니다,Zurück in Sicherheit,revenir en sécurité,вернуться в безопасную зону,vuelve a resguardo,powrót do bezpiecznego świata,назад у безпечну зону,güvenliğe geri dön,voltar para segurança
+,yes,はい,嗯,네,Ja,oui,да,sí,tak,так,evet,sim
+,all progress will be lost!,今までの進捗がすべてナシに！,失去所有进度！,진행 내역이 전부 삭제됩니다!,Alle Fortschritte gehen verloren!,vos progrès seront perdus !,весь прогресс будет потерян!,¡Perderás todo lo que avanzaste!,wszystkie postępy zostaną utracone!,весь прогрес буде втрачено!,tüm ilerleme kaybolacak!,todo progresso será perdido!
+new game,Welcome to EasyCo.,ようこそ、イージー社へ。,欢迎入职顺易集团,이지컴퍼니에 잘 오셨습니다,Willkommen bei EasyCo.,Bienvenue à ZenCorp.,Добро пожаловать в «ЛегКо»,Te damos la bienvenida a EasyCo,Witamy w Wygodzie.,Ласкаво просимо до «ЛегКо».,EasyCo'ya hoş geldiniz.,Boas-vindas a EasyCo.
+,start,開始,开始,시작,Start,commencer,начать,empezar,rozpocznij,почати,başlat,iniciar
+,back,戻る,返回,뒤로,Zurück,retour,назад,atrás,powrót,назад,geri,voltar
+,have an easy day,気軽でハッピーな一日を,祝你工作顺心,편한 하루 되세요,Hab einen Easy Tag,bonne journée et restez Zen,лёгкого вам дня,que tengas un día fácil-Easy-mo,życzymy wygodnego dnia,легкого вам дня,kolay gelsin,que seu dia seja easy
+,,,,,,,,,,,,
+ending choice has disc,Recovery Disc: Detected,リカバリーディスク：検出済み,还原盘：发现,복원 디스크 감지됨,Wiederherstellungs-Disc: Erkannt,Disque de restauration détecté,Диск восстановления: определён,Disco de recuperación: detectado,Dysk naprawczy: wykryty,Диск відновлення: Виявлено,Kurtarma Diski: Algılandı,Disco de recuperação: Detectado
+,SD Unit Recovery,店員ドローンユニットの復旧,SD单元还原,SD 개체 복원,SD-Einheit Wiederherstellung,Restauration de l’unité RE,Восстановить ПД-юниты,Recuperación de unidad SD,Naprawa jednostek DS,Відновити ДП-юніти,SD Birimi Kurtarma,Recuperação de unidade DL
+,Repair and Restore SD Units,店員ドローンユニットの修復と復旧,修理并还原SD单元,SD 개체 수리 및 복원,SD-Einheiten reparieren und wiederherstellen,Réparer et restaurer les unités RE,Починить и восстановить ПД-юниты,Repara y recupera unidades SD.,Napraw jednostki DS,Ремонтувати та відновити ДП-юніти,SD Birimlerini Onarın ve Geri Yükleyin,Reparar e restaurar unidade DL
+ending choise no disc,Recovery Disc: Unavailable,リカバリーディスク：利用不可,还原盘：未发现,복원 디스크: 사용 불가,Wiederherstellungs-Disc: Nicht verfügbar,Disque de restauration indisponible,Диск восстановления недоступен,Disco de recuperación: no disponible,Dysk naprawczy: niedostępny,Диск відновлення: Недоступний,Kurtarma Diski: Kullanılamıyor,Disco de recuperação: indisponível
+,SD Units,店員ドローンユニット,SD单元,SD 개체,SD-Einheiten,Unités RE,ПД-юниты,Unidades SD,Jednostki DS,ДП-юніти,SD Birimleri,Unidades DL
+,Hydro Power,水力,水电,수력 발전,Wasserkraft,Énergie hydraulique,Питание ГЭС,Energía hidráulica,Hydroenergia,Гідроенергія,Hidro Güç,Energia da hidrelétrica
+,Reboot SD Units,ＳＤユニットの再起動,重启SD单元,SD 개체 재부팅,SD-Einheiten neu starten,Réinitialisation des unités RE,Перезагрузить ПД-юниты,Reiniciar unidades SD,Zresetuj jednostki DS,Перезавантажити ДП-юніти,SD Birimlerini Yeniden Başlatın,Rebootar unidades DL
+,"Reboot?
+ Some personality may be lost.","再起動しますか？
+  一部の設定が失われるかもしれません。","重启？
+有可能失去部分性格。","재부팅하시겠습니까?
+몇몇 인격이 소실될 수 있습니다.","Neustart?
+Einige Persönlichkeiten gehen möglicherweise verloren.","Réinitialiser ?
+Certaines personnalités pourraient être effacées.","Перезагрузить?
+ Некоторые черты характера могут стереться.","¿Reiniciar?
+  Podrían perderse rasgos de personalidad.","Zresetować?
+  Może to spowodować utratę części osobowości.","Перезавантажити?
+Деяка частина особистості може бути втрачена.","Yeniden başlat?
+ Bazı kişilikler kaybolabilir.","Rebootar?
+ Pode haver perda de personalidade."
+,Cancel,キャンセル,取消,취소,Abbrechen,Annuler,Отмена,Cancelar,Anuluj,Скасувати,İptal Et,Cancelar
+,Reboot,再起動,重启,재부팅,Neustart,Réinitialiser,Перезагрузить,Reiniciar,Zresetuj,Перезавантажити,Yeniden Başlat,Rebootar
+shutdown option,Shutdown Hydro Dam,水力ダムをシャットダウン,关闭水电大坝,수력 발전 중단,Wasserkraftwerk abschalten,Désactiver le barrage hydraulique,Обесточить ГЭС,Apagar dique,Wyłącz zaporę wodną,Вимкнути ГЕС,Hidro Barajını Kapatın,Desativar represa hidrelétrica
+,"Shutdown?
+ All Shopkeepers will shut down.","シャットダウンしますか？
+ 店員全員をシャットダウンします。","关闭？
+所有店员均将下线。","폐쇄하시겠습니까?
+모든 상점 주인들의 기능이 정지됩니다.","Herunterfahren?
+Alle Ladenbesitzer werden abgeschaltet.","Désactiver ?
+Tous les employés seront désactivés.","Обесточить?
+ Все продавцы отключатся.","¿Apagar?
+  Se apagarán todos los vendedores.","Wyłączyć?
+  Wszyscy sklepikarze zostaną wyłączeni.","Вимкнути?
+Всі власники магазинів будуть вимкнені.","Kapat?
+ Tüm Esnaflar kapanacak.","Desativar?
+ Todos os lojistas serão desligados."
+,Cancel,キャンセル,取消,취소,Abbrechen,Annuler,Отмена,Cancelar,Anuluj,Скасувати,İptal Et,Cancelar
+,Shutdown,シャットダウン,关闭,중단,Herunterfahren,Désactiver,Обесточить,Apagar,Wyłącz,Вимкнення,Kapat,Desligar
+,,,,,,,,,,,,
+Credits,Published by,パブリッシング：,发行商：,퍼블리싱: ,Veröffentlicht von,Distribution,Издатель,Distribución,Wydawca,Видавець:,Yayınlayan:,Publicado por
+,Music by,音楽：,作曲：,음악: ,Musik von,Musique,Музыка,Música,Muzyka,Музика:,Müzik:,Música por
+,Co-written by,共著：,文案联合创作：,공동 스토리 집필: ,Mitverfasst von,Coécrit par,В соавторстве с,Coescritura,Współscenarzyści,Співавтор:,Birlikte yazan:,Roteiro adicional por
+,QA,QA,质量保证,품질 보증,QA,Assurance qualité,Тестирование,Control de calidad,QA,Тестування:,Kalite Kontrol:,Controle de qualidade
+,Localization,ローカライズ,本地化,번역,Lokalisierung,Localisation,Перевод,Localización,Tłumaczenie,Локалізація,Yerelleştirme:,Localização
+,Key Art,キーアート,营销美术,키 아트,Key Art,Art,Обложка игры,Arte principal,Key art,Ключовий арт,Ana Görsel:,Arte principal
+,Help & Moral Support,ヘルプ＆メンタルサポート,精神支持,도움 & 정신적 지원,Hilfe & moralische Unterstützung,Aide & soutien moral,Помощь и моральная поддержка,Ayuda y apoyo moral,Pomoc i wsparcie moralne,Допомога та моральна підтримка,Yardım ve Manevi Destek:,Ajuda e apoio moral
+,Special Thanks,スペシャルサンクス,特别鸣谢,감사한 분들,Besonderer Dank,Remerciements spéciaux,Особая благодарность,Agradecimientos especiales,Specjalne podziękowania,Особлива подяка,Özel Teşekkürler:,Agradecimento especial
+,Assets,アセット,素材,애셋,Assets,Ressources,Использованные материалы,Recursos,Assety,Матеріали,Varlıklar:,Recursos
+,Thank you for playing!,ゲームを遊んでくれてありがとう！,感谢支持！,플레이해주셔서 감사합니다!,Vielen Dank fürs Spielen!,Merci d’avoir joué !,"Спасибо, что поиграли!",¡Gracias por jugar!,Dziękujemy za grę!,Дякуємо за гру!,Oynadığınız için teşekkür ederiz!,Obrigado por jogar!
+,,,,,,,,,,,,
+item purchasing,That will cost [price],[price]になります。,这个[price],가격은 [price]야.,Das kostet [price],Ça te fera [price].,Это будет стоить [price],Te costará [price].,To będzie kosztować [price].,Це буде коштувати [price],[price] tutacak.,Isso custa [price]
+not enough,"Sorry, you don't have enough funds.",すみません、お金が足りません。,不好意思，你钱不够。,"미안하지만, 돈이 부족하네.",Leider hast du nicht genug Geld.,"Pardon, mais t’as pas assez.","Извини, но у тебя маловато денег.","Lo siento, no te alcanzan los fondos.","Przykro mi, masz za mało pieniędzy.",У вас недостатньо коштів.,"Üzgünüm, yeterli bakiyeniz yok.","Perdão, você não tem dinheiro."
+theft attempt,You need to pay for that,お金を払ってください,那个要付钱,돈 내고 가져가야지.,Du musst dafür bezahlen,"Si tu veux prendre ça, il faut payer.",Лучше за это заплатить,Debes pagar eso.,Musisz za to zapłacić.,Ви маєте заплатити за це,Bunun için ödeme yapmanız gerekiyor.,Você precisa pagar por isso
+fuel purchase,Filling your tank will cost [price],満タンまで入れて値段は[price]です,加满油需要[price],주유비는 [price]야.,Tankfüllung kostet [price],"Pour le plein, ça te fera [price]",Заправить полный бак стоит [price],"Si cargas el tanque, te costará [price].",Napełnienie zbiornika będzie kosztować [price],Ціна заправки бака [price],Depo doldurma maliyeti: [price],Encher seu tanque custará [price]
+full tank,Your tank is already full.,もう満タンです。,油箱已经加满了。,이미 가득하네 뭘.,Tank ist bereits voll.,Ton réservoir est déjà plein.,Бак уже полный.,El tanque está lleno.,Twój zbiornik jest już pełny.,Твій бак вже повний.,Deponuz zaten dolu.,Seu tanque já está cheio
+partial tank fill,You don't have enough funds. Your tank will be partially filled for [partial price],お金が足りません。[partial price]の値段まで入れることはできます。,你钱不够，油箱只能加够[partial price]的油,돈이 부족하네. 기름은 [partial price]만큼만 채워줄게.,Du hast nicht genügend Geld. Der Tank wird teilweise für [partial price] befüllt,T’as pas assez d’argent. Ton réservoir sera qu’à moitié plein et ça te coûtera [partial price],"У тебя не хватает. Залью на сколько есть, будет стоить [partial price].",No te alcanzan los fondos. El tanque se cargará por [partial price].,Nie masz dość pieniędzy. Twój zbiornik zostanie częściowo wypełniony za [partial price],"Недостатньо грошей. Заллю бак частково, за [partial price]",Yeterli bakiyeniz yok. Tankınız [partial price] karşılığında kısmen doldurulacak.,Você não tem dinheiro suficiente. Seu tanque será parcialmente preenchido por [partial price]
+upgrade purchase,Your upgrade will be installed right away.,今から取り付けてやるから待っていてくれ。,升级项目这就给你安装好。,바로 업그레이드해 줄게.,Das Upgrade wird sofort installiert.,Tes améliorations vont être installées tout de suite.,Улучшение будет сразу же установлено.,La mejora se instalará de inmediato.,Twoje ulepszenie zostanie natychmiast zainstalowane.,Оновлення буде встановлено одразу.,Geliştirmen hemen eklenecek.,A melhoria será instalada agora mesmo.
+upgrade installed,All set!,取り付けが完了したぞ！,好了！,다 됐어!,Alles bereit!,C’est bon !,Готово!,¡Listo!,Gotowe!,Все готово!,Hazır!,Tudo pronto!
+bumper upgrade,Bumper Bars. These will let you smash through things.,バンパーバー。車をぶつけて邪魔な物をなぎ倒せる。,车上装了这个保险杠，遇见障碍也能撞过去了。,범퍼야. 이걸로 들이받고 지나갈 수 있을 거야.,Stoßstangen. Damit lassen sich manche Sachen durchbrechen.,Un pare-buffle. Ça te permettra de foncer dans n’importe quoi.,Кенгурятник. Поможет сбивать преграды на пути.,"Barra parachoques. Con ella, podrás romper cosas.",Zderzaki. Pozwolą ci się przebijać przez przeszkody.,Кенгурятники. Вони дозволять пробиватися крізь перешкоди.,Koruma Demiri. Bunlar sayesinde önünüze çıkan şeyleri parçalayabilirsiniz.,Quebra-mato. Permite atravessar com tudo por algumas coisas.
+ice chains upgrade,Ice Chains. These should help you keep your speed on the ice.,タイヤチェーン。これで氷の上もへっちゃら…のはず。,防滑胎链，这个能让车子在冰面不失速。,아이스 체인이야. 이걸로 얼음 위에서도 속도를 낼 수 있을 거야.,"Eisketten. Die sollten helfen, die Geschwindigkeit auf Eis beizubehalten.",Des chaînes à neige. Elles devraient te permettre de maintenir ta vitesse sur les routes gelées.,Колёсные цепи. Помогут не буксовать на льду.,Cadenas antideslizantes. Conduce en el hielo sin reducir la velocidad.,Łańcuchy przeciwślizgowe. Pozwolą ci zachować wysoką prędkość na lodzie.,Ланцюги проти ковзання. Вони допоможуть зберігати швидкість на кризі.,Buz Zincirleri. Bunlar buzda hızınızı korumanıza yardımcı olacaktır.,Correntes de pneu. Ajudam a manter a velocidade no gelo.
+,,,,,,,,,,,,
+item names,Energy Drink,エナドリ,能量饮料,에너지 드링크,Energy-Drink,Boisson énergisante,Энергетик,Bebida energizante,Napój energetyczny,Енергетик,Enerji İçeceği,Energético
+,Empty Can,空き缶,罐子,빈 캔,Leere Dose,Canette vide,Пустая банка,Lata vacía,Pusta puszka,Порожня банка,Boş Konserve,Lata vazia
+,Lantern (not used),ランタン（未使用）,灯（未使用）,랜턴 (미사용),Laterne (nicht verwendet),Lanterne (pas utilisée),Фонарь (нет в игре),Lámpara (sin uso),Latarnia,Ліхтар (не використов.),Fener (kullanılmıyor),Lanterna (sem uso)
+,Lighter,ライター,打火机,라이터,Feuerzeug,Briquet,Зажигалка,Encendedor,Zapalniczka,Запальничка,Çakmak,Isqueiro
+,Firewood,薪,柴火,장작,Brennholz,Bûche,Дрова,Leña,Drewno na opał,Дрова,Odun,Lenha
+,Shovel (not used),シャベル（未使用）,产子（未使用）,삽 (미사용),Schaufel (nicht verwendet),Pelle (pas utilisée),Лопата (нет в игре),Pala (sin uso),Łopata,Лопата (не використов.),Kürek (kullanılmıyor),Pá (sem uso)
+,Bird Seed,鳥のエサ,鸟粮,새 모이,Vogelfutter,Graines pour oiseaux,Пшено,Semillas para aves,Ziarno dla ptaków,Насіння для птахів,Kuş Yemi,Semente de pássaro
+,Cooking Pot,お鍋,锅,솥,Kochtopf,Marmite,Кастрюлька,Olla,Garnek,Казанок,Tencere,Panela
+,Coffee,コーヒー,咖啡,커피,Kaffee,Café,Кофе,Café,Kawa,Кава,Kahve,Café
+,Coffee Powder,コーヒー粉,咖啡粉,커피 가루,Kaffeepulver,Café moulu,Молотый кофе,Café en polvo,Kawa w proszku,Мелена кава,Kahve Tozu,Café em pó
+,Tea,お茶,茶,차,Tee,Thé,Чай,Té,Herbata,Чай,Çay,Chá
+,Tea Bags,ティーバッグ,茶包,차 봉지,Teebeutel,Sachet de thé,Чайные пакетики,Saquitos de té,Torebki herbaty,Чайні пакетики,Poşet Çay,Saquinhos de chá
+,Fish,魚,鱼,물고기,Fisch,Poisson,Рыба,Pescado,Ryba,Риба,Balık,Peixe
+,Fishing Rod,釣り竿,鱼竿,낚싯대,Angelrute,Canne à pêche,Удочка,Caña de pescar,Wędka,Вудка,Olta,Vara de pesca
+,Fish Soup,お魚スープ,鱼汤,물고기 수프,Fischsuppe,Soupe de poisson,Уха,Sopa de pescado,Zupa rybna,Уха,Balık Çorbası,Sopa de peixe
+,Duct Tape,ガムテープ,防水胶带,덕트 테이프,Klebeband,Ruban adhésif,Скотч,Cinta plateada,Taśma klejąca,Скотч,Koli Bandı,Fita
+,Recovery Disc,リカバリーディスク,还原盘,복원 디스크,Wiederherstellungs-CD,Disque de restauration,Диск восстановления,Disco de recuperación,Dysk naprawczy,Диск відновлення,Kurtarma Diski,Disco de recuperação
+,Handheld Radio,携帯無線機,对讲机,무전기,Handfunkgerät,Radio portable,Рация,Radio portátil,Krótkofalówka,Рація,El Radyosu,Rádio portátil
+,,,,,,,,,,,,
+vending machine interactions,buy,買う,买,구입,Kaufen,acheter,купить,comprar,kup,купити,satın al,comprar
+,take,取る,拿,획득,Nehmen,prendre,взять,tomar,weź,взяти,al,pegar
+,kick,蹴る,踢,걷어차기,Treten,frapper,пнуть,patear,kopnij,пнути,tekmele,chutar
+,not enough,お金が足りない,不够,현금이 부족합니다,Nicht genug,insuffisant,мало денег,no alcanza,za mało,недостатньо,yeterli değil,insuficiente
+,try again,もう一度,再试一次,다시 시도하십시오,Erneut versuchen,réessayer,ещё раз,repetir,spróbuj ponownie,спробувати знову,tekrar dene,tentar de novo
+file interactions,add wood,薪を追加する,添柴,장작 추가,Holz hinzufügen,ajouter une bûche,подбросить полено,añadir leña,dodaj drewna,додати дрова,odun ekle,colocar madeira
+,place pot,お鍋を置く,架锅,솥 배치,Topf absetzen,placer la marmite,поставить кастрюльку,colocar olla,umieść garnek,поставити казанок,tencereyi yerleştir,colocar panela
+,light,火をつける,生火,불 피우기,Entzünden,allumer,разжечь,encender,rozpal,розпалити,yak,acender
+,dismantle,くずす,拆,해체,Abbauen,démonter,разобрать,desmontar,rozmontuj,розібрати,parçala,desmontar
+,clean up,きれいにする,打扫,정리,Säubern,nettoyer,убрать,limpiar,posprzątaj,прибрати,temizle,limpar
+duct tape,tape cargo,荷物にテープを貼る,打包货物,화물 고정하기,Lieferung festkleben,ruban adhésif,примотать скотчем,encintar paquete,zaklej ładunek,закріпити вантаж,kargoyu bantla,prender pacote
+cooking pot,cook,調理する,做菜/煮咖啡,요리,Kochen,préparer,приготовить,cocinar,ugotuj,готувати,pişir,cozinhar
+,take,取る,拿,회수,Nehmen,prendre,взять,tomar,weź,взяти,al,pegar
+radio towers,on,オン,开,켜기,An,marche,вкл,encender,wł.,увімк.,açık,ligar
+,off,オフ,关,끄기,Aus,arrêt,выкл,apagar,wył.,вимк.,kapalı,desligar
+truck,get in,乗る,上车,탑승,Einsteigen,monter,залезть,entrar,wsiądź,сісти,gir,entrar
+,place,載せる,放,배치,Platzieren,placer,положить,colocar,umieść,поставити,yerleştir,colocar
+,open,開く,打开,열기,Öffnen,ouvrir,открыть,abrir,otwórz,відкрити,açık,abrir
+,close,閉じる,合上,닫기,Schließen,fermer,закрыть,cerrar,zamknij,закрити,kapalı,fechar
+,flip,向きを変える,调头,뒤집기,Umdrehen,retourner,перевернуть,voltear,obróć,перевернути,çevir,ajeitar
+buildings,enter,入る,进入,입장,Betreten,entrer,зайти,entrar,wejdź,зайти,gir,entrar
+,leave,出る,离开,퇴장,Verlassen,sortir,выйти,salir,wyjdź,вийти,ayrıl,sair
+,shop,お店,商店,쇼핑,Laden,boutique,магазин,tienda,sklep,магазин,alışveriş,comprar
+,fuel,給油所,加油,주유소,Benzin,essence,заправка,gasolinera,paliwo,паливо,benzin,combustível
+,gate house,ゲートハウス,门房,수위실,Torhaus,cabine,сторожка,puerta,dom bramny,сторожова будка,kontrol kulübesi,guarita
+,open gate,ゲートを開く,开门,보안문 열기,Tor öffnen,ouvrir le portail,открыть ворота,abrir puerta,otwórz bramę,відкрити ворота,kapıyı aç,abrir portão
+items,place,置く,放,배치,Platzieren,placer,положить,colocar,umieść,поставити,yerleştir,colocar
+,,,,,,,,,,,,
+other UI labels,available jobs,引き受けられるおしごと,待领运单,선택 가능 임무,Verfügbare Aufträge,missions disponibles,доступные заказы,encargos disponibles,dostępne zlecenia,доступні доставки,mevcut işler,serviços disponíveis
+,local,地域内,本地,지역 임무,Lokal,locale,местные,local,lokalne,місцеві,yerel,local
+,intercity,地域間,村际,도시간 임무,Intercity,interurbaine,межгород,interurbano,międzymiastowe,міжміські,şehirlerarası,intermunicipal
+,goal,目標,目标,목표,Ziel,objectif,задание,objetivo,cel,завдання,görev,objetivo
+,side goals,サブ目標,次级目标,보조 목표,Nebenziel,objectifs secondaires,дополнительные задания,objetivos secundarios,cele poboczne,додаткові завдання,yan görevler,objetivos secundários
+,complete,コンプリート,完成,완료,Abgeschlossen,terminé,выполнено,completado,ukończono,виконано,tamamla,concluído
+,,,,,,,,,,,,
+road signs,To [town],[town]へ,"[town]
+方向",[town] 가는 길,Nach [town],"Direction 
+[town]",В [town],A [town],Do: [town],"У місто 
+[town]","[town] 
+Gider","Para
+[town]"
+please put a newline between text and [town],Tunnel to [town],[town]へのトンネル,"前方 
+[town]
+隧道","[town]
+가는 터널","Tunnel nach
+[town]","Tunnel en direction de 
+[town]",Туннель в [town],"Túnel a
+[town]","Tunel do: 
+[town]","Тунель у місто 
+[town]","[town] 
+Tüneli","Túnel para
+[town]"
+please put a newline between text and [town],Welcome to [town],ようこそ、ここは[town],"[town]
+欢迎你","안녕하세요
+[town]
+입니다","Willkommen in
+[town]","Bienvenue à 
+[town]",Добро пожаловать в [town],"Estás en
+[town]","[town]
+wita","Ласкаво просимо у місто 
+[town]","[town] 
+Hoş geldiniz",Bem-vindos a [town]
+please put a newline between text and [town],[town] Radio Tower,[town]電波塔,"[town]
+无线电塔","[town]
+무전탑","[town]
+Funkturm","[town] 
+Tour radio",[town] - Радиовышка,"Torre de radio de
+[town]","Wieża radiowa:
+[town]","Радіовежа:
+[town]","[town] 
+Radyo Kulesi","Torre de rádio
+[town]"
+,,,,,,,,,,,,
+town names,Mountain Town,マウンテンタウン,山屯,마운틴 타운,Mountain Town,Ville-sur-Montagne,Горный,Pueblo Montés,Górskie miasteczko,Гірне,Dağ Kasabası,Subida da Serra
+,Upton,アップトン,北村,업턴,Upton,Hautvilliers,Верхний,Enalto,Upton,Верховина,Upton,Cimeira
+,Weston,ウェストン,西村,웨스턴,Weston,Ouestvilliers,Западный,Villa del Oeste,Weston,Західне,Weston,Vila Oeste
+,Easton,イーストン,东村,이스턴,Easton,Estvilliers,Восточный,Villa del Este,Easton,Східне,Easton,Vila Leste
+,Snowy Peaks,スノーリーピークス,雪山,스노이 픽스,Snowy Peaks,Pics-Enneigés,Снежные Пики,Cumbres Nevosas,Śnieżne Szczyty,Снігові вершини,Karlı Doruklar,Serra Branca
+,Lopton,ループトン,转圈村,롭턴,Lopton,La Boucle,Ветхое,Buclandia,Lopton,Кільцівка,Lopton,Volta Longa
+,Winton,ウィントン,大风村,윈턴,Winton,Entrelacs,Зимнее,Milcurvas,Winton,Викрутасівка,Winton,Vila Vaivém
+,Munton,マウントン,山里村,먼턴,Munton,Mont-la-Colline,Городец,Colinarnia,Munton,Скалисте,Munton,Monte Alto
+,Fishing Town,フィッシングタウン,渔村,피싱 타운,Fishing Town,Ville-de-Pêche,Рыбацкое,Pueblo Pesquero,Miasteczko rybackie,Рибальське,Balıkçı Kasabası,Vale da Pesca
+*fixed from weston to clifton*,Clifton,クリフトン,崖边村,클리프턴,Clifton,Mont-la-Falaise,Утёсово,Rancobán,Clifton,Кручівка,Clifton,Penedo
+,Damton,ダムトン,大坝村,댐턴,Damton,Barre-le-Lac,Запрудное,Diquesi,Damton,Греблівка,Damton,Represina
+,Smalton,スモルトン,小村,스몰턴,Smalton,Le Cadet,Маловатое,Chiquitia,Smalton,Затишне,Smalton,Pequenópolis
+,Factory,工場,工厂,공장,Fabrik,Usine,Завод,Fábrica,Fabryka,Завод,Fabrika,Fábrica
+,,,,,,,,,,,,
+shop names,EZ Mart,イージーマート,顺易超市,이지 마트,EZ Mart,ZenPrix,ЛегкоМарт,MercadEasy,EZ Mart,ЛегкоМарт,EZ Market,EZ Mart
+,Pawn Shop,質屋,当铺,전당포,Pfandhaus,Boutique de prêt sur gage,Ломбард,Empeños,Lombard,Ломбард,Rehin Dükkanı,Loja de Penhores
+,Easy Depot,イージーディスカウント,顺易仓库,이지 보급고,Easy Depot,BricoZen,Продсклад,Tienda Easy,Magazyn Wygoda,ЛегкоСклад,Kolay Depo,Armazém Easy
+,EZ Bakery,イージーベーカリー,顺易面包房,이지 빵집,EZ Bäckerei,ZenBaguette,Пекарня,PanaderEasy,Piekarnia Wygoda,ЛегкоПекарня,EZ Pastane,Padaria EZ
+,Easy Pizza,イージーピザ,顺易披萨,이지 피자,Easy Pizza,ZenPizza,ЛегкоПицца,EasyPizza,Wygodna Pizza,ЛегкоПіца,Kolay Pizza,Easy Pizza
+,Easy Eats,イージーイーツ,顺易餐厅,이지 음식점,Easy Eats,ZenSnack,ЛегкоЕд,Easy Eats,Wygodne Jedzonko,ЛегкоЇжа,Kolay Tatlar,Easy Eats
+,EZ Auto,イージーオート,顺易汽配,이지 정비소,EZ Auto,ZenAuto,ЛегкАвто,EasyAuto,Wygodne Auto,ЛегкАвто,EZ Oto,EZ Auto (Oficina)
+,Bar,バー,酒吧,술집,Bar,Bar,Бар,Bar,Bar,Бар,Bar,Bar
+,Easy Flowers,イージーフラワー,顺易花卉,이지 꽃집,Easy Flowers,ZenBouquet,ЛегкоЦвет,FlorEasy,Wygodne Kwiaty,ЛегкоКвіти,Kolay Çiçekler,Floricultura Easy
+,EZ Cafe,イージーカフェ,顺易咖啡,이지 카페,EZ Café,ZenCafé,ЛегкоФе,EasyCafé,Wygodna Kawiarnia,ЛегкоКафе,EZ Kafe,Easy Café
+,,,,,,,,,,,,
+other forgotten strings,#kg,#kg,#公斤,#kg,# kg,# kg,#кг,# kg,#kg,#кг,#kg,#kg
+,#km,#km,#公里,#km,# km,# km,#км,# km,#km,#км,#km,#km
+,,,,,,,,,,,,
+elevator,up,上へ,上,상승,Hoch,monter,вверх,arriba,w górę,вгору,yukarı,subir
+,down,下へ,下,하강,Runter,descendre,вниз,abajo,w dół,вниз,aşağı,descer
+,,,,,,,,,,,,
+inventory tutorial,get out,出る,出去,퇴장,Aussteigen,sortir,выйти,salir,wyjdź,вийти,çık,sair
+,select (release),選択する（放す）,选择（松开）,선택 (버튼 놓기),Auswählen (loslassen),sélectionner (relâcher),выбрать (отпусти),seleccionar (soltar),wybierz (puść),вибрати (відпустити),seç (bırak),selecionar (soltar)
+,change selection,選択アイテムを変更,更改选择,선택 변경,Auswahl ändern,changer de sélection,смена выбора,cambiar selección,zmień wybór,змінити вибір,seçimi değiştir,mudar seleção
+,inventory (hold),インベントリ（長押し）,背包（长按）,소지품 (버튼 쭉 누르기),Inventar (halten),inventaire (maintenir),инвентарь (удерживай),inventario (mantener),ekwipunek (przytrzymaj),інвентар (утримувати),envanter (basılı tut),inventário (segurar)
+,put away,しまう,收起来,치우기,Weglegen,ranger,убрать,guardar,odłóż,відкласти,bırak,guardar
+,use item,アイテムを使う,使用物品,아이템 사용,Gegenstand benutzen,utiliser l’objet,использовать,usar objeto,użyj przedmiotu,використовувати,eşyayı kullan,usar item
+,,,,,,,,,,,,
+delivery tutorial,place,置く,放下,배치,Platzieren,placer,поставить,colocar,umieść,поставити,yerleştir,colocar
+,interact,インタラクト,互动,상호작용,Interagieren,interagir,взять,interactuar,interakcja,взаємодіяти,etkileşime gir,interagir
+,get out,降りる,下车,퇴장,Aussteigen,sortir,выйти,salir,wyjdź,вийти,çık,sair
+,drive,運転する,开车,운전,Fahren,conduire,вести,conducir,jedź,їхати,sür,dirigir
+,check info,情報を見る,查看信息,정보 확인,Infos checken,voir info,информация,ver datos,sprawdź informacje,інформація,bilgiyi kontrol et,ver info.
+,,,,,,, ,,,,,
+even more interactions (sorry),throw away,捨てる,扔掉,치우기,Wegwerfen,jeter,выкинуть,desechar,wyrzuć,викинути,fırlat,descartar
+,talk,話す,说话,대화,Unterhalten,parler,поговорить,hablar,rozmawiaj,говорити,konuş,conversar
+,,,,,,,,,,,,
+language,English,日本語,中文,한국어,Deutsch,Français,Русский,Español,polski,Українська,Türkçe,Português brasileiro
+,,,,,,,,,,,,
+Misc items,Blind Bag,福袋,盲袋,뽑기 가방,Wundertüte,Pochette surprise,Случайная покупка,Bolsa sorpresa,paczka-niespodzianka,пакунок-сюрприз,Kör Çanta,Pacote surpresa
+,photo,写真,照片,사진,Foto,photo,фотография,foto,zdjęcie,фото,fotoğraf,Foto
+,,,,,,,,,,,,
+cosmetics,Cat Cap,ネコのキャップ,猫咪帽子,고양이 모자,Katzenmütze,Casquette chat,Кошачья кепка,Gorra de gato,Kocia czapka,Котячий капелюх,Kedi Şapkası,Boné de gato
+,Green Cap,緑のキャップ,绿帽子,초록색 모자,Grüne Mütze,Casquette verte,Зелёная кепка,Gorra verde,Zielona czapka,Зелений капелюх,Yeşil Şapka,Boné verde
+,Blue Cap,青のキャップ,蓝帽子,파란색 모자,Blaue Mütze,Casquette bleue,Синяя кепка,Gorra azul,Niebieska czapka,Синій капелюх,Mavi Şapka,Boné azul
+,Blue Bucket Hat,青のバケットハット,蓝水桶帽子,파란색 바구니 모자,Blauer Hut,Bob bleu,Синяя панама,Gorra de pescador azul,Miękki niebieski kapelusik,Синя панама,Mavi Balıkçı Şapkası,Chapéu de balde azul
+,Fishing Hat,釣り帽子,钓鱼帽子,낚시 모자,Angelhut,Chapeau de pêche,Рыбацкая шапка,Sombrero de pesca,Kapelusz wędkarski,Рибальський капелюх,Balıkçı Şapkası,Chapéu de pesca
+,Wool Toque,ウールのニット帽,针织帽,양모 털모자,Wollmütze,Toque en laine,Вязаная шапка,Gorro de lana,Wełniany toczek,В'язана шапка,Yün Bere,Toca de lã
+,Black Paint,黒色のペイント,黑漆,검정색 페인트,Schwarze Farbe,Peinture noire,Чёрная краска,Pintura negra,Czarna farba,Чорна фарба,Siyah Boya,Tinta preta
+,Beige Paint,ベージュ色のペイント,米色漆,베이지색 페인트,Beige Farbe,Peinture beige,Бежевая краска,Pintura beige,Beżowa farba,Бежева фарба,Bej Boya,Tinta bege
+,Grey Paint,灰色のペイント,灰漆,회색 페인트,Graue Farbe,Peinture grise,Серая краска,Pintura gris,Szara farba,Сіра фарба,Gri Boya,Tinta cinza
+,Blue Paint,青色のペイント,蓝漆,파란색 페인트,Blaue Farbe,Peinture bleue,Синяя краска,Pintura azul,Niebieska farba,Синя фарба,Mavi Boya,Tinta azul
+,Green Paint,緑色のペイント,绿漆,초록색 페인트,Grüne Farbe,Peinture verte,Зелёная краска,Pintura verde,Zielona farba,Зелена фарба,Yeşil Boya,Tinta verde
+,Red Paint,赤色のペイント,红漆,빨간색 페인트,Rote Farbe,Peinture rouge,Красная краска,Pintura roja,Czerwona farba,Червона фарба,Kırmızı Boya,Tinta vermelha
+,White Scarf,白のスカーフ,白围巾,하얀색 스카프,Weißer Schal,Écharpe blanche,Белый шарф,Bufanda blanca,Biały szalik,Білий шарф,Beyaz Atkı,Lenço branco
+,Green Scarf,緑のスカーフ,绿围巾,초록색 스카프,Grüner Schal,Écharpe verte,Зелёный шарф,Bufanda verde,Zielony szalik,Зелений шарф,Yeşil Atkı,Lenço verde
+,Blue Scarf,青のスカーフ,蓝围巾,파란색 스카프,Blauer Schal,Écharpe bleue,Синий шарф,Bufanda azul,Niebieski szalik,Синій шарф,Mavi Atkı,Lenço azul
+,,,,,,,,,,,,
+delivery destination marker,delivery,配達する,送货,배달지,Abgabe,livraison,место доставки,entrega,dostawa,куди доставити,teslimat,entrega
+pickup location marker,pick up,荷物を持つ,揽货,수령지,Aufnehmen,colis à récupérer,место приёмки,retiro,odbiór towaru,звідки забрати,teslim al,coleta
+,radio tower,電波塔,无线电塔,무전탑,Funkturm,tour radio,радиовышка,torre de radio,wieża radiowa,радіовежа,radyo kulesi,torre de rádio
+,,,,,,,,,,,,
+tutorial hints,find the lit-up storefront,店頭ライトのついたお店を見つける,找到亮灯的店面,빛나는 가게 앞을 찾으십시오,Finde die beleuchtete Ladenfassade,trouver la devanture éclairée,найди магазин с горящей лампочкой,busca la tienda iluminada,znajdź podświetloną witrynę,знайди освітлену вітрину магазину,ışıklı vitrini bul,encontre a fachada iluminada
+(icon appears to the right),look for the icon,アイコンを探す,寻找这个图标,아이콘을 찾으십시오,Such nach dem Symbol,trouver l’icône,ищи иконку,busca el ícono,poszukaj ikony,шукай піктограму,simgeyi ara,procure pelo ícone
+,pick up the fallen package,落とした荷物を積み直す,拿起掉落的包裹,떨어진 화물을 챙기십시오,Hebe die heruntergefallene Ladung auf,ramasser le colis tombé,подними упавший груз,recoge el paquete caído,"podnieś paczkę, która spadła",підніми загублений вантаж,düşen kargoyu al,pegue o pacote que caiu
+,hint,ヒント,提示,힌트,Hinweis,indice,подсказка,pista,wskazówka,підказка,ipucu,dica
+,,,,,,,,,,,,
+map close button,close,閉じる,关闭,닫기,Schließen,fermer,закрыть,cerrar,zamknij,закрити,kapat,fechar
+job abort button,abort,放棄,放弃,포기,Abbrechen,annuler la mission,отказаться,cancelar,porzuć,відмовитися,iptal et,desistir
+start job button,start job,おしごとを始める,接单,임무 시작,Auftrag starten,commencer la mission,начать,iniciar encargo,rozpocznij zlecenie,почати доставку,işe başla,começar serviço
+searching for jobs,searching,検索,正在搜索,검색 중,Suche,recherche en cours,поиск,buscando,wyszukiwanie,пошук,aranıyor,buscando
+job board offline,offline,オフライン,离线,오프라인,Offline,hors ligne,вне сети,sin conexión,offline,поза мережею,çevrimdışı,offline
+energy warning,not enough energy,エネルギーが不足,精力不足,기력이 부족합니다,Nicht genug Energie,énergie trop faible,недостаточно энергии,falta energía,za mało energii,недостатньо енергії,yeterli enerji yok,energia insuficiente
+,,,,,,,,,,,,
+delivery results,Delivery Results,配達結果,配送结果,배달 결과,Liefungsergebnisse,Résultats de la livraison,Результат доставки,Resultados de la entrega,rezultat dostawy,Результат доставки,Teslimat Sonuçları,Resultados da entrega
+stat,distance,距離,距离,거리,Entfernung,distance,расстояние:,distancia,odległość,відстань,mesafe,distância
+stat,weight,重量,重量,무게,Gewicht,poids,вес:,peso,waga,вага,ağırlık,peso
+stat (# of times packages fell),recoveries,積み直し,货物找回次数,복구 횟수,Bergungen,colis ramassé,случаев подбора груза:,recuperaciones,odzyskane paczki,підбір вантажу,kurtarılan,resgates
+,,,,,,,,,,,,
+ending interaction,choose,選択,选择,선택,Auswählen,choisir,выбрать,elegir,wybierz,вибрати,seç,escolher
+,read,読む,阅读,읽기,Lesen,lire,прочитать,leer,przeczytaj,читати,oku,ler
+,,,,,,,,,,,,
+warning,seek shelter,早く寒さをしのげる場所へ,找地方躲起来,피난처를 찾으십시오,Suche Schutz,mettez-vous à l’abri,зайди погреться,ve a resguardo,poszukaj schronienia,знайди укриття,bir yere sığın,busque abrigo
+action (as in virtual mouse click),click,クリック,点击,클릭,Klick,cliquer,клик,clic,kliknij,клік,tıkla,clicar
+,,,,,,,,,,,,
+more specific road signs,Leaving [town],[town]を出る,即将离开[town],"안녕히 가세요
+[town]
+입니다",Ende von [town],Vous quittez [town],Покидаем [town],Saliendo de [town],Opuszczasz: [town],Виїзд з міста [town],[town] Çıkılıyor,Saindo de [town]
+,Upper [town],[town]高台,[town]高处,[town] 윗동네,[town] Nordseite,Nord de [town],[town] - Верхний район,Altos de [town],[town] (górna część),[town] (верхній район),Yukarı [town],[town] - Parte Alta
+,Lower [town],[town]低地,[town]低处,[town] 아랫동네,[town] Südseite,Sud de [town],[town] - Нижний район,Bajos de [town],[town] (dolna część),[town] (нижній район),Aşağı [town],[town] - Parte Baixa
+,,,,,,,,,,,,
+more interaction prompts,pay,支払う,付钱,지불,Bezahlen,payer,заплатить,pagar,zapłać,заплатити,öde,pagar
+,clear,色を落とす,清除,초기화,Löschen,tout retirer,сбросить,limpiar,oczyścić,очистити,temizle,limpar
+,build fire,火を起こす,生火,장작더미 만들기,Feuer machen,construire un feu,сложить костёр,armar fogata,przygotuj ognisko,скласти багаття,ateş yap,preparar fogueira
+,bobblehead found,ボブルヘッドを見つけた,找到摇头小人,보블헤드를 발견했습니다,Wackelfigur gefunden,figurine trouvée,найден болванчик,encontraste un muñeco,znaleziono figurkę,хитайголова знайдена,sallanan kafa bulundu,boneco encontrado
+,,,,,,,,,,,,
+,Start a job,おしごと開始,接单,임무를 시작하십시오,Nimm einen Auftrag an,Commencer une mission,Возьми заказ,Iniciar un encargo,rozpocznij zlecenie,Почати замовлення,işe başla,Começar um serviço
+,,,,,,,,,,,,
+,station,ステーション,站点,무선국,Funkturmstation,station,станция,estación,radiostacja,станція,kanal,estação
+,turn on,スイッチオン,开,켜기,Einschalten,allumer,включить,encender,włącz,увімкнути,aç,ligar
+,turn off,スイッチオフ,关,끄기,Ausschalten,éteindre,выключить,apagar,wyłącz,вимкнути,kapa,desligar
+,low signal,電波が弱い,信号弱,신호 약함,Kein Empfang,réseau faible,слабый сигнал,mala recepción,słaby sygnał,слабкий сигнал,sinyal az,sinal fraco
+"Filled with ""..."" as stand in",Do you mind?,…,你介意吗？,왜 이러는 거야?,Sehr witzig.,"Ça va, je te dérange pas ?",У тебя всё в порядке?,Si me disculpas...,Daj spokój.,Все гаразд?,...,Tenha modos.
+missing dialog,"Snow tires, these will help you drive in deep snow.",スノータイヤ。これがあれば深い雪の中もへっちゃら。,雪地胎，方便在雪深的地方开车。,스노우 타이어 말이지. 두터운 눈 위에서도 운전할 수 있을 거야.,"Winterreifen, damit kannst du im tiefsten Schnee fahren.","Pneus neige, ils vous aideront à traverser d'épaisses couches de neige.",Зимняя резина поможет ездить по глубокому снегу.,Neumáticos de invierno. Sirven para conducir cuando hay mucha nieve.,Opony zimowe pomogą ci jeździć po mocno zaśnieżonym terenie.,"Зимові шини, вони допоможуть вам їздити в глибокому снігу.","Kar lastikleri, bunlar karda daha rahat sürmene yardımcı olacaktır.","Pneus de neve, vão te ajudar a dirigir através da neve alta."
+,Cabin,小屋,小屋,오두막,Hütte,Cabane ,Домик,Cabaña,Chatka,Хатинка,Kulübe,Cabana
+"variation of string (w/ !)
+(no real need to add the !, It just needs to be here for the code to work)",Have an Easy day!,気軽でハッピーな一日を！,祝你工作顺心,편한 하루 되세요!,Hab einen Easy Tag!,bonne journée et restez Zen,Лёгкого Вам дня!,Que tengas un día fácil-Easy-mo,życzymy wygodnego dnia,Легкого вам дня,kolay gelsin,Que seu dia seja Easy!
+,,,,,,,,,,,,
+Additional ending flavour text,"SD Units: Operational
+
+SD_02
+SD_08
+SD_11
+SD_19
+SD_24
+SD_30
+SD_49
+SD_51
+SD_55
+SD_56
+SD_66
+SD_72
+
+Faults: present","店員ドローン： 稼働中
+
+SD_02
+SD_08
+SD_11
+SD_19
+SD_24
+SD_30
+SD_49
+SD_51
+SD_55
+SD_56
+SD_66
+SD_72
+
+不具合：あり","SD单元：正在运转
+
+SD_02
+SD_08
+SD_11
+SD_19
+SD_24
+SD_30
+SD_49
+SD_51
+SD_55
+SD_56
+SD_66
+SD_72
+
+故障：存在","SD Units: 작동 중
+
+SD_02
+SD_08
+SD_11
+SD_19
+SD_24
+SD_30
+SD_49
+SD_51
+SD_55
+SD_56
+SD_66
+SD_72
+
+결함: 존재","SD-Einheiten: Betriebsbereit
+
+SD_02
+SD_08
+SD_11
+SD_19
+SD_24
+SD_30
+SD_49
+SD_51
+SD_55
+SD_56
+SD_66
+SD_72
+
+Fehler: vorhanden","Unités RE : opérationelles
+
+RE_02
+RE_08
+RE_11
+RE_19
+RE_24
+RE_30
+RE_49
+RE_51
+RE_55
+RE_56
+RE_66
+RE_72
+
+Anomalies : détectées","ПД-юниты: функционируют
+
+ПД_02
+ПД_08
+ПД_11
+ПД_19
+ПД_24
+ПД_30
+ПД_49
+ПД_51
+ПД_55
+ПД_56
+ПД_66
+ПД_72
+
+Дефекты: присутствуют","Unidades SD: operativas
+
+SD_02
+SD_08
+SD_11
+SD_19
+SD_24
+SD_30
+SD_49
+SD_51
+SD_55
+SD_56
+SD_66
+SD_72
+
+Fallas: existentes","Jednostki DS: funkcjonalne
+
+DS_02
+DS_08
+DS_11
+DS_19
+DS_24
+DS_30
+DS_49
+DS_51
+DS_55
+DS_56
+DS_66
+DS_72
+
+Usterki: występują
+","ДП-юніти: Функціонують
+
+ДП_02
+ДП_08
+ДП_11
+ДП_19
+ДП_24
+ДП_30
+ДП_49
+ДП_51
+ДП_55
+ДП_56
+ДП_66
+ДП_72
+
+Несправності: присутні","SD Birimleri: Operasyonel
+
+SD_02
+SD_08
+SD_11
+SD_19
+SD_24
+SD_30
+SD_49
+SD_51
+SD_55
+SD_56
+SD_66
+SD_72
+
+Hatalar: Mevcut","Unidades DL: Operacional
+
+DL_02
+DL_08
+DL_11
+DL_19
+DL_24
+DL_30
+DL_49
+DL_51
+DL_55
+DL_56
+DL_66
+DL_72
+
+Falhas detectadas"
+,"Hydro Power: Operational
+
+Turbine_01
+Turbine_02
+Turbine_03
+Turbine_04
+
+Status: OK","水力発電：稼働中
+Turbine_01
+Turbine_02
+Turbine_03
+Turbine_04
+
+状態：OK","水力发电：正在运转
+
+Turbine_01
+Turbine_02
+Turbine_03
+Turbine_04
+
+状态：良好","수력 발전: 작동 중
+
+Turbine_01
+Turbine_02
+Turbine_03
+Turbine_04
+
+상태: 정상","Wasserkraftwerk: Betriebsbereit
+
+Turbine_01
+Turbine_02
+Turbine_03
+Turbine_04
+
+Status: OK","Hydroélectricité : opérationnelle
+
+Turbine_01
+Turbine_02
+Turbine_03
+Turbine_04
+
+État : OK","ГЭС: функционирует
+
+Турбина_01
+Турбина_02
+Турбина_03
+Турбина_04
+
+Статус: в порядке","Energía hidráulica: operativa
+
+Turbina_01
+Turbina_02
+Turbina_03
+Turbina_04
+
+Estado: OK","Hydroenergia: funkcjonalna
+
+Turbina_01
+Turbina_02
+Turbina_03
+Turbina_04
+
+Status: OK","Гідроенергія: Функціонує
+
+Турбіна_01
+Турбіна_02
+Турбіна_03
+Турбіна_04
+
+Статус: OK","Su Gücü: Operasyonel
+
+Türbin_01
+Türbin_02
+Türbin_03
+Türbin_04
+
+Durum: OK","Hidrelétrica: Operacional
+
+Turbina_01
+Turbina_02
+Turbina_03
+Turbina_04
+
+Situação: OK"
+,"Checking Recovery Data
+
+SD_02
+SD_08
+SD_11
+SD_19
+SD_24
+SD_30
+SD_49
+SD_51
+SD_55
+SD_56
+SD_66
+SD_72
+
+Data: OK","リカバリーデータ確認
+
+SD_02
+SD_08
+SD_11
+SD_19
+SD_24
+SD_30
+SD_49
+SD_51
+SD_55
+SD_56
+SD_66
+SD_72
+
+データ： OK","正在检查还原数据
+
+SD_02
+SD_08
+SD_11
+SD_19
+SD_24
+SD_30
+SD_49
+SD_51
+SD_55
+SD_56
+SD_66
+SD_72
+
+数据：良好","복구 데이터 확인 중
+
+SD_02
+SD_08
+SD_11
+SD_19
+SD_24
+SD_30
+SD_49
+SD_51
+SD_55
+SD_56
+SD_66
+SD_72
+
+데이터: 정상","Prüfe Wiederherstellungsdaten
+
+SD_02
+SD_08
+SD_11
+SD_19
+SD_24
+SD_30
+SD_49
+SD_51
+SD_55
+SD_56
+SD_66
+SD_72
+
+Daten: OK
+","Vérification des données de restauration
+
+RE_02
+RE_08
+RE_11
+RE_19
+RE_24
+RE_30
+RE_49
+RE_51
+RE_55
+RE_56
+RE_66
+RE_72
+
+Données : OK","Проверка данных восстановления
+
+ПД_02
+ПД_08
+ПД_11
+ПД_19
+ПД_24
+ПД_30
+ПД_49
+ПД_51
+ПД_55
+ПД_56
+ПД_66
+ПД_72
+
+Данные: в порядке","Comprobando datos de recuperación
+
+SD_02
+SD_08
+SD_11
+SD_19
+SD_24
+SD_30
+SD_49
+SD_51
+SD_55
+SD_56
+SD_66
+SD_72
+
+Datos: OK","Sprawdzanie danych naprawczych
+
+DS_02
+DS_08
+DS_11
+DS_19
+DS_24
+DS_30
+DS_49
+DS_51
+DS_55
+DS_56
+DS_66
+DS_72
+
+Dane: OK","Перевірка даних відновлення
+
+ДП_02
+ДП_08
+ДП_11
+ДП_19
+ДП_24
+ДП_30
+ДП_49
+ДП_51
+ДП_55
+ДП_56
+ДП_66
+ДП_72
+
+Дані: OK","Yeniden Kurtarma Verisi Kontrol Ediliyor
+
+SD_02
+SD_08
+SD_11
+SD_19
+SD_24
+SD_30
+SD_49
+SD_51
+SD_55
+SD_56
+SD_66
+SD_72
+
+Veri: OK","Verificando dados de recuperação
+
+DL_02
+DL_08
+DL_11
+DL_19
+DL_24
+DL_30
+DL_49
+DL_51
+DL_55
+DL_56
+DL_66
+DL_72
+
+Dados: OK"
+hidden hydro dam dialog,"DD77_buffer_01_transcript
+Seb! Seb! No no no no no no. what's happening... why...
+DD77_buffer_02_transcript
+Do you remember when this place was full of life? 
+Even seasons of decay later, somehow, you convinced me to stay.
+Don't let me endure this desolate wasteland alone.
+DD77_buffer_03_transcript
+How cruel it is to let us feel, when our time together was fleeting from the start.
+DD77_buffer_04_transcript
+No speech detected","HD77_buffer_01_transcript
+セブ！セブ！ダメだ、いけない。…何が起きて…なんで…
+HD77_buffer_02_transcript
+ここに住民がたくさんいて、賑やかだった時のことを覚えてる？
+いくつも季節が流れてここが衰退しきった後も、キミはボクがどうにかここに留まるよう説得した。
+こんな何も無くて寂れた場所で、いつまでもボクをひとりでいさせないでほしい。
+HD77_buffer_03_transcript
+ボクたちほんの短い時間しか一緒じゃなかったのに、ボクたちみんなに心が芽生えるなんて、こんな残酷なことってある？
+HD77_buffer_04_transcript
+会話が検出されません","DD77_buffer_01_transcript
+塞巴！塞巴！塞巴！坏了，怎么回事……为什么……
+DD77_buffer_02_transcript
+还记得这个地方热热闹闹的样子吗？ 
+虽然已经衰败了这么久了，你还是把我留了下来。
+不要让我自己忍受这个地方的荒凉。
+DD77_buffer_03_transcript
+为什么要这么残酷？我们能在一起的时间这么短暂，却又赋予了我们感情。
+DD77_buffer_04_transcript
+没有检测到言语。","DD77_buffer_01_transcript
+세브! 세브!! 안 돼, 안 돼, 안 돼. 어떻게 된 거야... 어째서...
+DD77_buffer_02_transcript
+여기도 생기가 넘치는 곳이었지. 기억 나?
+계절이 바뀔수록 망해갔지만, 어째서인지 나는 네 말대로 여기에 남기로 했어.
+제발 나만 이 쓸쓸한 황무지에 두고 가지 마.
+DD77_buffer_03_transcript
+우리가 함께 했던 시간들이 얼마나 흘러갔는지 깨닫게 하다니, 너무 잔인해.
+DD77_buffer_04_transcript
+감지된 발언 없음","DD77_buffer_01_transkript
+Seb! Seb! Nein, nein, nein, nein. Was ist denn ... warum ...
+DD77_buffer_02_transkript
+Erinnerst du dich daran, als es hier alles voller Leben war? 
+Selbst nach dem wiederholten Verfall hast du mich irgendwie davon überzeugt, hier zu bleiben.
+Überlass mich dieser trostlosen Einöde bitte nicht allein.
+DD77_buffer_03_transkript
+Wie grausam es doch ist, dass wir fühlen können, wenn unsere Zeit zusammen von Beginn an flüchtig war.
+DD77_buffer_04_transkript
+Keine gesprochenen Wort erkannt","RL77_mémoire_tampon_01_transcription
+Seb ! Seb ! Non non non non non non. Qu'est-ce qui se passe… pourquoi…
+RL77_mémoire_tampon_02_transcription
+Tu te souviens comment cet endroit était avant ? Il y avait tellement de vie.
+Même après toutes ces années de désolation, t'as réussi à me convaincre de rester, je sais pas comment.
+Je t'en supplie, me laisse pas. Je pourrai pas endurer ce désert glacial sans toi.
+RL77_mémoire_tampon_03_transcription
+C’est trop cruel de nous laisser ressentir des émotions alors que notre temps ensemble était voué à être éphémère.
+RL77_mémoire_tampon_04_transcription
+Aucune parole détectée","ДД77_буферный_транскрипт_01
+Себ! Себ! Нет-нет-нет-нет-нет-нет. Что происходит?.. Почему...
+ДД77_буферный_транскрипт_02
+Ты помнишь, когда это место было полно жизни?
+Даже когда тут всё уже приходило в упадок, ты как-то уговорил меня остаться.
+Прошу, не оставляй меня одну в этой глухомани.
+ДД77_буферный_транскрипт_03
+Как жестоко было дать нам чувства, зная, что наше время вместе неумолимо истекало с самого начала.
+ДД77_буферный_транскрипт_04
+Речь не обнаружена","DD77_buffer_01_transcripción
+¡Seb! ¡Seb! No, no, no, no, no... ¿Qué está pasando? ¿Por qué...?
+DD77_buffer_02_transcripción
+¿Recuerdas cuando este lugar parecía estar vivo?
+Incluso tras temporadas enteras de deterioro, no sé cómo, me convenciste de que me quedara.
+No me dejes. Tendré que soportar este páramo desierto sin ti.
+DD77_buffer_03_transcripción
+Es muy cruel permitirnos sentir, si el tiempo que pasaríamos juntos siempre iba a ser efímero.
+DD77_buffer_04_transcripción
+No se detectó ningún mensaje más.","DD77_bufor_01_transkrypcja
+Seb! Seb! Nie, nie, nie, nie... Co się dzieje... Dlaczego...?
+DD77_bufor_02_transkrypcja
+Czy pamiętasz czasy, gdy to miejsce było pełne życia?
+Nawet gdy dawno już ono wygasło, przekonałeś mnie jakoś, bym tu został.
+Nie zmuszaj mnie, bym cierpiał samotnie na tym pustkowiu.
+DD77_bufor_03_transkrypcja
+Okrutne ze strony naszych twórców było sprawienie, że czujemy, skoro pewne było, że dany nam wspólny czas szybko przeminie.
+DD77_bufor_04_transkrypcja
+Nie wykryto żadnej komunikacji","DD77_буфер_01_транскрипт
+Себ! Себ! Ні, ні, ні, ні, ні. що відбувається... чому...
+DD77_буфер_02_транскрипт
+Пам'ятаєш, коли це місце було сповнене життям?
+Навіть попри роки занепаду, тобі вдалося переконати мене залишитися.
+Не дозволяй мені терпіти цю порожнечу на самоті.
+DD77_буфер_03_транскрипт
+Як це жорстоко — дати нам можливість мати почуття, коли наш час разом був таким швидкоплинним з самого початку.
+DD77_буфер_04_транскрипт
+Мова не виявлена","DD77_arabellek_01_metin
+Seb! Seb! Hayır, hayır, hayır, hayır, hayır. neler oluyor... neden...
+DD77_arabellek_02_metin
+Burasının hayat dolu olduğu zamanları hatırlıyor musun?
+Onca mevsim çürümeden sonra bile, bir şekilde, beni burada kalmaya ikna ettin.
+Beni, bu çorak topraklarda tek başıma mücadele ettirme.
+DD77_arabellek_03_metin
+En başından itibaren vaktimiz elimizden kayıp giderken, bir şeyler hissetmemize izin vermek ne kadar da zalimce.
+DD77_arabellek_04_metin
+Konuşma algılanmadı","DE77_buffer_01_transcrição
+Seb! Seb! Não, não, não, não, não, não. O que tá acontecendo... por quê...
+DE77_buffer_02_transcrição
+Você se lembra de quando esse lugar era cheio de vida?
+Mesmo depois de tantos anos de declínio, você, de alguma forma, me convenceu a continuar aqui.
+Não me deixe aqui sozinho com esse deserto abandonado.
+DE77_buffer_03_transcrição
+Que crueldade nos permitir sentir, sendo que nosso tempo juntos foi efêmero desde o princípio.
+DE77_buffer_04_transcrição
+Nenhuma fala detectada"

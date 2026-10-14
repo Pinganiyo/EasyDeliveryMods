@@ -76,6 +76,7 @@ public sealed class Plugin : BaseUnityPlugin
     internal static ConfigEntry<KeyCode>? SplitscreenToggleKey;
     internal static ConfigEntry<string>? SplitscreenOrientation;
     internal static ConfigEntry<KeyCode>? SplitscreenSwapControlKey;
+    internal static ConfigEntry<KeyCode>? DumpTextKey;
     internal static ConfigEntry<float>? PassengerCameraOffset;
 
     private Harmony? _harmony;
@@ -304,6 +305,12 @@ public sealed class Plugin : BaseUnityPlugin
             "PassengerCameraOffset",
             0.5f,
             "Only used if the truck's first-person view point is exactly centred: how far (meters) the passenger's inside view is moved to the left seat. Normally the view point is mirrored from the driver's seat automatically.");
+
+        DumpTextKey = Config.Bind(
+            "Developer",
+            "DumpTextKey",
+            KeyCode.F10,
+            "Developer tool: writes every text held by the game's scripts in the loaded scene to BepInEx\\game_texts_dump.json.");
 
         SplitscreenOrientation = Config.Bind(
             "Splitscreen",

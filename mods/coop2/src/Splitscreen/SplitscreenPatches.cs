@@ -476,6 +476,58 @@ public static class SplitscreenPatches
     }
 
     /// <summary>
+    /// Shopkeepers rebuild their dialog from the story line each time you talk (sTransactionDialogInjector).
+    /// When both players are at the NPC, Player 1's conversation gets the "both players" greeting and
+    /// sendoff, plus one extra remark after the greeting. The story line and the price/payment lines
+    /// are kept as they are, so progress and payments are unchanged.
+    /// </summary>
+    [HarmonyPatch(typeof(sTransactionDialogInjector), "InjectDialog")]
+    public static class DuoDialogInjectPatch
+    {
+        private static readonly System.Collections.Generic.Dictionary<sTransactionNPC, sTransactionNPC.Dialog[]> Originals = new();
+
+        [HarmonyPrefix]
+        public static void Prefix(sTransactionDialogInjector __instance)
+        {
+            var npc = __instance.GetComponent<sTransactionNPC>();
+            if (npc != null && Originals.TryGetValue(npc, out var original))
+            {
+                npc.dialog = original; // undo the previous duo conversation before the line is injected
+                Originals.Remove(npc);
+            }
+        }
+
+        [HarmonyPostfix]
+        public static void Postfix(sTransactionDialogInjector __instance)
+        {
+            if (!SplitscreenManager.SplitActive) return;
+            var npc = __instance.GetComponent<sTransactionNPC>();
+            var look = __instance.GetComponent<sNPCAppearence>();
+            var info = UnityEngine.Object.FindFirstObjectByType<sNPCInformation>();
+            if (npc == null || look == null || info == null) return;
+            if (!SplitscreenManager.BothNear(npc.transform.position)) return;
+            if (look.npcIndex < 0 || look.npcIndex >= info.npcData.Count || info.IsDead(look.npcIndex)) return;
+
+            string name = info.npcData[look.npcIndex].name;
+            var set = CoopDialogs.Get(name, duo: true);
+            var source = npc.dialog;
+            if (set == null || source == null || source.Length < 2) return;
+
+            Originals[npc] = source;
+            var list = new System.Collections.Generic.List<sTransactionNPC.Dialog>();
+            list.Add(new sTransactionNPC.Dialog { text = set.Greeting, duration = source[0].duration });
+
+            string remark = CoopDialogs.NextInteraction(name, duo: true);
+            if (remark.Length > 0)
+                list.Add(new sTransactionNPC.Dialog { text = P2Dialog.FormatLikeStory(P2Dialog.WithPrice(remark, npc.price)), duration = 0f });
+
+            for (int i = 1; i < source.Length - 1; i++) list.Add(source[i]);
+            list.Add(new sTransactionNPC.Dialog { text = set.Sendoff, duration = source[source.Length - 1].duration });
+            npc.dialog = list.ToArray();
+        }
+    }
+
+    /// <summary>
     /// NPC heads (sNPCAppearence) look at the character they found at level load (Player 1) or at the
     /// truck when P1 is in it. With two players an NPC looks at the nearest player who is on foot, and
     /// only at the truck when nobody is.
