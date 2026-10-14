@@ -65,6 +65,14 @@ public static class SplitscreenPatches
         [HarmonyPrefix]
         public static bool Prefix(sInputManager __instance)
         {
+            // 0-controller mode: P2 polls the arrow-key layout directly.
+            if (SplitscreenManager.P2ZeroGamepadMode && __instance == SplitscreenManager.P2InputManager)
+            {
+                try { if (KeyboardLayouts.Apply(__instance, KeyboardLayouts.P2)) return false; }
+                catch { }
+                return true;
+            }
+
             // Only intercept P2's input manager
             if (__instance != SplitscreenManager.P2InputManager)
                 return true; // let P1's normal update run
@@ -110,6 +118,83 @@ public static class SplitscreenPatches
             catch { }
             
             return true; // fallback: run normal update
+        }
+
+        /// <summary>
+        /// 0-controller mode: after P1's normal Update, replace gameplay input with the
+        /// WASD layout so P1 no longer reacts to P2's arrow keys. Mouse/pause stay original.
+        /// </summary>
+        [HarmonyPostfix]
+        public static void Postfix(sInputManager __instance)
+        {
+            if (!SplitscreenManager.P2ZeroGamepadMode || !SplitscreenManager.IsSplitscreenActive) return;
+            if (__instance == SplitscreenManager.P2InputManager) return;
+            try { KeyboardLayouts.Apply(__instance, KeyboardLayouts.P1); } catch { }
+        }
+    }
+
+    /// <summary>Separate keyboard layouts for two players sharing one keyboard.</summary>
+    internal sealed class KeyboardLayout
+    {
+        public Key Up, Down, Left, Right;
+        public Key LookUp, LookDown, LookLeft, LookRight;
+        public Key Select, Brake, Inventory, Camera, Headlights, Horn, Reset, Map;
+        public Key? Pause;
+    }
+
+    internal static class KeyboardLayouts
+    {
+        public static readonly KeyboardLayout P1 = new KeyboardLayout
+        {
+            Up = Key.W, Down = Key.S, Left = Key.A, Right = Key.D,
+            LookUp = Key.I, LookDown = Key.K, LookLeft = Key.J, LookRight = Key.L,
+            Select = Key.E, Brake = Key.Space, Inventory = Key.Q, Camera = Key.C,
+            Headlights = Key.H, Horn = Key.F, Reset = Key.R, Map = Key.Tab,
+            Pause = null, // P1 keeps the game's own pause binding (Esc)
+        };
+
+        public static readonly KeyboardLayout P2 = new KeyboardLayout
+        {
+            Up = Key.UpArrow, Down = Key.DownArrow, Left = Key.LeftArrow, Right = Key.RightArrow,
+            LookUp = Key.Numpad8, LookDown = Key.Numpad5, LookLeft = Key.Numpad4, LookRight = Key.Numpad6,
+            Select = Key.Enter, Brake = Key.RightShift, Inventory = Key.RightCtrl, Camera = Key.Slash,
+            Headlights = Key.Period, Horn = Key.Comma, Reset = Key.Backspace, Map = Key.Quote,
+            Pause = Key.P,
+        };
+
+        private static float Axis(Keyboard kb, Key neg, Key pos)
+            => (kb[pos].isPressed ? 1f : 0f) - (kb[neg].isPressed ? 1f : 0f);
+
+        /// <summary>Writes the layout's state into the manager's public input fields.</summary>
+        public static bool Apply(sInputManager m, KeyboardLayout l)
+        {
+            var kb = Keyboard.current;
+            if (kb == null) return false;
+
+            var move = new Vector2(Axis(kb, l.Left, l.Right), Axis(kb, l.Down, l.Up));
+            if (move.sqrMagnitude > 1f) move.Normalize();
+
+            m.driveInput = move;
+            m.playerInput = move;
+            m.cameraLook = new Vector2(Axis(kb, l.LookLeft, l.LookRight), Axis(kb, l.LookDown, l.LookUp));
+            if (m != SplitscreenManager.P1Input) m.mouseInput = Vector2.zero;
+
+            m.selectPressed = kb[l.Select].wasPressedThisFrame;
+            m.selectReleased = kb[l.Select].wasReleasedThisFrame;
+            m.backPressed = kb[l.Brake].wasPressedThisFrame;
+            m.backReleased = kb[l.Brake].wasReleasedThisFrame;
+            m.breakPressed = kb[l.Brake].isPressed;
+            m.inventoryPressed = kb[l.Inventory].wasPressedThisFrame;
+            m.inventoryReleased = kb[l.Inventory].wasReleasedThisFrame;
+            m.inventoryHeld = kb[l.Inventory].isPressed;
+            m.cameraPressed = kb[l.Camera].wasPressedThisFrame;
+            m.headlightsPressed = kb[l.Headlights].wasPressedThisFrame;
+            m.hornPressed = kb[l.Horn].wasPressedThisFrame;
+            m.resetPressed = kb[l.Reset].wasPressedThisFrame;
+            m.resetHeld = kb[l.Reset].isPressed;
+            m.mapPressed = kb[l.Map].wasPressedThisFrame;
+            if (l.Pause.HasValue) m.pausePressed = kb[l.Pause.Value].wasPressedThisFrame;
+            return true;
         }
     }
 

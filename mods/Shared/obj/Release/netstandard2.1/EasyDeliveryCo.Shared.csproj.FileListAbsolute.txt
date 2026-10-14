@@ -8,3 +8,4 @@ D:\github\EasyDeliveryMods\mods\Shared\obj\Release\netstandard2.1\EasyDeliveryCo
 D:\github\EasyDeliveryMods\mods\Shared\obj\Release\netstandard2.1\EasyDeliveryCo.Shared.csproj.CoreCompileInputs.cache
 D:\github\EasyDeliveryMods\mods\Shared\obj\Release\netstandard2.1\EasyDeliveryCo.Shared.dll
 D:\github\EasyDeliveryMods\mods\Shared\obj\Release\netstandard2.1\EasyDeliveryCo.Shared.pdb
+D:\github\EasyDeliveryMods\mods\Shared\obj\Release\netstandard2.1\EasyDeliveryCo.Shared.sourcelink.json

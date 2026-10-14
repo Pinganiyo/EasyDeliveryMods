@@ -56,6 +56,7 @@ internal sealed class SplitscreenManager : MonoBehaviour
     internal static GameObject? P2Character => _instance?._p2Character;
     internal static sCharacterController? P2Controller => _instance?._p2Controller;
     internal static sInputManager? P2InputManager => _instance?._p2InputManager;
+    internal static sInputManager? P1Input => _instance?._p1InputManager;
     internal static int P2GamepadIndex => _instance?._p2GamepadIndex ?? 0;
     internal static bool P2ZeroGamepadMode => _instance?._p2ZeroGamepadMode ?? false;
     internal static CarSeats.CarSeat P1Seat => _instance?._p1Seat ?? CarSeats.CarSeat.None;

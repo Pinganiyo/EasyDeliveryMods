@@ -13,17 +13,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- BepInEx trio: Build.ps1 ensures these exist in mods\LanCoop\lib. -->
+    <!-- BepInEx trio: Build.ps1 ensures these exist in mods\lib. -->
     <Reference Include="BepInEx">
-      <HintPath>..\LanCoop\lib\BepInEx.dll</HintPath>
+      <HintPath>..\lib\BepInEx.dll</HintPath>
       <Private>false</Private>
     </Reference>
     <Reference Include="BepInEx.Harmony">
-      <HintPath>..\LanCoop\lib\BepInEx.Harmony.dll</HintPath>
+      <HintPath>..\lib\BepInEx.Harmony.dll</HintPath>
       <Private>false</Private>
     </Reference>
     <Reference Include="0Harmony">
-      <HintPath>..\LanCoop\lib\0Harmony.dll</HintPath>
+      <HintPath>..\lib\0Harmony.dll</HintPath>
       <Private>false</Private>
     </Reference>
 

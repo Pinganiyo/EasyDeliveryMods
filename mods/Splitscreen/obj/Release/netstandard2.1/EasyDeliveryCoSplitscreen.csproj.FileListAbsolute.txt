@@ -11,3 +11,4 @@ D:\github\EasyDeliveryMods\mods\Splitscreen\bin\Release\netstandard2.1\EasyDeliv
 D:\github\EasyDeliveryMods\mods\Splitscreen\obj\Release\netstandard2.1\EasyDeli.FAD2D027.Up2Date
 D:\github\EasyDeliveryMods\mods\Splitscreen\obj\Release\netstandard2.1\EasyDeliveryCoSplitscreen.dll
 D:\github\EasyDeliveryMods\mods\Splitscreen\obj\Release\netstandard2.1\EasyDeliveryCoSplitscreen.pdb
+D:\github\EasyDeliveryMods\mods\Splitscreen\obj\Release\netstandard2.1\EasyDeliveryCoSplitscreen.sourcelink.json

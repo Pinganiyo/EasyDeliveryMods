@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("EasyDeliveryCo.Shared")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a0f76d091d0096c4966b0c66523236dfa33b5830")]
 [assembly: System.Reflection.AssemblyProductAttribute("EasyDeliveryCo.Shared")]
 [assembly: System.Reflection.AssemblyTitleAttribute("EasyDeliveryCo.Shared")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

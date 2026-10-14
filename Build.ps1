@@ -4,40 +4,35 @@
 
 .DESCRIPTION
   Mod layout (D:\github\EasyDeliveryMods\mods):
-    LanCoop     - clean GitHub base (EasyDeliveryCoLanCoop.dll), untouched
-    Shared      - EasyDeliveryCo.Shared.dll, driver/seat logic reused by LAN + Splitscreen
+    Shared      - EasyDeliveryCo.Shared.dll, shared driver/seat logic
     Splitscreen - EasyDeliveryCoSplitscreen.dll (local P2, cameras, driver input)
     CustomSkins - EasyDeliveryCoCustomSkins.dll (StreamingAssets\CustomPlayer\*.png skins, F7 panel)
 
-  The script prepares build prerequisites without touching the LAN repo sources:
-    - copies BepInEx DLLs into mods\LanCoop\lib if missing
+  The script prepares build prerequisites:
+    - copies BepInEx DLLs into mods\lib if missing (from -LibSource)
     - links mods\EasyDeliveryCo_Data to <GameDir>\EasyDeliveryCo_Data (junction,
-      so the `..\EasyDeliveryCo_Data\Managed` HintPaths in every csproj resolve)
+      so the ..\EasyDeliveryCo_Data\Managed HintPaths in every csproj resolve)
 
 .EXAMPLE
   .\Build.ps1
   .\Build.ps1 -Mods Splitscreen, CustomSkins
-  .\Build.ps1 -Mods All -No Splitscreen
-  .\Build.ps1 -Mods LanCoop -Deploy
+  .\Build.ps1 -Mods All -No CustomSkins
   .\Build.ps1 -Mods All -Configuration Release -Deploy -GameDir "C:\GOG Games\Easy Delivery Co"
 #>
 [CmdletBinding()]
 param(
   [string[]]$Mods = @("All"),
 
-  # Mods to skip, e.g. -Mods All -No Splitscreen
+  # Mods to skip, e.g. -Mods All -No CustomSkins
   [string[]]$No = @(),
 
   [string]$Configuration = "Release",
 
   [string]$GameDir = "C:\GOG Games\Easy Delivery Co",
 
-  # Second game copy (local test client). Deployed plugin folders are mirrored
-  # there automatically. Defaults to "<GameDir> (Client)"; skipped if missing.
-  [string]$ClientDir = "",
-
   # Folder that already contains BepInEx.dll / 0Harmony.dll / BepInEx.Harmony.dll
-  [string]$LibSource = "C:\GOG Games\Easy Delivery Co\EasyDeliveryCoLanCoop-src\lib",
+  # (the BepInEx 5 install's core folder).
+  [string]$LibSource = "C:\GOG Games\Easy Delivery Co\BepInEx\core",
 
   # Copy built DLLs into <GameDir>\BepInEx\plugins\<Mod>\
   [switch]$Deploy,
@@ -49,17 +44,16 @@ $ErrorActionPreference = "Stop"
 
 $RootDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $ModsDir = Join-Path $RootDir "mods"
+$LibDir  = Join-Path $ModsDir "lib"
 
 $Projects = @{
   Shared      = "Shared\EasyDeliveryCo.Shared.csproj"
-  LanCoop     = "LanCoop\EasyDeliveryCoLanCoop.csproj"
   Splitscreen = "Splitscreen\EasyDeliveryCoSplitscreen.csproj"
   CustomSkins = "CustomSkins\EasyDeliveryCoCustomSkins.csproj"
 }
 
 # Plugin folder name + extra DLLs that must be deployed next to the plugin DLL.
 $DeployMap = @{
-  LanCoop     = @{ Folder = "EasyDeliveryCoLanCoop";     Dll = "EasyDeliveryCoLanCoop.dll";   Extra = @("EasyDeliveryCo.Shared.dll") }
   Splitscreen = @{ Folder = "EasyDeliveryCoSplitscreen"; Dll = "EasyDeliveryCoSplitscreen.dll"; Extra = @("EasyDeliveryCo.Shared.dll") }
   CustomSkins = @{ Folder = "EasyDeliveryCoCustomSkins"; Dll = "EasyDeliveryCoCustomSkins.dll"; Extra = @() }
 }
@@ -71,26 +65,24 @@ function Resolve-Dotnet {
     $v = & $cmd.Source --version 2>$null
     if ($LASTEXITCODE -eq 0 -and "$v" -match '^\d+\.\d+') { return $cmd.Source }
   } catch { }
-  $localSdk = "C:\GOG Games\Easy Delivery Co\EasyDeliveryCoLanCoop-src\.dotnet\dotnet.exe"
-  if (Test-Path -LiteralPath $localSdk) { return $localSdk }
   throw "No .NET SDK found. Install one or pass -DotnetExe <path to dotnet>."
 }
 
 function Ensure-BepInExLibs {
-  $dest = Join-Path $ModsDir "LanCoop\lib"
   $needed = @("BepInEx.dll", "0Harmony.dll", "BepInEx.Harmony.dll")
-  $missing = $needed | Where-Object { -not (Test-Path -LiteralPath (Join-Path $dest $_)) }
+  New-Item -ItemType Directory -Path $LibDir -Force | Out-Null
+  $missing = $needed | Where-Object { -not (Test-Path -LiteralPath (Join-Path $LibDir $_)) }
   if ($missing.Count -eq 0) {
-    Write-Host "[deps] BepInEx libs present in mods\LanCoop\lib." -ForegroundColor DarkGray
+    Write-Host "[deps] BepInEx libs present in mods\lib." -ForegroundColor DarkGray
     return
   }
   foreach ($f in $missing) {
     $src = Join-Path $LibSource $f
     if (-not (Test-Path -LiteralPath $src)) {
-      throw "Missing $f (not in $dest nor in -LibSource $LibSource). Put BepInEx 5 DLLs there first."
+      throw "Missing $f (not in $LibDir nor in -LibSource $LibSource). Put BepInEx 5 DLLs there first."
     }
-    Copy-Item -LiteralPath $src -Destination (Join-Path $dest $f) -Force
-    Write-Host "[deps] Copied $f -> mods\LanCoop\lib\" -ForegroundColor DarkGray
+    Copy-Item -LiteralPath $src -Destination (Join-Path $LibDir $f) -Force
+    Write-Host "[deps] Copied $f -> mods\lib\" -ForegroundColor DarkGray
   }
 }
 
@@ -128,29 +120,15 @@ function Ensure-GameDataLink {
   if (-not (Test-Path -LiteralPath (Join-Path $target "Managed\Assembly-CSharp.dll"))) {
     throw "Game DLLs not found at $target. Pass the correct -GameDir."
   }
-  # Standard link used by the new mods (..\EasyDeliveryCo_Data from any mods\<X>\ project).
+  # Standard link used by the mods (..\EasyDeliveryCo_Data from any mods\<X>\ project).
   $created = Ensure-JunctionLink (Join-Path $ModsDir "EasyDeliveryCo_Data") $target
   if (-not $created) {
     Write-Host "[deps] mods\EasyDeliveryCo_Data already exists, reusing." -ForegroundColor DarkGray
   }
-  # The untouched LAN clone may reference a different relative path
-  # (e.g. ..\EasyDeliveryCo steam version\EasyDeliveryCo_Data). Mirror whatever
-  # its csproj HintPaths expect, without modifying its sources.
-  $lancoopProj = Join-Path $ModsDir "LanCoop\EasyDeliveryCoLanCoop.csproj"
-  if (Test-Path -LiteralPath $lancoopProj) {
-    $text = [System.IO.File]::ReadAllText($lancoopProj)
-    $rx = [regex]'<HintPath>([^<>]*?EasyDeliveryCo_Data)[\\/][^<>]*</HintPath>'
-    foreach ($m in $rx.Matches($text)) {
-      $relDir = $m.Groups[1].Value -replace '/', '\'
-      $absDir = [System.IO.Path]::GetFullPath((Join-Path (Join-Path $ModsDir "LanCoop") $relDir))
-      if ($absDir -ieq [System.IO.Path]::GetFullPath((Join-Path $ModsDir "EasyDeliveryCo_Data"))) { continue }
-      Ensure-JunctionLink $absDir $target | Out-Null
-    }
-  }
 }
 
 function Normalize-ModList($list) {
-  # Accept @("All") | "LanCoop,Splitscreen" | @("LanCoop", "Splitscreen")
+  # Accept @("All") | "Splitscreen,CustomSkins" | @("Splitscreen", "CustomSkins")
   $flat = @()
   foreach ($m in $list) {
     foreach ($p in ("$m" -split ',')) {
@@ -162,10 +140,8 @@ function Normalize-ModList($list) {
 }
 
 function To-ModKey($m) {
-  $key = (Get-Culture).TextInfo.ToTitleCase($m.ToLower())
-  if ($m -ieq "CustomSkins") { $key = "CustomSkins" }
-  if ($m -ieq "LanCoop") { $key = "LanCoop" }
-  return $key
+  if ($m -ieq "CustomSkins") { return "CustomSkins" }
+  return (Get-Culture).TextInfo.ToTitleCase($m.ToLower())
 }
 
 function Get-SelectedMods {
@@ -174,15 +150,15 @@ function Get-SelectedMods {
   foreach ($m in Normalize-ModList $Mods) {
     if ($m -ieq "All") { $all = $true; break }
     $key = To-ModKey $m
-    if (-not $Projects.ContainsKey($key)) { throw "Unknown mod '$m'. Valid: All, LanCoop, Splitscreen, CustomSkins, Shared." }
+    if (-not $Projects.ContainsKey($key)) { throw "Unknown mod '$m'. Valid: All, Splitscreen, CustomSkins, Shared." }
     if ($want -notcontains $key) { $want += $key }
   }
-  if ($all) { $want = @("Shared", "LanCoop", "Splitscreen", "CustomSkins") }
+  if ($all) { $want = @("Shared", "Splitscreen", "CustomSkins") }
   # Splitscreen needs Shared built (ProjectReference handles it, but build it explicitly first for clarity).
   if ($want -contains "Splitscreen" -and $want -notcontains "Shared") { $want = @("Shared") + $want }
   foreach ($m in Normalize-ModList $No) {
     $key = To-ModKey $m
-    if (-not $Projects.ContainsKey($key)) { throw "Unknown mod '$m' in -No. Valid: LanCoop, Splitscreen, CustomSkins, Shared." }
+    if (-not $Projects.ContainsKey($key)) { throw "Unknown mod '$m' in -No. Valid: Splitscreen, CustomSkins, Shared." }
     $want = @($want | Where-Object { $_ -ine $key })
   }
   if ($want.Count -eq 0) { throw "Nothing to build: -No excluded every selected mod." }
@@ -216,26 +192,19 @@ if ($failed.Count -gt 0) { throw "Build FAILED for: $($failed -join ', ')" }
 Write-Host "Build OK: $($selected -join ', ')" -ForegroundColor Green
 
 if ($Deploy) {
-  if ($ClientDir -eq "") { $ClientDir = "$GameDir (Client)" }
-
-  # Deploying over running games leaves locked half-updated DLLs: refuse early.
-  foreach ($d in @($GameDir, $ClientDir)) {
-    if (-not (Test-Path -LiteralPath $d)) { continue }
-    $full = [System.IO.Path]::GetFullPath($d)
-    $running = Get-Process -Name "EasyDeliveryCo" -ErrorAction SilentlyContinue | Where-Object {
-      try { $_.MainModule.FileName.StartsWith($full, [System.StringComparison]::OrdinalIgnoreCase) }
-      catch { $false }
-    }
-    if ($running) { throw "Close the game running from $d before deploying (DLLs are locked)." }
+  # Deploying over a running game leaves locked half-updated DLLs: refuse early.
+  $full = [System.IO.Path]::GetFullPath($GameDir)
+  $running = Get-Process -Name "EasyDeliveryCo" -ErrorAction SilentlyContinue | Where-Object {
+    try { $_.MainModule.FileName.StartsWith($full, [System.StringComparison]::OrdinalIgnoreCase) }
+    catch { $false }
   }
+  if ($running) { throw "Close the game running from $GameDir before deploying (DLLs are locked)." }
 
   $pluginsDir = Join-Path $GameDir "BepInEx\plugins"
-  $deployedFolders = @()
   foreach ($m in $selected) {
     if (-not $DeployMap.ContainsKey($m)) { continue }  # Shared deploys alongside Splitscreen
     $info = $DeployMap[$m]
     $outDir = Join-Path $ModsDir "$m\bin\$Configuration\netstandard2.1"
-    if ($m -eq "LanCoop") { $outDir = Join-Path $ModsDir "LanCoop\bin\$Configuration\netstandard2.1" }
     $destDir = Join-Path $pluginsDir $info.Folder
     New-Item -ItemType Directory -Path $destDir -Force | Out-Null
     $files = @($info.Dll) + $info.Extra
@@ -249,22 +218,6 @@ if ($Deploy) {
       Copy-Item -LiteralPath $src -Destination (Join-Path $destDir $f) -Force
       Write-Host "[deploy] $f -> BepInEx\plugins\$($info.Folder)\" -ForegroundColor DarkGray
     }
-    if ($deployedFolders -notcontains $info.Folder) { $deployedFolders += $info.Folder }
   }
   Write-Host "Deployed to $pluginsDir" -ForegroundColor Green
-
-  # Mirror the same plugin folders into the client copy, like the manual step.
-  if (Test-Path -LiteralPath $ClientDir) {
-    $clientPlugins = Join-Path $ClientDir "BepInEx\plugins"
-    New-Item -ItemType Directory -Path $clientPlugins -Force | Out-Null
-    foreach ($folder in $deployedFolders) {
-      $srcDir = Join-Path $pluginsDir $folder
-      $dstDir = Join-Path $clientPlugins $folder
-      New-Item -ItemType Directory -Path $dstDir -Force | Out-Null
-      Copy-Item -LiteralPath (Join-Path $srcDir "*") -Destination $dstDir -Force -Recurse
-      Write-Host "[deploy] Mirrored $folder -> client copy." -ForegroundColor DarkGray
-    }
-  } else {
-    Write-Host "[deploy] No client copy at $ClientDir, skipping mirror." -ForegroundColor DarkGray
-  }
 }
