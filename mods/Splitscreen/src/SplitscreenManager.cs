@@ -227,6 +227,12 @@ internal sealed class SplitscreenManager : MonoBehaviour
         }
 
         // Clone P1 into P2
+        // Creating P2's sInputManager (clone / AddComponent) can overwrite the static
+        // sInputManager.players registry, which makes P1 read P2's (empty) input.
+        // Snapshot it now and restore it once P2 is set up.
+        var playersBackup = sInputManager.players;
+        var playersBackupItems = playersBackup != null ? (sInputManager[])playersBackup.Clone() : null;
+
         _p2Character = CloneP2Character(_p1Controller.gameObject);
         if (_p2Character == null)
         {
@@ -338,6 +344,24 @@ internal sealed class SplitscreenManager : MonoBehaviour
             SplitPlugin.Log.LogWarning("[Splitscreen] Failed to ensure P2 has sInputManager.");
             Destroy(_p2Character);
             return;
+        }
+
+        // Put P1 back in the players registry
+        try
+        {
+            if (playersBackup != null && playersBackupItems != null)
+            {
+                for (int i = 0; i < playersBackup.Length; i++) playersBackup[i] = playersBackupItems[i];
+                sInputManager.players = playersBackup;
+            }
+            else if (_p1InputManager != null)
+            {
+                sInputManager.players = new[] { _p1InputManager };
+            }
+        }
+        catch (Exception ex)
+        {
+            SplitPlugin.Log.LogWarning($"[Splitscreen] Could not restore players registry: {ex.Message}");
         }
 
         // Clone P1's camera into P2
