@@ -354,6 +354,208 @@ public static class SplitscreenPatches
     }
 
     /// <summary>
+    /// ProximityToggle switches areas on/off depending on how far Player 1 is. With two players:
+    ///  - the area's content (toEnable, e.g. a shop interior) is on while EITHER player is near;
+    ///  - the outside world (toDisable: sun, snow, engine sounds) goes off only when P1 is near and
+    ///    P2 too. Otherwise it stays on for whoever is still outside, and ProximityToggleVisibility
+    ///    hides it per camera for the player who is indoors.
+    /// </summary>
+    [HarmonyPatch(typeof(ProximityToggle), "Update")]
+    public static class ProximityToggleUpdatePatch
+    {
+        private static readonly FieldInfo? HasToggled =
+            typeof(ProximityToggle).GetField("hasToggled", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        [HarmonyPrefix]
+        public static bool Prefix(ProximityToggle __instance)
+        {
+            if (!SplitscreenManager.SplitActive || HasToggled == null) return true;
+            if (!ProximityToggleVisibility.FollowsP1(__instance)) return true; // not a P1 toggle: untouched
+
+            var p2 = SplitscreenManager.P2CharacterObject;
+            if (p2 == null) return true;
+
+            Vector3 here = __instance.transform.position;
+            float threshold = __instance.distanceThreashold;
+            bool near1 = Vector3.Distance(here, __instance.target.position) < threshold;
+            bool near2 = Vector3.Distance(here, p2.transform.position) < threshold;
+            bool toggled = (bool)HasToggled.GetValue(__instance);
+
+            if (near1 || near2)
+            {
+                if (!toggled) HasToggled.SetValue(__instance, true);
+                foreach (var go in __instance.toEnable)
+                    if (go != null && !go.activeSelf) go.SetActive(true);
+
+                bool outsideStillOn = !(near1 && near2);
+                foreach (var go in __instance.toDisable)
+                    if (go != null && go.activeSelf != outsideStillOn) go.SetActive(outsideStillOn);
+            }
+            else if (toggled)
+            {
+                HasToggled.SetValue(__instance, false);
+                foreach (var go in __instance.toDisable) if (go != null) go.SetActive(true);
+                foreach (var go in __instance.toEnable) if (go != null) go.SetActive(false);
+            }
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// DeathManager reloads the whole world when Player 1's warmth reaches 0. With two players, if only
+    /// one is down the other must keep playing in the same world: P1's death then just collapses P1 and,
+    /// after the death time, gets P1 back up next to the truck. When both are down at the same time the
+    /// game's own death (world reload) is left to run.
+    /// </summary>
+    [HarmonyPatch(typeof(DeathManager), "Update")]
+    public static class DeathManagerUpdatePatch
+    {
+        private static readonly FieldInfo? GuyField =
+            typeof(DeathManager).GetField("guy", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        [HarmonyPrefix]
+        public static bool Prefix(DeathManager __instance)
+        {
+            if (!SplitscreenManager.SplitActive || GuyField == null) return true;
+            var guy = GuyField.GetValue(__instance) as sCharacterInteraction;
+            if (guy == null || guy.hud == null) return true;
+
+            bool p2Dead = SplitscreenManager.P2Dead;
+
+            if (__instance.dying)
+            {
+                if (p2Dead) return true; // both down: the game finishes the death (world reload)
+
+                __instance.deathTime -= Time.unscaledDeltaTime;
+                if (__instance.deathTime <= 0f)
+                    RespawnP1(__instance, guy);
+                return false;
+            }
+
+            if (guy.hud.temperature == 0f)
+            {
+                if (p2Dead)
+                {
+                    __instance.deathTime = SplitscreenManager.DeathSeconds;
+                    return true; // P2 is already down: the game handles it
+                }
+
+                if (!guy.hud.navigation.car.GuyActive)
+                    guy.SetActive(a: true);
+                __instance.dying = true;
+                __instance.deathTime = SplitscreenManager.DeathSeconds;
+                guy.GetComponent<Animator>().SetBool("Move", value: false);
+                guy.GetComponent<Animator>().SetBool("Dead", value: true);
+                guy.GetComponent<sCharacterController>().enabled = false;
+                Plugin.Log.LogInfo("[Splitscreen] Player 1 froze to death (Player 2 keeps playing).");
+                return false;
+            }
+
+            return true;
+        }
+
+        private static void RespawnP1(DeathManager dm, sCharacterInteraction guy)
+        {
+            dm.dying = false;
+            dm.deathTime = SplitscreenManager.DeathSeconds;
+
+            var cc = guy.GetComponent<sCharacterController>();
+            SplitscreenManager.StandUp(guy.GetComponent<Animator>());
+            if (cc != null)
+            {
+                cc.enabled = true;
+                cc.MoveTo(SplitscreenManager.SpawnPointNearCar(driverSide: true));
+                cc.velocity = Vector3.zero;
+            }
+            guy.hud.temperature = guy.hud.temperatureLimit;
+            Plugin.Log.LogInfo("[Splitscreen] Player 1 is back up.");
+
+            // The game's respawn starts the player in the truck; the same call it uses at level start
+            guy.SetActive(a: false);
+        }
+    }
+
+    /// <summary>
+    /// NPC heads (sNPCAppearence) look at the character they found at level load (Player 1) or at the
+    /// truck when P1 is in it. With two players an NPC looks at the nearest player who is on foot, and
+    /// only at the truck when nobody is.
+    /// </summary>
+    [HarmonyPatch(typeof(sNPCAppearence), "Update")]
+    public static class NpcHeadLookPatch
+    {
+        private const BindingFlags F = BindingFlags.Instance | BindingFlags.NonPublic;
+        private static readonly FieldInfo? HeadField = typeof(sNPCAppearence).GetField("head", F);
+        private static readonly FieldInfo? CarField = typeof(sNPCAppearence).GetField("car", F);
+        private static readonly FieldInfo? InfoField = typeof(sNPCAppearence).GetField("info", F);
+        private static readonly FieldInfo? AnimField = typeof(sNPCAppearence).GetField("anim", F);
+        private const float HeadTurnSpeed = 6f; // higher = snappier (about 0.4 s to settle)
+        private static readonly System.Collections.Generic.Dictionary<int, Quaternion> _smoothed = new();
+
+        [HarmonyPrefix]
+        public static bool Prefix(sNPCAppearence __instance)
+        {
+            if (!SplitscreenManager.SplitActive) return true;
+            if (HeadField == null || CarField == null || InfoField == null || AnimField == null) return true;
+
+            var head = HeadField.GetValue(__instance) as Transform;
+            var car = CarField.GetValue(__instance) as sCarController;
+            var info = InfoField.GetValue(__instance) as sNPCInformation;
+            var anim = AnimField.GetValue(__instance) as Animator;
+            var p1 = SplitscreenManager.P1CharacterObject;
+            var p2 = SplitscreenManager.P2CharacterObject;
+            if (head == null || car == null || info == null || p1 == null || p2 == null) return true;
+
+            // Same first branch as the game
+            if (info.IsDead(__instance.npcIndex) || EndingManager.instance.currentEnding == EndingManager.Ending.shutdown)
+            {
+                if (anim != null) anim.enabled = false;
+                return false;
+            }
+
+            Vector3 here = __instance.transform.position;
+            Transform? target = null;
+            float best = float.MaxValue;
+
+            if (car.GuyActive) // P1 on foot
+            {
+                best = Vector3.Distance(here, p1.transform.position);
+                target = p1.transform;
+            }
+            if (!SplitscreenManager.IsP2InCar) // P2 on foot
+            {
+                float d = Vector3.Distance(here, p2.transform.position);
+                if (d < best) { best = d; target = p2.transform; }
+            }
+
+            Vector3 lookAt = target != null ? target.position + Vector3.up : car.transform.position;
+            Vector3 dir = lookAt - head.position;
+            Quaternion desired = dir.sqrMagnitude > 1e-6f ? Quaternion.LookRotation(dir, Vector3.up) : head.rotation;
+
+            // Turn smoothly (also when the nearest player changes) instead of snapping like head.LookAt
+            int id = __instance.GetInstanceID();
+            if (!_smoothed.TryGetValue(id, out var current)) current = head.rotation;
+            current = Quaternion.Slerp(current, desired, 1f - Mathf.Exp(-HeadTurnSpeed * Time.deltaTime));
+            _smoothed[id] = current;
+            head.rotation = current;
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// FirstPersonCameraHack.Toggle switches shared truck objects on/off for everyone. While splitscreen
+    /// runs, ViewModeVisibility decides per camera instead, so the game's own switch is skipped.
+    /// </summary>
+    [HarmonyPatch(typeof(FirstPersonCameraHack), "Toggle")]
+    public static class FirstPersonCameraHackTogglePatch
+    {
+        [HarmonyPrefix]
+        public static bool Prefix(FirstPersonCameraHack __instance)
+        {
+            return !ViewModeVisibility.Owns(__instance);
+        }
+    }
+
+    /// <summary>
     /// FirstPersonCameraHack reads players[0].cameraPressed (the C key). The hack cloned with
     /// P2's camera rig would otherwise follow P1's key, so feed it P2's own camera input.
     /// </summary>

@@ -134,6 +134,50 @@ internal sealed class SplitscreenManager : MonoBehaviour
 
     internal static sCameraController? P2Rig => _p2Rig;
     internal static sCameraController? P1Rig => _p1Rig;
+
+    // Building interiors: when both players are inside, they share one full-screen camera.
+    internal static bool P1Inside { get; private set; }
+    internal static bool P2Inside { get; private set; }
+    internal static bool MergedView => P1Inside && P2Inside;
+    private static bool _loggedMerged;
+
+    /// <summary>The camera that shows Player 2's world (their half, or the shared full-screen one).</summary>
+    internal static Camera? P2ViewCamera =>
+        MergedView ? _instance?._p1Cam : _instance?._p2Cam;
+
+    // A building interior is a separate area of the map; its exit door ("leave" sTeleporter) is inside it.
+    // Anyone close to one of those doors is inside a building, however they got there (door, F8 while
+    // already indoors, ...), so the state is read from positions instead of counting door uses.
+    private const float InteriorRadius = 20f;
+    private static sTeleporter[] _doors = System.Array.Empty<sTeleporter>();
+    private static float _nextDoorScan = -100f;
+
+    internal static bool IsInsideBuilding(Vector3 pos)
+    {
+        if (Time.unscaledTime >= _nextDoorScan)
+        {
+            _nextDoorScan = Time.unscaledTime + 3f;
+            _doors = FindObjectsByType<sTeleporter>(FindObjectsSortMode.None);
+        }
+        foreach (var tp in _doors)
+        {
+            if (tp != null && tp.interactText == "leave" && Vector3.Distance(tp.transform.position, pos) < InteriorRadius)
+                return true;
+        }
+        return false;
+    }
+
+    private void UpdateInsideState()
+    {
+        bool p1 = _p1Character != null && IsInsideBuilding(_p1Character.transform.position);
+        bool p2 = _p2Character != null && IsInsideBuilding(_p2Character.transform.position);
+        if (p1 != P1Inside) Plugin.Log.LogInfo($"[Splitscreen] P1 {(p1 ? "is inside" : "left")} a building.");
+        if (p2 != P2Inside) Plugin.Log.LogInfo($"[Splitscreen] P2 {(p2 ? "is inside" : "left")} a building.");
+        P1Inside = p1;
+        P2Inside = p2;
+    }
+    internal static GameObject? P1CharacterObject => _instance?._p1Character;
+    internal static GameObject? P2CharacterObject => _p2Character;
     private static CarSeat _loggedP1Seat, _loggedP2Seat;
     private static bool _p2HasCameraHack;
 
@@ -183,7 +227,7 @@ internal sealed class SplitscreenManager : MonoBehaviour
         if (!_active || _p2Character == null) return;
 
         // Check P2 Interact (E / A / Cross / RT)
-        if (GetP2InteractPressed())
+        if (!P2Dead && GetP2InteractPressed())
         {
             try
             {
@@ -196,7 +240,7 @@ internal sealed class SplitscreenManager : MonoBehaviour
         }
 
         // Check P2 Back / Drop (Space / B / Circle / LT)
-        if (GetP2BackPressed())
+        if (!P2Dead && GetP2BackPressed())
         {
             try
             {
@@ -209,6 +253,10 @@ internal sealed class SplitscreenManager : MonoBehaviour
         }
 
         P2Stats.Tick(Time.deltaTime, _p2InCar, _p2Character.transform.position);
+        UpdateP2Death();
+        if (!P2Dead) CheckP2AutoTeleport();
+        LinkInventory();
+        ProximityToggleVisibility.UpdateAudio();
 
         // P2's rig has no FirstPersonCameraHack of its own: toggle first/third person directly
         if (!_p2HasCameraHack && _p2Rig != null && GetP2CameraPressed() && _p2Rig.firstPersonPivot != null)
@@ -232,7 +280,29 @@ internal sealed class SplitscreenManager : MonoBehaviour
             Plugin.Log.LogInfo($"[Splitscreen] Seats: P1={P1Seat} P2={P2Seat} ");
         }
 
+        UpdateInsideState();
+
+        // Both players inside a building: one shared full-screen camera, always Player 1's
+        if (MergedView)
+        {
+            _p1Cam.enabled = true;
+            _p2Cam.enabled = false;
+            ApplyRect(_p1Rig != null ? _p1Rig.transform : _p1Cam.transform, FullRect);
+            if (!_loggedMerged)
+            {
+                _loggedMerged = true;
+                Plugin.Log.LogInfo("[Splitscreen] Both players inside: one shared camera.");
+            }
+            return;
+        }
+        if (_loggedMerged)
+        {
+            _loggedMerged = false;
+            Plugin.Log.LogInfo("[Splitscreen] A player left the building: splitscreen again.");
+        }
+
         // Both players keep their own viewport at all times, also while sharing the truck.
+        _p1Cam.enabled = true;
         _p2Cam.enabled = true;
         if (_hud != null) _hud.SetActive(true);
 
@@ -378,9 +448,19 @@ internal sealed class SplitscreenManager : MonoBehaviour
 
         if (_p1Cam != null && _p2Cam != null && _p2Character != null)
             P2Stats.Init(_p1Cam, _p2Cam, _p2Character);
+
+        ShareInventory();
         if (_p1Cam != null && _p2Cam != null && _p1Character != null && _p2Character != null)
             OwnModelHider.Init(_p1Cam, _p2Cam, _p1Character, _p2Character);
 
+        if (_p2Cam != null)
+            ViewModeVisibility.Init(_p2Cam);
+        if (_p1Cam != null && _p2Cam != null)
+            ProximityToggleVisibility.Init(_p1Cam, _p2Cam);
+
+        P1Inside = false;
+        P2Inside = false;
+        _loggedMerged = false;
         ControlP2 = false;
         Raw = default;
         _active = true;
@@ -389,6 +469,10 @@ internal sealed class SplitscreenManager : MonoBehaviour
         P1Seat = CarSeat.None;
         P2Seat = CarSeat.None;
         Plugin.Log.LogInfo("[Splitscreen] Activated — splitscreen co-op running.");
+
+        // Like the game's own start: the second player begins sitting in the truck
+        if (_p1Character != null && !IsInsideBuilding(_p1Character.transform.position))
+            PlaceP2InTruck();
     }
 
     internal void Deactivate()
@@ -396,9 +480,14 @@ internal sealed class SplitscreenManager : MonoBehaviour
         if (!_active) return;
         _active = false;
         _activeState = false;
+        P2Dead = false;
         P2Stats.Shutdown();
         OwnModelHider.Shutdown();
+        ViewModeVisibility.Shutdown();
+        ProximityToggleVisibility.Shutdown();
         _p2HasCameraHack = false;
+        P1Inside = false;
+        P2Inside = false;
         ControlP2 = false;
         Raw = default;
 
@@ -435,6 +524,7 @@ internal sealed class SplitscreenManager : MonoBehaviour
         // Full-screen camera for P1 again
         if (_p1Cam != null)
         {
+            _p1Cam.enabled = true;
             ApplyRect(_p1Rig != null ? _p1Rig.transform : _p1Cam.transform, FullRect);
             _p1Cam = null;
         }
@@ -455,6 +545,11 @@ internal sealed class SplitscreenManager : MonoBehaviour
 
         if (_p2Character != null)
         {
+            var p2Items = GetP2ItemManager();
+            if (p2Items != null && p2Items.holdingItem && p2Items.heldItemIndex >= 0)
+            {
+                try { p2Items.PutAway(); } catch { }
+            }
             Destroy(_p2Character);
             _p2Character = null;
         }
@@ -808,6 +903,309 @@ internal sealed class SplitscreenManager : MonoBehaviour
 
     // ── P2 Interaction & Truck Entry / Exit ─────────────────────────────────
 
+    // ── Death (warmth reaches 0) ────────────────────────────────────────────
+    //
+    // Player 1: the game's DeathManager reloads the whole world when P1's warmth hits 0 (see
+    // DeathManagerUpdatePatch, which keeps that for "both down" only). Player 2 gets the same collapse
+    // here. When only one player is down, the other keeps playing in the same world and the one who
+    // died gets back up next to the truck after the death time, warm again.
+
+    internal static bool P2Dead { get; private set; }
+    private static float _p2DeathTimer;
+    internal const float DeathSeconds = 16f;
+    private static DeathManager? _deathManager;
+    private static float _nextDeathManagerScan;
+
+    internal static DeathManager? GetDeathManager()
+    {
+        if (_deathManager == null && Time.unscaledTime >= _nextDeathManagerScan)
+        {
+            _nextDeathManagerScan = Time.unscaledTime + 2f;
+            _deathManager = FindFirstObjectByType<DeathManager>();
+        }
+        return _deathManager;
+    }
+
+    internal static bool P1IsDying => GetDeathManager() != null && GetDeathManager()!.dying;
+
+    /// <summary>A spot beside the truck, on the driver's side for one player and the passenger's for the other.</summary>
+    internal static Vector3 SpawnPointNearCar(bool driverSide)
+    {
+        var car = _car ?? FindAnyObjectByType<sCarController>();
+        if (car == null) return P1CharacterObject != null ? P1CharacterObject.transform.position + Vector3.up : Vector3.up;
+        return car.transform.position + car.transform.right * (driverSide ? 1.5f : -1.5f) + Vector3.up * 0.4f;
+    }
+
+    /// <summary>
+    /// The game's "Dead" pose is a dead end: it never plays on after a respawn (the game reloads the
+    /// whole world instead). Rebind puts the animator back in its starting state so the character stands up.
+    /// </summary>
+    internal static void StandUp(Animator? anim)
+    {
+        if (anim == null) return;
+        anim.SetBool("Dead", false);
+        anim.Rebind();
+        anim.Update(0f);
+        anim.SetBool("Move", false);
+    }
+
+    /// <summary>Puts Player 2 in the truck, on the passenger side (the driver's seat if P1 sits there).</summary>
+    internal static void PlaceP2InTruck()
+    {
+        var car = _car ?? FindAnyObjectByType<sCarController>();
+        if (_p2Character == null || car == null || _p2InCar) return;
+        var p2Guy = _p2Character.GetComponent<sCharacterInteraction>();
+        if (p2Guy == null) return;
+
+        // EnterTruck picks the seat from which side the character is standing on
+        var cc = _p2Character.GetComponent<sCharacterController>();
+        Vector3 doorSide = car.transform.position - car.transform.right * 1.5f + Vector3.up * 0.4f;
+        if (cc != null) cc.MoveTo(doorSide);
+        else _p2Character.transform.position = doorSide;
+
+        EnterTruck(p2Guy, car);
+    }
+
+    private void UpdateP2Death()
+    {
+        if (_p2Character == null) return;
+        var p2Guy = _p2Character.GetComponent<sCharacterInteraction>();
+        var cc = _p2Character.GetComponent<sCharacterController>();
+
+        if (!P2Dead)
+        {
+            if (!P2Stats.Active || P2Stats.Temperature > 0.001f) return;
+
+            if (_p2InCar && p2Guy != null)
+                ExitTruck(p2Guy, _car ?? FindAnyObjectByType<sCarController>());
+
+            P2Dead = true;
+            _p2DeathTimer = DeathSeconds;
+            if (cc != null)
+            {
+                if (cc.animator != null)
+                {
+                    cc.animator.SetBool("Move", false);
+                    cc.animator.SetBool("Dead", true);
+                }
+                cc.velocity = Vector3.zero;
+                cc.enabled = false;
+            }
+            Plugin.Log.LogInfo("[Splitscreen] Player 2 froze to death.");
+            return;
+        }
+
+        _p2DeathTimer -= Time.unscaledDeltaTime;
+        if (_p2DeathTimer > 0f) return;
+
+        // Both down: the game reloads the world (P1's DeathManager finishes its own countdown)
+        if (P1IsDying)
+        {
+            _p2DeathTimer = 0.25f;
+            return;
+        }
+
+        if (cc != null)
+        {
+            StandUp(cc.animator);
+            cc.enabled = true;
+            cc.MoveTo(SpawnPointNearCar(driverSide: false));
+            cc.velocity = Vector3.zero;
+        }
+        if (_p2Rig != null) _p2Rig.transform.position = _p2Character.transform.position;
+        P2Stats.ResetWarmth();
+        P2Dead = false;
+        Plugin.Log.LogInfo("[Splitscreen] Player 2 is back up.");
+        PlaceP2InTruck();
+    }
+
+    // ── Shared inventory ────────────────────────────────────────────────────
+
+    private static bool _inventoryLogged;
+
+    private static sItemManager? GetP1ItemManager() =>
+        _instance != null && _instance._p1Character != null
+            ? _instance._p1Character.GetComponentInChildren<sItemManager>(true)
+            : null;
+
+    /// <summary>
+    /// Both players use ONE item list: P2's item manager points at P1's list, so whatever either player
+    /// stores or takes is the same stash (and P1's inventory screen shows it). P2 does not save it
+    /// separately, P1's manager keeps writing the save.
+    /// </summary>
+    private static void ShareInventory()
+    {
+        _inventoryLogged = false;
+        LinkInventory();
+    }
+
+    private static void LinkInventory()
+    {
+        var p1 = GetP1ItemManager();
+        var p2 = GetP2ItemManager();
+        if (p1 == null || p2 == null || p1 == p2 || p1.inventory == null) return;
+
+        if (p2.useSaveData) p2.useSaveData = false;
+        p2.inventoryBackup = null;
+        if (!ReferenceEquals(p2.inventory, p1.inventory))
+        {
+            p2.inventory = p1.inventory;
+            if (!_inventoryLogged)
+            {
+                _inventoryLogged = true;
+                Plugin.Log.LogInfo($"[Splitscreen] Inventory shared between P1 and P2 ({p1.inventory.Count} items).");
+            }
+        }
+    }
+
+    // ── Building doors (sTeleporter) for Player 2 ───────────────────────────
+
+    private static float _p2TeleportCooldown;
+    private static sTeleporter[] _teleporters = System.Array.Empty<sTeleporter>();
+    private static float _nextTeleporterScan;
+
+    /// <summary>
+    /// What sTeleporter.Teleport/DoTeleport do for Player 1 (they use the first sCharacterInteraction
+    /// in the scene), done for Player 2: put away the held item, move the character and its camera rig
+    /// to the linked door, play the door sound.
+    /// </summary>
+    internal static void TeleportP2(sTeleporter tp)
+    {
+        if (_p2Character == null || tp == null || tp.link == null) return;
+        if (Time.time < _p2TeleportCooldown) return;
+        _p2TeleportCooldown = Time.time + 0.6f;
+
+        var im = GetP2ItemManager();
+        if (im != null && im.holdingItem)
+            im.PutAway();
+
+        Vector3 dest = tp.link.transform.position;
+        PrepareAreaAround(dest);
+        var cc = _p2Character.GetComponent<sCharacterController>();
+        if (cc != null)
+        {
+            cc.MoveTo(dest);
+            cc.velocity = Vector3.zero;
+        }
+        else
+        {
+            _p2Character.transform.position = dest;
+        }
+
+        if (_p2Rig != null)
+            _p2Rig.transform.position = dest;
+
+        if (_instance != null) _instance.StartCoroutine(_instance.DumpWorldLater(1.5f, "after P2 door '" + tp.interactText + "'"));
+        tp.link.PlaySFX();
+        Plugin.Log.LogInfo($"[Splitscreen] Player 2 used door '{tp.interactText}' -> {tp.link.name}.");
+    }
+
+    /// <summary>
+    /// Switches on the area around a point right now (what ProximityToggle would do one frame later),
+    /// so a player teleporting in does not drop through a floor whose colliders are still off.
+    /// </summary>
+    private static void PrepareAreaAround(Vector3 point)
+    {
+        var hasToggled = typeof(ProximityToggle).GetField("hasToggled", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+        foreach (var t in FindObjectsByType<ProximityToggle>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+        {
+            if (t == null || Vector3.Distance(t.transform.position, point) >= t.distanceThreashold) continue;
+            foreach (var go in t.toEnable) if (go != null) go.SetActive(true);
+            hasToggled?.SetValue(t, true);
+        }
+    }
+
+    // ── Diagnostics: what the world looks like around the players ───────────
+
+    private static string PathOf(Transform t)
+    {
+        string path = t.name;
+        for (int i = 0; i < 4 && t.parent != null; i++) { t = t.parent; path = t.name + "/" + path; }
+        return path;
+    }
+
+    private static string Names(System.Collections.Generic.List<GameObject> list)
+    {
+        var parts = new System.Collections.Generic.List<string>();
+        foreach (var go in list) parts.Add(go != null ? go.name + (go.activeSelf ? "(on)" : "(off)") : "null");
+        return string.Join(",", parts);
+    }
+
+    private System.Collections.IEnumerator DumpWorldLater(float delay, string tag)
+    {
+        yield return new WaitForSeconds(delay);
+        DumpWorld(tag);
+    }
+
+    internal void DumpWorld(string tag)
+    {
+        try
+        {
+            Vector3 p1 = _p1Character != null ? _p1Character.transform.position : Vector3.zero;
+            Vector3 p2 = _p2Character != null ? _p2Character.transform.position : Vector3.zero;
+            Plugin.Log.LogInfo($"[Splitscreen][world {tag}] P1={p1} P2={p2}");
+
+            foreach (var t in FindObjectsByType<ProximityToggle>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            {
+                if (t == null) continue;
+                float d1 = Vector3.Distance(t.transform.position, p1), d2 = Vector3.Distance(t.transform.position, p2);
+                if (Mathf.Min(d1, d2) > t.distanceThreashold * 3f) continue; // only the ones that matter right now
+                foreach (var go in t.toEnable)
+                {
+                    if (go == null) continue;
+                    var types = new System.Collections.Generic.List<string>();
+                    foreach (var c in go.GetComponents<Component>()) if (c != null) types.Add(c.GetType().Name);
+                    Plugin.Log.LogInfo($"[Splitscreen][world {tag}]   enable '{go.name}' children={go.transform.childCount} components=[{string.Join(",", types)}]");
+                }
+                Plugin.Log.LogInfo($"[Splitscreen][world {tag}] toggle '{PathOf(t.transform)}' target='{(t.target != null ? PathOf(t.target) : "null")}' " +
+                                   $"thr={t.distanceThreashold:0.#} d1={d1:0.#} d2={d2:0.#} enable=[{Names(t.toEnable)}] disable=[{Names(t.toDisable)}]");
+            }
+
+            foreach (var n in FindObjectsByType<sShopNPC>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+                Plugin.Log.LogInfo($"[Splitscreen][world {tag}] sShopNPC '{PathOf(n.transform)}' activeInHierarchy={n.gameObject.activeInHierarchy} d1={Vector3.Distance(n.transform.position, p1):0.#} d2={Vector3.Distance(n.transform.position, p2):0.#} renderers={n.GetComponentsInChildren<Renderer>(true).Length}");
+            foreach (var n in FindObjectsByType<sTransactionNPC>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+                Plugin.Log.LogInfo($"[Splitscreen][world {tag}] sTransactionNPC '{PathOf(n.transform)}' activeInHierarchy={n.gameObject.activeInHierarchy} d1={Vector3.Distance(n.transform.position, p1):0.#} d2={Vector3.Distance(n.transform.position, p2):0.#} renderers={n.GetComponentsInChildren<Renderer>(true).Length}");
+
+            foreach (var l in FindObjectsByType<Light>(FindObjectsSortMode.None))
+            {
+                if (l.type != LightType.Directional) continue;
+                Plugin.Log.LogInfo($"[Splitscreen][world {tag}] directional light '{PathOf(l.transform)}' enabled={l.enabled} intensity={l.intensity:0.##} mask={l.cullingMask}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Plugin.Log.LogWarning($"[Splitscreen] DumpWorld failed: {ex.Message}");
+        }
+    }
+
+    /// <summary>Leaving a building while carrying a package is automatic for P1 (sTeleporter.CheckAutoTeleport).</summary>
+    private static void CheckP2AutoTeleport()
+    {
+        if (_p2Character == null || _p2InCar) return;
+        var p2Guy = _p2Character.GetComponent<sCharacterInteraction>();
+        if (p2Guy == null || p2Guy.packagePlatform == null || !p2Guy.packagePlatform.activeSelf) return;
+
+        if (Time.unscaledTime >= _nextTeleporterScan)
+        {
+            _nextTeleporterScan = Time.unscaledTime + 2f;
+            _teleporters = FindObjectsByType<sTeleporter>(FindObjectsSortMode.None);
+        }
+
+        Vector3 pos = _p2Character.transform.position;
+        foreach (var tp in _teleporters)
+        {
+            if (tp == null || tp.interactText != "leave") continue;
+            Vector3 v = pos - tp.transform.position;
+            float forward = Vector3.Project(v, tp.transform.forward).magnitude;
+            float right = Vector3.Project(v, tp.transform.right).magnitude;
+            if (v.magnitude < 1f && right < 1f && forward < 0.5f)
+            {
+                TeleportP2(tp);
+                return;
+            }
+        }
+    }
+
     internal static void HandleP2Interaction()
     {
         if (_p2Character == null) return;
@@ -875,6 +1273,17 @@ internal sealed class SplitscreenManager : MonoBehaviour
                 var payload = bestIP.transform.parent != null ? bestIP.transform.parent.gameObject : bestIP.gameObject;
                 PickupPayloadForP2(p2Guy, payload);
                 return;
+            }
+
+            // Building doors ("enter" / "leave"): the game's sTeleporter only knows Player 1
+            if (bestIP.callback == "Teleport" && bestIP.listener != null)
+            {
+                var tp = bestIP.listener.GetComponent<sTeleporter>();
+                if (tp != null)
+                {
+                    TeleportP2(tp);
+                    return;
+                }
             }
 
             // Any other InteractionPoint (NPC, Campfire, Bed, Shop, etc.)
@@ -1388,7 +1797,7 @@ internal sealed class SplitscreenManager : MonoBehaviour
 
             // Spawn beside passenger door of car if available, or beside P1
             Vector3 spawnPos;
-            if (_car != null)
+            if (_car != null && !IsInsideBuilding(source.transform.position))
             {
                 spawnPos = _car.transform.position - _car.transform.right * 1.5f + Vector3.up * 0.2f;
             }

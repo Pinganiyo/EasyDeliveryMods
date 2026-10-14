@@ -28,7 +28,14 @@ internal static class P2Stats
     private static sCharacterController? _p2Controller;
     private static sCharacterController? _p1Controller;
     private static Campfire[] _campfires = Array.Empty<Campfire>();
+    private static TemperatureBuff[] _zones = Array.Empty<TemperatureBuff>();
+    private static sTransactionNPC[] _shops = Array.Empty<sTransactionNPC>();
+    private static EndButton[] _endButtons = Array.Empty<EndButton>();
+    private static FieldInfo? _fireDead, _fireDestroyed;
     private static float _nextCampfireScan;
+    private static string _lastWarmSource = "";
+    private const float SourceRadius = 6f;       // campfires and burning ground fires
+    private const float InteriorRadius = 12f;    // shop NPCs / ending button, which warm all of their room
     private static int _frostFrame = -1;
     private static float _p1Intensity;
 
@@ -77,6 +84,12 @@ internal static class P2Stats
         Plugin.Log.LogInfo($"[Splitscreen] P2Stats started (temp {Temperature:0}/{_hud.temperatureLimit:0}, energy shared).");
     }
 
+    /// <summary>Back to full warmth after a respawn (the game does the same for P1 when the world reloads).</summary>
+    internal static void ResetWarmth()
+    {
+        if (_hud != null) Temperature = _hud.temperatureLimit;
+    }
+
     internal static void Shutdown()
     {
         if (!Active) return;
@@ -105,6 +118,7 @@ internal static class P2Stats
     internal static void Tick(float dt, bool p2InCar, Vector3 p2Position)
     {
         if (!Active || _hud == null) return;
+        if (SplitscreenManager.P2Dead) return; // nothing drains while P2 is down
 
         float buff = 0f;
         if (p2InCar)
@@ -114,17 +128,11 @@ internal static class P2Stats
         }
         else
         {
-            if (Time.unscaledTime >= _nextCampfireScan)
+            buff = WarmthAt(p2Position, out string source);
+            if (source != _lastWarmSource)
             {
-                _nextCampfireScan = Time.unscaledTime + 3f;
-                _campfires = UnityEngine.Object.FindObjectsByType<Campfire>(FindObjectsSortMode.None);
-            }
-            foreach (var fire in _campfires)
-            {
-                if (fire == null || fire.state != 2) continue;
-                float d = Vector3.Distance(fire.transform.position, p2Position);
-                if (d < 6f)
-                    buff = Mathf.Max(buff, (1f - d / 6f) * 3f);
+                _lastWarmSource = source;
+                Plugin.Log.LogInfo($"[Splitscreen] P2 warmth source: {(source.Length > 0 ? source : "none")} (buff {buff:0.##})");
             }
         }
 
@@ -154,6 +162,100 @@ internal static class P2Stats
             if (_p2Controller.animator != null)
                 _p2Controller.animator.SetBool("Tired", LowEnergy);
         }
+    }
+
+    /// <summary>
+    /// What warms the world around Player 2. The game's warmth sources all add to one shared value that
+    /// only follows Player 1 (they measure the distance to P1), so each one is re-evaluated at P2.
+    /// </summary>
+    private static float WarmthAt(Vector3 pos, out string source)
+    {
+        string bestName = "";
+        float best = 0f;
+
+        if (Time.unscaledTime >= _nextCampfireScan)
+        {
+            _nextCampfireScan = Time.unscaledTime + 3f;
+            _campfires = UnityEngine.Object.FindObjectsByType<Campfire>(FindObjectsSortMode.None);
+            _zones = UnityEngine.Object.FindObjectsByType<TemperatureBuff>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            _shops = UnityEngine.Object.FindObjectsByType<sTransactionNPC>(FindObjectsSortMode.None);
+            _endButtons = UnityEngine.Object.FindObjectsByType<EndButton>(FindObjectsSortMode.None);
+        }
+
+        void Consider(float value, string name)
+        {
+            if (value > best) { best = value; bestName = name; }
+        }
+
+        // Campfires (Campfire.Update)
+        foreach (var fire in _campfires)
+        {
+            if (fire == null || fire.state != 2) continue;
+            float d = Vector3.Distance(fire.transform.position, pos);
+            if (d < SourceRadius) Consider((1f - d / SourceRadius) * 3f, "campfire");
+        }
+
+        // Fires that spread on the ground (FireSpread.Warm), as long as they are alive
+        var fires = FireSpread.fires;
+        if (fires != null)
+        {
+            _fireDead ??= typeof(FireSpread).GetField("dead", BindingFlags.Instance | BindingFlags.NonPublic);
+            _fireDestroyed ??= typeof(FireSpread).GetField("destroyed", BindingFlags.Instance | BindingFlags.NonPublic);
+            foreach (var f in fires)
+            {
+                if (f == null) continue;
+                if (_fireDead?.GetValue(f) is true || _fireDestroyed?.GetValue(f) is true) continue;
+                float d = Vector3.Distance(f.transform.position, pos);
+                if (d < SourceRadius) Consider((1f - d / SourceRadius) * 3f, "fire");
+            }
+        }
+
+        // Warm areas (shelters): TemperatureBuff objects that are switched on, if P2 is inside them
+        foreach (var zone in _zones)
+        {
+            if (zone == null || !zone.isActiveAndEnabled) continue;
+            if (Inside(zone.gameObject, pos)) Consider(zone.temperature, "shelter '" + zone.name + "'");
+        }
+
+        // Shop NPCs and the ending button warm their whole room
+        foreach (var shop in _shops)
+        {
+            if (shop != null && shop.isActiveAndEnabled && Vector3.Distance(shop.transform.position, pos) < InteriorRadius)
+                Consider(2f, "shop '" + shop.name + "'");
+        }
+        foreach (var eb in _endButtons)
+        {
+            if (eb != null && eb.isActiveAndEnabled && Vector3.Distance(eb.transform.position, pos) < InteriorRadius)
+                Consider(2f, "end room");
+        }
+
+        source = bestName;
+        return best;
+    }
+
+    /// <summary>Is the point inside any collider of this object, its children or its parents (zone volumes)?</summary>
+    private static bool Inside(GameObject go, Vector3 p)
+    {
+        bool anyCollider = false;
+        var colliders = new System.Collections.Generic.List<Collider>();
+        colliders.AddRange(go.GetComponentsInChildren<Collider>(true));
+        colliders.AddRange(go.GetComponentsInParent<Collider>(true));
+        foreach (var c in colliders)
+        {
+            if (c == null || !c.enabled || !c.gameObject.activeInHierarchy) continue;
+            anyCollider = true;
+            if (!c.bounds.Contains(p)) continue;
+            try
+            {
+                if ((c.ClosestPoint(p) - p).sqrMagnitude < 0.0025f) return true;
+            }
+            catch
+            {
+                return true; // non-convex mesh collider: its bounds are the best we have
+            }
+        }
+        // A zone without any collider has no volume to test: fall back to a small area around it
+        return !anyCollider && Vector3.Distance(go.transform.position, p) < 8f;
     }
 
     // ── Per-camera frost ────────────────────────────────────────────────────

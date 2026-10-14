@@ -30,7 +30,11 @@ internal sealed class SplitscreenHud : MonoBehaviour
         int w = Screen.width;
         int h = Screen.height;
 
-        if (vertical)
+        if (SplitscreenManager.MergedView)
+        {
+            // shared camera: no divider and no P1/P2 tags
+        }
+        else if (vertical)
         {
             // Draw vertical dividing line in the center
             int cx = w / 2;
@@ -56,7 +60,7 @@ internal sealed class SplitscreenHud : MonoBehaviour
 
         // ── Native World-Space Floating Markers for Player 2 ────────────────
         var interaction = SplitscreenManager.GetP2WorldInteraction();
-        var p2Cam = SplitscreenManager.P2CameraInstance;
+        var p2Cam = SplitscreenManager.P2ViewCamera;
 
         if (interaction.HasValue && p2Cam != null)
         {

@@ -26,6 +26,7 @@ internal static class PlayerCustomization
     public static bool HasTextureP2 => TextureP2 != null;
 
     private static bool _initialized = false;
+    private static bool _reloading = false;
     private static FileSystemWatcher? _watcher;
     private static volatile bool _pendingReload = false;
 
@@ -85,6 +86,9 @@ internal static class PlayerCustomization
         {
             byte[] fileData = File.ReadAllBytes(path);
             var tex = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+            // Textures created at runtime are unloaded when a level loads unless told otherwise; the ones
+            // loaded at game start were gone by the time the world existed (only F7 / a reload brought them back)
+            tex.hideFlags = HideFlags.HideAndDontSave;
             tex.filterMode = FilterMode.Point;
             tex.wrapMode = TextureWrapMode.Clamp;
             if (tex.LoadImage(fileData))
@@ -146,15 +150,29 @@ internal static class PlayerCustomization
 
         if (playerIndex == 0)
         {
-            bool isP2 = appearance.gameObject.name.Contains("P2") ||
+            // A seated P2 is a child of the truck, so the root name is no longer "...P2...":
+            // check the real P2 character first and fall back to the names.
+            var p2 = SplitscreenManager.P2CharacterObject;
+            bool isP2 = (p2 != null && appearance.transform.IsChildOf(p2.transform)) ||
+                        appearance.gameObject.name.Contains("P2") ||
                         (appearance.transform.root != null && appearance.transform.root.name.Contains("P2"));
             playerIndex = isP2 ? 2 : 1;
         }
 
         Texture2D? targetTex = playerIndex == 2 ? TextureP2 : TextureP1;
+        if (targetTex == null && !_reloading && _initialized &&
+            (File.Exists(Player1TexturePath) || File.Exists(Player2TexturePath) || File.Exists(DefaultTexturePath)))
+        {
+            // The textures were unloaded (level change) or never loaded: load them again, once
+            _reloading = true;
+            try { ReloadTextures(); }
+            finally { _reloading = false; }
+            targetTex = playerIndex == 2 ? TextureP2 : TextureP1;
+        }
         if (targetTex == null) return;
 
         targetTex.filterMode = FilterMode.Point;
+        int applied = 0;
 
         // Apply to head/head
         Transform head = appearance.transform.Find("head");
@@ -172,6 +190,7 @@ internal static class PlayerCustomization
                         {
                             m.SetTexture("_BaseMap", targetTex);
                             m.SetTexture("_MainTex", targetTex);
+                            applied++;
                         }
                     }
                 }
@@ -191,11 +210,18 @@ internal static class PlayerCustomization
                     {
                         m.SetTexture("_BaseMap", targetTex);
                         m.SetTexture("_MainTex", targetTex);
+                        applied++;
                     }
                 }
             }
         }
+
+        int id = appearance.GetInstanceID();
+        if (applied == 0 || _loggedSkinFor.Add(id))
+            Plugin.Log.LogInfo($"[PlayerCustomization] Skin P{playerIndex} applied to {applied} material(s) on '{appearance.gameObject.name}'.");
     }
+
+    private static readonly System.Collections.Generic.HashSet<int> _loggedSkinFor = new();
 
     public static void ApplyToAllActivePlayers()
     {
