@@ -69,6 +69,18 @@ public static class SplitscreenPatches
             if (__instance != SplitscreenManager.P2InputManager)
                 return true; // let P1's normal update run
 
+            // P2: no controllers connected -> split keyboard (arrows + IJKL)
+            if (SplitscreenManager.P2ZeroGamepadMode)
+            {
+                try
+                {
+                    if (ReadP2Keyboard(__instance))
+                        return false;
+                }
+                catch { }
+                return true;
+            }
+
             // P2: manually read from gamepad 2
             try
             {
@@ -111,6 +123,46 @@ public static class SplitscreenPatches
             
             return true; // fallback: run normal update
         }
+    }
+
+    /// <summary>
+    /// Split-keyboard layout for P2 (P1 keeps WASD):
+    /// Arrows = move, I/J/K/L = camera look, Enter = select, Backspace = back,
+    /// RShift = brake, RCtrl = inventory, O = camera, U = headlights, H = horn, \ = reset.
+    /// </summary>
+    private static bool ReadP2Keyboard(sInputManager m)
+    {
+        var kb = Keyboard.current;
+        if (kb == null) return false;
+
+        float x = (kb.rightArrowKey.isPressed ? 1f : 0f) - (kb.leftArrowKey.isPressed ? 1f : 0f);
+        float y = (kb.upArrowKey.isPressed ? 1f : 0f) - (kb.downArrowKey.isPressed ? 1f : 0f);
+        var movement = Vector2.ClampMagnitude(new Vector2(x, y), 1f);
+
+        float lx = (kb.lKey.isPressed ? 1f : 0f) - (kb.jKey.isPressed ? 1f : 0f);
+        float ly = (kb.iKey.isPressed ? 1f : 0f) - (kb.kKey.isPressed ? 1f : 0f);
+
+        m.playerInput = movement;
+        m.driveInput = movement;
+        m.cameraLook = Vector2.ClampMagnitude(new Vector2(lx, ly), 1f);
+        m.mouseInput = Vector2.zero;
+
+        m.selectPressed = kb.enterKey.wasPressedThisFrame;
+        m.selectReleased = kb.enterKey.wasReleasedThisFrame;
+        m.backPressed = kb.backspaceKey.wasPressedThisFrame;
+        m.backReleased = kb.backspaceKey.wasReleasedThisFrame;
+        m.breakPressed = kb.rightShiftKey.isPressed;
+        m.inventoryPressed = kb.rightCtrlKey.wasPressedThisFrame;
+        m.inventoryReleased = kb.rightCtrlKey.wasReleasedThisFrame;
+        m.inventoryHeld = kb.rightCtrlKey.isPressed;
+        m.cameraPressed = kb.oKey.wasPressedThisFrame;
+        m.headlightsPressed = kb.uKey.wasPressedThisFrame;
+        m.hornPressed = kb.hKey.wasPressedThisFrame;
+        m.pausePressed = false; // P1 owns pause/map
+        m.mapPressed = false;
+        m.resetPressed = kb.backslashKey.wasPressedThisFrame;
+        m.resetHeld = kb.backslashKey.isPressed;
+        return true;
     }
 
     public sealed class InteractionPatchState
