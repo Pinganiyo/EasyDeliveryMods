@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-  Test helper: builds the splitscreen mods, deploys them, and launches the game once.
+  Test helper: builds the coop2 mod (mods\coop2), deploys it, and launches the game once.
 
 .DESCRIPTION
   Local 2-player splitscreen runs in a single game instance: P2 is spawned inside
@@ -72,7 +72,7 @@ if (-not (Test-Path -LiteralPath $gameExe)) { throw "Game exe not found: $gameEx
 # 1. Build mods and deploy them to the game folder.
 if (-not $NoBuild) {
   $buildPs = Join-Path $RootDir "Build.ps1"
-  powershell -NoProfile -ExecutionPolicy Bypass -File $buildPs -Mods Splitscreen -Deploy -GameDir $GameDir
+  powershell -NoProfile -ExecutionPolicy Bypass -File $buildPs -Mods Coop2 -Deploy -GameDir $GameDir
   if ($LASTEXITCODE -ne 0) { throw "Build.ps1 failed." }
 }
 

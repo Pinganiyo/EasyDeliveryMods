@@ -7,6 +7,8 @@
     Shared      - EasyDeliveryCo.Shared.dll, shared driver/seat logic
     Splitscreen - EasyDeliveryCoSplitscreen.dll (local P2, cameras, driver input)
     CustomSkins - EasyDeliveryCoCustomSkins.dll (StreamingAssets\CustomPlayer\*.png skins, F7 panel)
+    Coop2       - EasyDeliveryCoLanCoop.dll (all-in-one local co-op: P2, cameras, truck seats, skins);
+                  not part of "All" and replaces Splitscreen + CustomSkins when deployed
 
   The script prepares build prerequisites:
     - copies BepInEx DLLs into mods\lib if missing (from -LibSource)
@@ -50,12 +52,18 @@ $Projects = @{
   Shared      = "Shared\EasyDeliveryCo.Shared.csproj"
   Splitscreen = "Splitscreen\EasyDeliveryCoSplitscreen.csproj"
   CustomSkins = "CustomSkins\EasyDeliveryCoCustomSkins.csproj"
+  Coop2       = "coop2\EasyDeliveryCoLanCoop.csproj"
 }
 
 # Plugin folder name + extra DLLs that must be deployed next to the plugin DLL.
+# Disable = plugin folders of mods that must not load together with this one
+#           (their DLLs are renamed to *.dll.disabled on deploy, nothing is deleted).
 $DeployMap = @{
   Splitscreen = @{ Folder = "EasyDeliveryCoSplitscreen"; Dll = "EasyDeliveryCoSplitscreen.dll"; Extra = @("EasyDeliveryCo.Shared.dll") }
   CustomSkins = @{ Folder = "EasyDeliveryCoCustomSkins"; Dll = "EasyDeliveryCoCustomSkins.dll"; Extra = @() }
+  # coop2 is the all-in-one co-op mod (own P2, skins, F7 panel): it goes in the plugins root and
+  # replaces Splitscreen + CustomSkins, which would otherwise create a second P2 / second skin panel.
+  Coop2       = @{ Folder = "."; Dll = "EasyDeliveryCoLanCoop.dll"; Extra = @(); Disable = @("EasyDeliveryCoSplitscreen", "EasyDeliveryCoCustomSkins") }
 }
 
 function Resolve-Dotnet {
@@ -217,6 +225,15 @@ if ($Deploy) {
       if (-not (Test-Path -LiteralPath $src)) { throw "Deploy: expected output not found: $src" }
       Copy-Item -LiteralPath $src -Destination (Join-Path $destDir $f) -Force
       Write-Host "[deploy] $f -> BepInEx\plugins\$($info.Folder)\" -ForegroundColor DarkGray
+    }
+    foreach ($other in @($info.Disable)) {
+      if (-not $other) { continue }
+      $otherDir = Join-Path $pluginsDir $other
+      if (-not (Test-Path -LiteralPath $otherDir)) { continue }
+      Get-ChildItem -LiteralPath $otherDir -Filter "*.dll" -File | ForEach-Object {
+        Move-Item -LiteralPath $_.FullName -Destination ($_.FullName + ".disabled") -Force
+        Write-Host "[deploy] disabled $other\$($_.Name) (conflicts with $m)" -ForegroundColor Yellow
+      }
     }
   }
   Write-Host "Deployed to $pluginsDir" -ForegroundColor Green

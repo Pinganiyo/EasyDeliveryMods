@@ -1,0 +1,43 @@
+# Build outputs
+bin/
+obj/
+
+# IDE / OS
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+Thumbs.db
+Desktop.ini
+
+# Logs
+*.log
+*.tmp
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+
+# Local dependency binaries (do not commit)
+lib/*.dll
+
+# Tool cache
+tools/.store/
+
+# Local release bundles
+releases/**
+!releases/.gitkeep
+
+# Test and coverage artifacts
+TestResults/
+coverage/
+*.coverage
+*.coveragexml
+
+# BepInEx / runtime artifacts (if copied here accidentally)
+BepInEx/config/*.cfg
+BepInEx/LogOutput.log
