@@ -59,22 +59,25 @@ internal sealed class SplitscreenManager : MonoBehaviour
 
     public static readonly Vector3 SeatedCharacterScale = new Vector3(0.52f, 0.52f, 0.52f);
 
-    // The scale a character had before being shrunk for a seat, so walking around restores exactly that.
+    // The WORLD scale a character walks with (measured: height 1.70). It must be captured before the character
+    // is parented to the truck, because re-parenting changes the local scale to keep the world size.
+    private static readonly Vector3 DefaultWalkScale = new Vector3(1.13f, 1.13f, 1.13f);
     private static readonly System.Collections.Generic.Dictionary<GameObject, Vector3> _walkScale = new();
 
-    /// <summary>Shrinks a character for sitting in the truck, remembering its walking size.</summary>
-    internal static void ApplySeatedScale(Transform t)
+    /// <summary>Call BEFORE parenting a character to the truck.</summary>
+    internal static void RememberWalkScale(Transform t, Transform car)
     {
-        if (!_walkScale.ContainsKey(t.gameObject) && !Mathf.Approximately(t.localScale.x, SeatedCharacterScale.x))
-            _walkScale[t.gameObject] = t.localScale;
-        t.localScale = SeatedCharacterScale;
+        if (t.parent != car) _walkScale[t.gameObject] = t.lossyScale;
     }
 
-    /// <summary>Gives a character back the size it had before sitting down.</summary>
+    /// <summary>Shrinks a character for sitting in the truck.</summary>
+    internal static void ApplySeatedScale(Transform t) => t.localScale = SeatedCharacterScale;
+
+    /// <summary>Call after unparenting: gives the character back the size it walked with.</summary>
     internal static void RestoreWalkScale(Transform t)
     {
-        t.localScale = _walkScale.TryGetValue(t.gameObject, out var s) ? s : Vector3.one;
-        Plugin.Log.LogInfo($"[Splitscreen] {t.name} walking scale restored to {t.localScale}");
+        t.localScale = _walkScale.TryGetValue(t.gameObject, out var s) ? s : DefaultWalkScale;
+        Plugin.Log.LogInfo($"[Splitscreen] {t.name} walking size restored to {t.lossyScale}");
     }
     public const float SeatedXOffset = 0.22f;
     public const float SeatedYOffset = -0.12f;
@@ -150,7 +153,7 @@ internal sealed class SplitscreenManager : MonoBehaviour
     internal struct RawInput
     {
         public Vector2 PlayerInput, DriveInput, CameraLook;
-        public bool SelectPressed, BackPressed, BreakHeld, CameraPressed, HeadlightsPressed, HornPressed;
+        public bool SelectPressed, BackPressed, BreakHeld, CameraPressed, HeadlightsPressed, HornPressed, InventoryPressed, InventoryReleased;
     }
     internal static RawInput Raw;
 
@@ -1044,6 +1047,23 @@ internal sealed class SplitscreenManager : MonoBehaviour
         return false;
     }
 
+    /// <summary>Inventory button (hold to open, release to pick) for P2.</summary>
+    public static bool GetP2InventoryPressed()
+    {
+        if (!_activeState) return false;
+        if (ControlP2) { bool v = Raw.InventoryPressed; Raw.InventoryPressed = false; return v; }
+        if (P2Gamepad.Active) return P2Gamepad.InventoryPressed;
+        return P2UsesPad && _p2Pad!.leftShoulder.wasPressedThisFrame;
+    }
+
+    public static bool GetP2InventoryReleased()
+    {
+        if (!_activeState) return false;
+        if (ControlP2) { bool v = Raw.InventoryReleased; Raw.InventoryReleased = false; return v; }
+        if (P2Gamepad.Active) return P2Gamepad.InventoryReleased;
+        return P2UsesPad && _p2Pad!.leftShoulder.wasReleasedThisFrame;
+    }
+
     /// <summary>Change-camera key (first/third person toggle) for P2.</summary>
     public static bool GetP2CameraPressed()
     {
@@ -1418,6 +1438,90 @@ internal sealed class SplitscreenManager : MonoBehaviour
         }
     }
 
+    internal static bool IsP2ItemManager(sItemManager? im) =>
+        im != null && _p2Character != null && im.transform.IsChildOf(_p2Character.transform);
+
+    private static readonly System.Reflection.FieldInfo? InvCamField = HarmonyLib.AccessTools.Field(typeof(InventoryDisplay), "cam");
+    private static readonly System.Reflection.FieldInfo? ItemInUseField = HarmonyLib.AccessTools.Field(typeof(sItemManager), "itemInUse");
+    private static readonly System.Reflection.MethodInfo? ItemButtonMethod = HarmonyLib.AccessTools.Method(typeof(sItemManager), "ButtonPressed");
+
+    /// <summary>
+    /// The item manager is copied from Player 1's, so it points at Player 1's character, button events and camera.
+    /// Point Player 2's at Player 2 (so its inventory freezes Player 2, faces Player 2's camera, and Player 1's
+    /// button presses no longer use or pick up things for Player 2).
+    /// </summary>
+    private static void PrepareP2ItemManager(sItemManager im)
+    {
+        var p2Guy = _p2Character!.GetComponent<sCharacterInteraction>();
+        if (p2Guy == null) return;
+
+        if (im.guy != p2Guy)
+        {
+            try
+            {
+                if (im.guy != null && ItemButtonMethod != null)
+                    im.guy.OnButtonPressed -= (sCharacterInteraction.ButtonPressed)System.Delegate.CreateDelegate(
+                        typeof(sCharacterInteraction.ButtonPressed), im, ItemButtonMethod);
+            }
+            catch (Exception ex) { Plugin.Log.LogWarning($"[Inventory] Could not unhook P2 from P1's buttons: {ex.Message}"); }
+            Plugin.Log.LogInfo($"[Inventory] Player 2's item manager now belongs to {p2Guy.name} (was {(im.guy != null ? im.guy.name : "none")}).");
+            im.guy = p2Guy;
+        }
+
+        var d = im.display;
+        if (d == null) return;
+        var cc = p2Guy.GetComponent<sCharacterController>();
+        if (cc != null && d.cc != cc) d.cc = cc;
+        var cam = P2ViewCamera;
+        if (cam != null && InvCamField != null && InvCamField.GetValue(d) != (object)cam) InvCamField.SetValue(d, cam);
+    }
+
+    /// <summary>What sItemManager.DoInput does for Player 1, driven by Player 2's buttons.</summary>
+    internal static void DoP2ItemInput(sItemManager im)
+    {
+        PrepareP2ItemManager(im);
+        var d = im.display;
+        if (d == null) return;
+
+        bool canUse = !_p2InCar && !P2Dead && !P2Dialog.Active;
+        bool pressed = GetP2InventoryPressed();
+        bool released = GetP2InventoryReleased();
+
+        if (pressed && canUse && !d.inventoryOpen)
+        {
+            if (im.holdingItem) d.selectedItem = -1;
+            d.OpenInventory();
+        }
+
+        if (d.inventoryOpen && (released || !canUse))
+        {
+            d.CloseInventory();
+            if (released)
+            {
+                if (d.selectedItem < 0 && im.heldItem != null)
+                {
+                    if (im.heldItemIndex < 0) im.RemoveGeneric(true);
+                    else im.PutAway();
+                }
+                else if (im.inventory.Count > 0)
+                    im.Swap();
+            }
+        }
+
+        im.SetItemSelect(canUse && d.inventoryOpen ? GetP2MovementInput() : Vector2.zero);
+    }
+
+    /// <summary>Player 2 presses interact while holding an item: use it on what is in front, or on its own.</summary>
+    private static void UseHeldItemForP2(sItemManager im, InteractionPoint? ip)
+    {
+        if (ItemInUseField?.GetValue(im) is bool busy && busy) return;
+
+        if (ip != null && Vector3.Distance(im.hands.position, ip.transform.position) < im.interactRange)
+            ip.DoAction(im.heldItemIndex);
+        else if (im.heldItem != null)
+            im.heldItem.SendMessage("ButtonPressed", im, SendMessageOptions.DontRequireReceiver);
+    }
+
     // ── Building doors (sTeleporter) for Player 2 ───────────────────────────
 
     private static float _p2TeleportCooldown;
@@ -1591,8 +1695,19 @@ internal sealed class SplitscreenManager : MonoBehaviour
             return;
         }
 
+        // While the inventory is open, interact does nothing (as for P1)
+        var p2Items = GetP2ItemManager();
+        if (p2Items != null && p2Items.display != null && p2Items.display.inventoryOpen) return;
+
         // 3. Same target the prompt shows (and the game would pick for P1)
         var target = FindP2Target();
+
+        // Holding an item: use it (drink, give, put in a pot...) unless the target is a truck door/tailgate
+        if (p2Items != null && p2Items.holdingItem && (target.Ip == null || !target.Ip.ignoreItems))
+        {
+            UseHeldItemForP2(p2Items, target.Ip);
+            return;
+        }
 
         if (target.Ip != null)
         {
@@ -1729,6 +1844,7 @@ internal sealed class SplitscreenManager : MonoBehaviour
         IgnoreCollisionsWithCar(p2Guy.gameObject, car, true);
 
         // Parent P2 to car so P2 moves smoothly with the truck at any speed
+        RememberWalkScale(p2Guy.transform, car.transform);
         p2Guy.transform.parent = car.transform;
 
         float dot = Vector3.Dot(p2Guy.transform.position - car.transform.position, car.transform.right);
@@ -1779,6 +1895,29 @@ internal sealed class SplitscreenManager : MonoBehaviour
         SetP2CameraMode(onFoot: true, car);
 
         Plugin.Log.LogInfo($"[Splitscreen] Player 2 exited the truck!");
+    }
+
+    internal static bool IsSeatedInTruck(int player) => (player == 1 ? P1Seat : P2Seat) != CarSeat.None;
+
+    /// <summary>Puts a package in the truck bed the way the game does when you place it there (P1's guy owns the bed).</summary>
+    internal static void StowPackageInTruck(Transform package, sCarController car)
+    {
+        var p1Guy = GuyOf(1);
+        package.parent = (p1Guy != null && p1Guy.packagePoint != null) ? p1Guy.packagePoint : car.transform;
+        package.localPosition = Vector3.zero;
+        package.name = "Placed In Truck";
+        package.gameObject.SetActive(false);
+        car.ResetFreeze();
+
+        var bedIp = p1Guy != null
+            ? typeof(sCharacterInteraction).GetField("truckBedInteraction", AnyField)?.GetValue(p1Guy) as InteractionPoint
+            : null;
+        if (bedIp != null)
+        {
+            bedIp.name = "close";
+            bedIp.useIcon = false;
+            bedIp.callback = "ToggleTailgate";
+        }
     }
 
     private static void PlacePackageForP2(sCharacterInteraction p2Guy, sCarController? car, sCharacterInteraction? p1Guy)

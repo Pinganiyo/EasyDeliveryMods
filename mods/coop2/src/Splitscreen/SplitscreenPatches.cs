@@ -174,6 +174,7 @@ public static class SplitscreenPatches
 
             if (SplitscreenManager.P1Seat != SplitscreenManager.CarSeat.None)
             {
+                SplitscreenManager.RememberWalkScale(__instance.transform, __instance.car.transform);
                 __instance.transform.parent = __instance.car.transform;
                 __instance.transform.localPosition = SplitscreenManager.GetSeatedLocalPosition(SplitscreenManager.P1Seat);
                 __instance.transform.localRotation = Quaternion.Euler(0, 180, 0);
@@ -765,6 +766,8 @@ public static class SplitscreenPatches
                 CameraPressed = __instance.cameraPressed || SplitscreenManager.Raw.CameraPressed,
                 HeadlightsPressed = __instance.headlightsPressed || SplitscreenManager.Raw.HeadlightsPressed,
                 HornPressed = __instance.hornPressed || SplitscreenManager.Raw.HornPressed,
+                InventoryPressed = __instance.inventoryPressed || SplitscreenManager.Raw.InventoryPressed,
+                InventoryReleased = __instance.inventoryReleased || SplitscreenManager.Raw.InventoryReleased,
             };
 
             __instance.driveInput = Vector2.zero;
@@ -808,5 +811,33 @@ public static class SplitscreenPatches
                 Plugin.Log.LogError($"[Splitscreen] Error applying custom skin: {ex.Message}");
             }
         }
+    }
+
+    /// <summary>
+    /// sItemManager.DoInput reads Player 1's input for every item manager, so Player 2's manager used to open its
+    /// inventory, swap and put items away whenever Player 1 did. Player 2's manager reads Player 2's input instead.
+    /// </summary>
+    [HarmonyPatch(typeof(sItemManager), "DoInput")]
+    public static class ItemManagerDoInputPatch
+    {
+        [HarmonyPrefix]
+        public static bool Prefix(sItemManager __instance)
+        {
+            if (!SplitscreenManager.IsP2ItemManager(__instance)) return true;
+            SplitscreenManager.DoP2ItemInput(__instance);
+            return false;
+        }
+    }
+
+    /// <summary>Player 2's inventory label goes to Player 2's screen, not Player 1's HUD.</summary>
+    [HarmonyPatch(typeof(InventoryDisplay), "LateUpdate")]
+    public static class InventoryDisplayLateUpdatePatch
+    {
+        [HarmonyPrefix]
+        public static void Prefix(InventoryDisplay __instance) =>
+            P2Markers.InP2Inventory = SplitscreenManager.IsP2ItemManager(__instance.GetComponentInParent<sItemManager>());
+
+        [HarmonyFinalizer]
+        public static void Finalizer() => P2Markers.InP2Inventory = false;
     }
 }

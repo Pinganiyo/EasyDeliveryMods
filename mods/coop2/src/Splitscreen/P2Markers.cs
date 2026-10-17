@@ -21,6 +21,21 @@ internal static class P2Markers
     private static readonly List<Recorded> Shared = new();
     private static bool _recording;
 
+    /// <summary>True while Player 2's inventory display is drawing its label (it is shown on P2's screen only).</summary>
+    internal static bool InP2Inventory;
+    private static string? _p2InvLabel;
+    private static Vector3 _p2InvPos;
+    private static int _p2InvFrame = -10;
+
+    private static bool TakeP2InventoryLabel(Vector3 pos, string label)
+    {
+        if (!InP2Inventory) return true;
+        _p2InvLabel = label;
+        _p2InvPos = pos;
+        _p2InvFrame = Time.frameCount;
+        return false;   // not on Player 1's HUD
+    }
+
     private static sTeleporter[] _doors = System.Array.Empty<sTeleporter>();
     private static sShopNPC[] _shops = System.Array.Empty<sShopNPC>();
     private static float _nextScan;
@@ -62,16 +77,24 @@ internal static class P2Markers
     private static class LabelPatch
     {
         [HarmonyPrefix]
-        private static void Pre(Vector3 __0, string __1) =>
+        private static bool Pre(Vector3 __0, string __1)
+        {
+            if (!TakeP2InventoryLabel(__0, __1)) return false;
             Record(new P2WorldInteraction { WorldPosition = __0, Label = __1 });
+            return true;
+        }
     }
 
     [HarmonyPatch(typeof(sHUD), "DrawWorldPointLabel", typeof(Vector3), typeof(string), typeof(Vector2))]
     private static class LabelOffsetPatch
     {
         [HarmonyPrefix]
-        private static void Pre(Vector3 __0, string __1) =>
+        private static bool Pre(Vector3 __0, string __1)
+        {
+            if (!TakeP2InventoryLabel(__0, __1)) return false;
             Record(new P2WorldInteraction { WorldPosition = __0, Label = __1 });
+            return true;
+        }
     }
 
     [HarmonyPatch(typeof(sHUD), "DrawWorldPointSprite")]
@@ -94,6 +117,9 @@ internal static class P2Markers
         foreach (var r in Shared) if (r.Frame > newest) newest = r.Frame;
         foreach (var r in Shared)
             if (r.Frame == newest) into.Add(r.Item);   // one frame's worth, not every frame piled up
+
+        if (_p2InvLabel != null && Time.frameCount - _p2InvFrame <= 1)
+            into.Add(new P2WorldInteraction { WorldPosition = _p2InvPos, Label = _p2InvLabel });
 
         var p2 = SplitscreenManager.P2CharacterObject;
         if (p2 == null) return;

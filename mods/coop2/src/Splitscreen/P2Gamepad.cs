@@ -24,7 +24,7 @@ internal static class P2Gamepad
     private static readonly (string action, string field)[] Used =
     {
         ("Movement", "_movement"), ("AltMovement", "_altMovement"), ("Click", "_select"), ("Break", "_back"),
-        ("Camera", "_cameraLook"), ("ChangeCamera", "_camera"), ("Headlights", "_headlights"), ("Horn", "_horn"),
+        ("Camera", "_cameraLook"), ("ChangeCamera", "_camera"), ("Headlights", "_headlights"), ("Horn", "_horn"), ("Inventory", "_inventory"),
     };
 
     internal static bool Active => _asset != null && _pad != null && _pad.added;
@@ -113,6 +113,8 @@ internal static class P2Gamepad
     internal static bool SelectPressed => Pressed("Click");
     internal static bool BackPressed => Pressed("Break");
     internal static bool BrakeHeld => Held("Break");
+    internal static bool InventoryPressed => Pressed("Inventory");
+    internal static bool InventoryReleased => Action("Inventory")?.WasReleasedThisFrame() ?? false;
     internal static bool CameraPressed => Pressed("ChangeCamera");
     internal static bool HeadlightsPressed => Pressed("Headlights");
     internal static bool HeadlightsHeld => Held("Headlights");

@@ -32,6 +32,7 @@ internal static class PackageThrow
         public Vector3 Spin;
         public int Thrower;
         public float Age;
+        public bool ToTruck;   // aimed at the truck bed because the friend is sitting in the truck
     }
 
     private static readonly Charger[] Chargers = { new Charger(), new Charger() }; // [0] = P1, [1] = P2
@@ -133,6 +134,25 @@ internal static class PackageThrow
         float angle = AngleDegrees * Mathf.Deg2Rad;
         Vector3 velocity = dir * (Mathf.Cos(angle) * speed) + Vector3.up * (Mathf.Sin(angle) * speed);
 
+        // The friend is sitting in the truck: throw toward the delivery compartment. The distance is still decided
+        // by how long you held the button, exactly like a throw to a player on foot.
+        bool toTruck = false;
+        var car = UnityEngine.Object.FindAnyObjectByType<sCarController>();
+        int other = player == 1 ? 2 : 1;
+        if (car != null && car.payloadPivot != null && SplitscreenManager.IsSeatedInTruck(other))
+        {
+            Vector3 toBed = car.payloadPivot.position - guy.transform.position;
+            toBed.y = 0f;
+            if (toBed.sqrMagnitude > 0.25f)
+            {
+                dir = toBed.normalized;
+                velocity = dir * (Mathf.Cos(angle) * speed) + Vector3.up * (Mathf.Sin(angle) * speed);
+            }
+            toTruck = true;
+            var p1Guy = SplitscreenManager.GuyOf(1);
+            if (p1Guy != null && !p1Guy.tailgateOpen) p1Guy.ToggleTailgate();   // so it can go in
+        }
+
         package.SetParent(null, true);
         package.name = "Payload";
 
@@ -149,8 +169,9 @@ internal static class PackageThrow
             Velocity = velocity,
             Spin = new Vector3(UnityEngine.Random.Range(-120f, 120f), UnityEngine.Random.Range(-60f, 60f), UnityEngine.Random.Range(-120f, 120f)),
             Thrower = player,
+            ToTruck = toTruck,
         });
-        Plugin.Log.LogInfo($"[Throw] P{player} threw the package at {strength01:P0} strength ({speed:0.#} m/s).");
+        Plugin.Log.LogInfo($"[Throw] P{player} threw the package{(toTruck ? " toward the truck bed" : "")} at {strength01:P0} strength ({speed:0.#} m/s).");
     }
 
     // ── Calling a package back ──────────────────────────────────────────────
@@ -188,6 +209,27 @@ internal static class PackageThrow
             f.Velocity += Vector3.down * Gravity * dt;
             Vector3 next = prev + f.Velocity * dt;
             f.Age += dt;
+
+            // aimed at the truck bed: goes in when it gets there (the truck may have moved on, so use its live position)
+            if (f.ToTruck)
+            {
+                var car = UnityEngine.Object.FindAnyObjectByType<sCarController>();
+                if (car != null && car.payloadPivot != null)
+                {
+                    bool arrived = (next - car.payloadPivot.position).sqrMagnitude < 2f * 2f;
+                    if (!arrived && Physics.Linecast(prev, next, out var carHit, ~PlayersLayerMask, QueryTriggerInteraction.Ignore))
+                        arrived = carHit.rigidbody != null && carHit.rigidbody.name == "Car";
+                    if (arrived)
+                    {
+                        SplitscreenManager.StowPackageInTruck(f.Package, car);
+                        LastThrown[f.Thrower - 1] = null;
+                        HintUntil[f.Thrower - 1] = 0f;
+                        Flights.RemoveAt(i);
+                        Plugin.Log.LogInfo("[Throw] The package landed in the truck bed.");
+                        continue;
+                    }
+                }
+            }
 
             // caught by the friend
             int friend = f.Thrower == 1 ? 2 : 1;
