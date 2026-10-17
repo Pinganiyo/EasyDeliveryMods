@@ -80,6 +80,8 @@ public sealed class Plugin : BaseUnityPlugin
     internal static ConfigEntry<KeyCode>? SplitscreenSwapControlKey;
     internal static ConfigEntry<KeyCode>? DumpTextKey;
     internal static ConfigEntry<float>? PassengerCameraOffset;
+    internal static ConfigEntry<bool>? TwoMonitors;
+    internal static ConfigEntry<bool>? StartFullscreen;
 
     private Harmony? _harmony;
     private GameObject? _managerGo;
@@ -326,6 +328,18 @@ public sealed class Plugin : BaseUnityPlugin
             "Orientation",
             "Vertical",
             "Screen split direction: Vertical (left/right halves) or Horizontal (top/bottom halves).");
+
+        TwoMonitors = Config.Bind(
+            "Splitscreen",
+            "TwoMonitors",
+            false,
+            "Experimental: with two monitors, Player 1 stays on the game window and Player 2 gets the second monitor, both full screen (no split).");
+
+        StartFullscreen = Config.Bind(
+            "Display",
+            "StartFullscreen",
+            true,
+            "Start the game in full screen (borderless) on the main monitor, even if the game last closed in a window.");
 
         ApplyCommandLineModeOverride();
 

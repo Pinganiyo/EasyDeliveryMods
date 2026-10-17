@@ -58,6 +58,24 @@ internal sealed class SplitscreenManager : MonoBehaviour
     internal static bool IsP1Passenger => P1Seat == CarSeat.Passenger;
 
     public static readonly Vector3 SeatedCharacterScale = new Vector3(0.52f, 0.52f, 0.52f);
+
+    // The scale a character had before being shrunk for a seat, so walking around restores exactly that.
+    private static readonly System.Collections.Generic.Dictionary<GameObject, Vector3> _walkScale = new();
+
+    /// <summary>Shrinks a character for sitting in the truck, remembering its walking size.</summary>
+    internal static void ApplySeatedScale(Transform t)
+    {
+        if (!_walkScale.ContainsKey(t.gameObject) && !Mathf.Approximately(t.localScale.x, SeatedCharacterScale.x))
+            _walkScale[t.gameObject] = t.localScale;
+        t.localScale = SeatedCharacterScale;
+    }
+
+    /// <summary>Gives a character back the size it had before sitting down.</summary>
+    internal static void RestoreWalkScale(Transform t)
+    {
+        t.localScale = _walkScale.TryGetValue(t.gameObject, out var s) ? s : Vector3.one;
+        Plugin.Log.LogInfo($"[Splitscreen] {t.name} walking scale restored to {t.localScale}");
+    }
     public const float SeatedXOffset = 0.22f;
     public const float SeatedYOffset = -0.12f;
     public const float SeatedZOffset = 0.38f;
@@ -142,7 +160,7 @@ internal sealed class SplitscreenManager : MonoBehaviour
     // Building interiors: when both players are inside, they share one full-screen camera.
     internal static bool P1Inside { get; private set; }
     internal static bool P2Inside { get; private set; }
-    internal static bool MergedView => P1Inside && P2Inside;
+    internal static bool MergedView => P1Inside && P2Inside && !SecondDisplay.Active;
 
     /// <summary>True when both players are within radius metres of a point (e.g. both at a shopkeeper).</summary>
     internal static bool BothNear(Vector3 pos, float radius = 15f)
@@ -212,10 +230,86 @@ internal sealed class SplitscreenManager : MonoBehaviour
 
     private float _nextToggleCooldown;
 
+    private System.Collections.IEnumerator ApplyStartFullscreen()
+    {
+        // wait until the game has applied its own saved display settings, then override them once
+        yield return new WaitForSecondsRealtime(3f);
+        try
+        {
+            if (!Screen.fullScreen || Screen.fullScreenMode == FullScreenMode.Windowed)
+            {
+                var d = Display.main;
+                Screen.SetResolution(d.systemWidth, d.systemHeight, FullScreenMode.FullScreenWindow);
+                Plugin.Log.LogInfo($"[Display] Started in full screen ({d.systemWidth}x{d.systemHeight}).");
+            }
+        }
+        catch (Exception ex) { Plugin.Log.LogWarning($"[Display] Could not switch to full screen: {ex.Message}"); }
+    }
+
     private void Awake()
     {
+        if (Plugin.StartFullscreen?.Value == true) StartCoroutine(ApplyStartFullscreen());
         _instance = this;
         InputSystem.onDeviceChange += OnDeviceChange;
+    }
+
+    // ── Seated heads: the friend sees where you look ───────────────────────
+
+    private static readonly Transform?[] _heads = new Transform?[2];
+    private static readonly GameObject?[] _headOwner = new GameObject?[2];
+    private static readonly Quaternion[] _headRot = new Quaternion[2];
+    private static readonly bool[] _headWas = new bool[2];
+
+    private void LateUpdate()
+    {
+        if (!_active) return;
+        TurnSeatedHead(0, _p1Character, _p1Cam, P1Seat);
+        TurnSeatedHead(1, _p2Character, _p2Cam, P2Seat);
+    }
+
+    /// <summary>A player sitting in the truck turns their head to where their camera looks (within a natural range).</summary>
+    private static void TurnSeatedHead(int i, GameObject? character, Camera? cam, CarSeat seat)
+    {
+        if (seat == CarSeat.None || character == null || cam == null || _car == null || (i == 1 && P2Dead))
+        {
+            _headWas[i] = false;
+            return;
+        }
+
+        if (_headOwner[i] != character || _heads[i] == null)
+        {
+            _headOwner[i] = character;
+            _heads[i] = null;
+            foreach (var t in character.GetComponentsInChildren<Transform>(true))
+                if (t.name.Equals("head", StringComparison.OrdinalIgnoreCase)) { _heads[i] = t; break; }
+        }
+        var head = _heads[i];
+        if (head == null) return;
+
+        // look direction relative to the truck, limited like a real neck
+        var car = _car.transform;
+        Vector3 local = car.InverseTransformDirection(cam.transform.forward);
+        float yaw = Mathf.Clamp(Mathf.Atan2(local.x, local.z) * Mathf.Rad2Deg, -80f, 80f);
+        float pitch = Mathf.Clamp(-Mathf.Asin(Mathf.Clamp(local.y, -1f, 1f)) * Mathf.Rad2Deg, -35f, 35f);
+        Quaternion desired = car.rotation * Quaternion.Euler(pitch, yaw, 0f) * Quaternion.Euler(0f, 180f, 0f); // the head bone faces backwards
+
+        if (!_headWas[i]) _headRot[i] = head.rotation;
+        _headWas[i] = true;
+        _headRot[i] = Quaternion.Slerp(_headRot[i], desired, 1f - Mathf.Exp(-10f * Time.deltaTime));
+
+        // Turn the head on the spot: the neck (bottom centre of the head) stays where the animation put it
+        var renderers = head.GetComponentsInChildren<Renderer>(true);
+        bool haveNeck = renderers.Length > 0;
+        Vector3 neck = head.position;
+        if (haveNeck)
+        {
+            Bounds b = renderers[0].bounds;
+            for (int r = 1; r < renderers.Length; r++) b.Encapsulate(renderers[r].bounds);
+            neck = new Vector3(b.center.x, b.min.y, b.center.z);
+        }
+        Vector3 neckLocal = head.InverseTransformPoint(neck);
+        head.rotation = _headRot[i];
+        head.position += neck - head.TransformPoint(neckLocal);
     }
 
     private void Update()
@@ -318,7 +412,19 @@ internal sealed class SplitscreenManager : MonoBehaviour
             Plugin.Log.LogInfo($"[Splitscreen] Seats: P1={P1Seat} P2={P2Seat} ");
         }
 
+        SecondDisplay.CheckStillConnected();
         UpdateInsideState();
+
+        // Two monitors: each player has a whole screen of their own, always
+        if (SecondDisplay.Active)
+        {
+            _p1Cam.enabled = true;
+            _p2Cam.enabled = true;
+            ApplyRect(_p1Rig != null ? _p1Rig.transform : _p1Cam.transform, FullRect);
+            ApplyRect(_p2Rig != null ? _p2Rig.transform : _p2Cam.transform, FullRect);
+            if (_hud != null) _hud.SetActive(true);
+            return;
+        }
 
         // Both players inside a building: one shared full-screen camera, always Player 1's
         if (MergedView)
@@ -418,6 +524,9 @@ internal sealed class SplitscreenManager : MonoBehaviour
             StartCoroutine(FinishP2RigInit());
         }
 
+        if (_p2Cam != null && _p1Cam != null)
+            SecondDisplay.Setup(_p1Cam, _p2Rig != null ? _p2Rig.transform : _p2Cam.transform);
+
         if (_hud == null)
             _hud = gameObject.AddComponent<SplitscreenHud>();
         _hud.SetActive(true);
@@ -460,6 +569,7 @@ internal sealed class SplitscreenManager : MonoBehaviour
         P2Dead = false;
         P2Dialog.Cancel();
         PackageThrow.Reset();
+        SecondDisplay.Teardown();
         P2Stats.Shutdown();        P2Gamepad.Teardown();
         _p1Pad = null;
         _p2Pad = null;
@@ -477,7 +587,7 @@ internal sealed class SplitscreenManager : MonoBehaviour
         if (_p2InCar && _p2Character != null)
         {
             _p2Character.transform.parent = null;
-            _p2Character.transform.localScale = Vector3.one;
+            RestoreWalkScale(_p2Character.transform);
             SetCharacterCollisionsEnabled(_p2Character, true);
             _p2InCar = false;
             P2Seat = CarSeat.None;
@@ -1632,7 +1742,7 @@ internal sealed class SplitscreenManager : MonoBehaviour
 
         p2Guy.transform.localPosition = GetSeatedLocalPosition(seat);
         p2Guy.transform.localRotation = Quaternion.Euler(0, 180, 0);
-        p2Guy.transform.localScale = SeatedCharacterScale;
+        ApplySeatedScale(p2Guy.transform);
 
         // P2 camera switches to the truck chase view
         SetP2CameraMode(onFoot: false, car);
@@ -1648,7 +1758,7 @@ internal sealed class SplitscreenManager : MonoBehaviour
 
         // Unparent from car and restore original scale
         p2Guy.transform.parent = null;
-        p2Guy.transform.localScale = Vector3.one;
+        RestoreWalkScale(p2Guy.transform);
 
         if (car != null)
         {

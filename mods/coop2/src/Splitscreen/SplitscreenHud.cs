@@ -30,7 +30,11 @@ internal sealed class SplitscreenHud : MonoBehaviour
         int w = Screen.width;
         int h = Screen.height;
 
-        if (SplitscreenManager.MergedView)
+        if (SecondDisplay.Active)
+        {
+            // one screen each: no divider, no tags
+        }
+        else if (SplitscreenManager.MergedView)
         {
             // shared camera: no divider and no P1/P2 tags
         }
@@ -58,18 +62,46 @@ internal sealed class SplitscreenHud : MonoBehaviour
             DrawTag("P2", 10, cy + 10);
         }
 
-        P2Dialog.Draw();
-        PackageThrow.Draw();
-
-        // ── Native World-Space Floating Markers for Player 2 ────────────────
-        var interaction = SplitscreenManager.GetP2WorldInteraction();
-        var p2Cam = SplitscreenManager.P2ViewCamera;
-
-        if (interaction.HasValue && p2Cam != null)
+        if (SecondDisplay.Active)
         {
-            var data = interaction.Value;
-            Vector3 vp = p2Cam.WorldToViewportPoint(data.WorldPosition);
+            // Player 1's part on this screen, Player 2's part into the texture shown on the second monitor
+            PackageThrow.Draw(1);
+            if (Event.current.type != EventType.Repaint) return;
+            SecondDisplay.BeginOverlay();
+            try
+            {
+                P2Dialog.Draw();
+                PackageThrow.Draw(2);
+                DrawP2Marker();
+            }
+            finally { SecondDisplay.EndOverlay(); }
+            return;
+        }
 
+        P2Dialog.Draw();
+        PackageThrow.Draw(0);
+        DrawP2Marker();
+    }
+
+    private void DrawP2Marker()
+    {
+        // ── Native World-Space Floating Markers for Player 2 ────────────────
+        var p2Cam = SplitscreenManager.P2ViewCamera;
+        if (p2Cam == null) return;
+
+        var interaction = SplitscreenManager.GetP2WorldInteraction();
+        if (interaction.HasValue) DrawWorldItem(p2Cam, interaction.Value);
+
+        P2Markers.Collect(_items);
+        foreach (var item in _items) DrawWorldItem(p2Cam, item);
+    }
+
+    private readonly System.Collections.Generic.List<P2WorldInteraction> _items = new();
+
+    private void DrawWorldItem(Camera p2Cam, P2WorldInteraction data)
+    {
+        {
+            Vector3 vp = p2Cam.WorldToViewportPoint(data.WorldPosition);
             // Visible if in front of camera and inside Player 2's viewport frustum
             if (vp.z > 0.1f && vp.x >= -0.05f && vp.x <= 1.05f && vp.y >= -0.05f && vp.y <= 1.05f)
             {

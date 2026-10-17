@@ -177,7 +177,7 @@ public static class SplitscreenPatches
                 __instance.transform.parent = __instance.car.transform;
                 __instance.transform.localPosition = SplitscreenManager.GetSeatedLocalPosition(SplitscreenManager.P1Seat);
                 __instance.transform.localRotation = Quaternion.Euler(0, 180, 0);
-                __instance.transform.localScale = SplitscreenManager.SeatedCharacterScale;
+                SplitscreenManager.ApplySeatedScale(__instance.transform);
                 
                 SplitscreenManager.SetCharacterCollisionsEnabled(__instance.gameObject, false);
                 if (__instance.car != null)
@@ -219,7 +219,7 @@ public static class SplitscreenPatches
                     // Exiting truck
                     SplitscreenManager.P1Seat = SplitscreenManager.CarSeat.None;
                     __instance.transform.parent = null;
-                    __instance.transform.localScale = Vector3.one;
+                    SplitscreenManager.RestoreWalkScale(__instance.transform);
                     SplitscreenManager.SetCharacterCollisionsEnabled(__instance.gameObject, true);
                     if (__instance.car != null)
                         SplitscreenManager.IgnoreCollisionsWithCar(__instance.gameObject, __instance.car, false);

@@ -13,8 +13,8 @@ internal static class PackageThrow
 {
     private const float MaxCharge = 1.5f;     // seconds of holding for a full-strength throw
     private const float MinCharge = 0.15f;    // shorter than this is a tap and does nothing
-    private const float MinSpeed = 5f;        // m/s at the lightest throw (about 3 m)
-    private const float MaxSpeed = 26f;       // m/s at full strength (about 65 m)
+    private const float MinSpeed = 4f;        // m/s at the lightest throw (about 2 m)
+    private const float MaxSpeed = 16f;       // m/s at full strength (about 25 m)
     private const float AngleDegrees = 40f;
     private const float CatchRadius = 1.5f;
     private const float Gravity = 9.81f;
@@ -252,11 +252,13 @@ internal static class PackageThrow
 
     // ── Wind-up bar (called from SplitscreenHud.OnGUI) ──────────────────────
 
-    internal static void Draw()
+    /// <param name="only">0 = both players, 1 or 2 = just that player's bar and hint (two-monitor mode).</param>
+    internal static void Draw(int only)
     {
-        DrawRecallHint();
+        DrawRecallHint(only);
         for (int player = 1; player <= 2; player++)
         {
+            if (only != 0 && player != only) continue;
             float charge = Charge01(player);
             if (charge <= 0f) continue;
 
@@ -287,10 +289,11 @@ internal static class PackageThrow
         }
     }
 
-    private static void DrawRecallHint()
+    private static void DrawRecallHint(int only)
     {
         for (int player = 1; player <= 2; player++)
         {
+            if (only != 0 && player != only) continue;
             if (LastThrown[player - 1] == null || Time.unscaledTime > HintUntil[player - 1] || !GameFont.Ready) continue;
             var guy = SplitscreenManager.GuyOf(player);
             if (guy == null || Carrying(guy)) continue;
