@@ -39,6 +39,10 @@ internal sealed class SplitscreenManager : MonoBehaviour
     internal static Camera? P1CameraInstance => _instance?._p1Cam;
     internal static bool SplitActive => _activeState;
     private static int _p2GamepadIndex = 0;
+    private static Gamepad? _p1Pad;
+    private static Gamepad? _p2Pad;
+    private static bool _devicesDirty;
+    private static bool _p1InputLocked;
     private static int _p2LegacyJoystickNumber = 1;
     private static bool _activeState;
     internal static bool IsP2InCar => _p2InCar;
@@ -128,7 +132,7 @@ internal sealed class SplitscreenManager : MonoBehaviour
     internal struct RawInput
     {
         public Vector2 PlayerInput, DriveInput, CameraLook;
-        public bool SelectPressed, BackPressed, BreakHeld, CameraPressed;
+        public bool SelectPressed, BackPressed, BreakHeld, CameraPressed, HeadlightsPressed, HornPressed;
     }
     internal static RawInput Raw;
 
@@ -179,8 +183,9 @@ internal sealed class SplitscreenManager : MonoBehaviour
 
     private void UpdateInsideState()
     {
-        bool p1 = _p1Character != null && IsInsideBuilding(_p1Character.transform.position);
-        bool p2 = _p2Character != null && IsInsideBuilding(_p2Character.transform.position);
+        // A player sitting in the truck is outside by definition (the truck cannot enter a building)
+        bool p1 = _p1Character != null && OnFoot(1) && P1Seat == CarSeat.None && IsInsideBuilding(_p1Character.transform.position);
+        bool p2 = _p2Character != null && !_p2InCar && IsInsideBuilding(_p2Character.transform.position);
         if (p1 != P1Inside) Plugin.Log.LogInfo($"[Splitscreen] P1 {(p1 ? "is inside" : "left")} a building.");
         if (p2 != P2Inside) Plugin.Log.LogInfo($"[Splitscreen] P2 {(p2 ? "is inside" : "left")} a building.");
         P1Inside = p1;
@@ -210,6 +215,7 @@ internal sealed class SplitscreenManager : MonoBehaviour
     private void Awake()
     {
         _instance = this;
+        InputSystem.onDeviceChange += OnDeviceChange;
     }
 
     private void Update()
@@ -235,6 +241,12 @@ internal sealed class SplitscreenManager : MonoBehaviour
             ControlP2 = !ControlP2;
             Raw = default;
             Plugin.Log.LogInfo($"[Splitscreen] Keyboard now controls {(ControlP2 ? "Player 2" : "Player 1")}.");
+        }
+
+        if (_active && _devicesDirty)
+        {
+            _devicesDirty = false;
+            AssignDevices(initial: false);
         }
 
         if (!_active || _p2Character == null) return;
@@ -277,6 +289,9 @@ internal sealed class SplitscreenManager : MonoBehaviour
 
         P2Stats.Tick(Time.deltaTime, _p2InCar, _p2Character.transform.position);
         UpdateP2Death();
+        SettleSeatedAnimations();
+        P2Gamepad.Refresh(_p1Input);
+        PackageThrow.Tick(Time.deltaTime);
         if (!P2Dead) CheckP2AutoTeleport();
         LinkInventory();
         ProximityToggleVisibility.UpdateAudio();
@@ -388,70 +403,8 @@ internal sealed class SplitscreenManager : MonoBehaviour
                 ?? p1Controller.GetComponentInChildren<PlayerInput>(includeInactive: true)
                 ?? FindFirstObjectByType<PlayerInput>();
 
-        // Count connected gamepads
-        int gamepadCount = Gamepad.all.Count;
-        if (gamepadCount == 0)
-        {
-            gamepadCount = CountConnectedJoysticks();
-        }
-
-        if (gamepadCount == 1)
-        {
-            // ── 1 Controller Connected: P1 = Keyboard, P2 = Controller 1 ───
-            _p2GamepadIndex = 0;
-            _p2LegacyJoystickNumber = 1;
-
-            if (_p1Input != null)
-            {
-                try
-                {
-                    var kbDevices = new List<InputDevice>();
-                    if (Keyboard.current != null) kbDevices.Add(Keyboard.current);
-                    if (Mouse.current != null) kbDevices.Add(Mouse.current);
-
-                    _p1Input.neverAutoSwitchControlSchemes = true;
-                    if (kbDevices.Count > 0)
-                        _p1Input.SwitchCurrentControlScheme("Keyboard", kbDevices.ToArray());
-                    else
-                        _p1Input.SwitchCurrentControlScheme("Keyboard");
-                }
-                catch (Exception ex)
-                {
-                    Plugin.Log.LogWarning($"[Splitscreen] Failed locking P1 to Keyboard: {ex.Message}");
-                }
-            }
-
-            Plugin.Log.LogInfo("[Splitscreen] 1 controller detected -> P1: Keyboard & Mouse, P2: Controller 1");
-        }
-        else if (gamepadCount >= 2)
-        {
-            // ── 2+ Controllers: P1 = Controller 1, P2 = Controller 2 ───────
-            _p2GamepadIndex = 1;
-            _p2LegacyJoystickNumber = 2;
-
-            if (_p1Input != null && Gamepad.all.Count >= 1)
-            {
-                try
-                {
-                    _p1Input.neverAutoSwitchControlSchemes = true;
-                    _p1Input.SwitchCurrentControlScheme("Gamepad", new InputDevice[] { Gamepad.all[0] });
-                }
-                catch (Exception ex)
-                {
-                    Plugin.Log.LogWarning($"[Splitscreen] Failed locking P1 to Gamepad 1: {ex.Message}");
-                }
-            }
-
-            Plugin.Log.LogInfo("[Splitscreen] 2+ controllers detected -> P1: Controller 1, P2: Controller 2");
-        }
-        else
-        {
-            // ── 0 Controllers: P1 = WASD, P2 = Arrow keys fallback ─────────
-            _p2GamepadIndex = 0;
-            _p2LegacyJoystickNumber = 1;
-
-            Plugin.Log.LogInfo("[Splitscreen] 0 controllers detected -> P1: WASD, P2: Arrow keys");
-        }
+        // Who uses which device (keyboard / controllers), and keep it right when controllers come and go
+        AssignDevices(initial: true);
 
         // Spawn P2 character clone
         _p2Character = SpawnP2Character(p1Controller.gameObject);
@@ -484,6 +437,7 @@ internal sealed class SplitscreenManager : MonoBehaviour
         P1Inside = false;
         P2Inside = false;
         _loggedMerged = false;
+        PackageThrow.Reset();
         ControlP2 = false;
         Raw = default;
         _active = true;
@@ -505,7 +459,11 @@ internal sealed class SplitscreenManager : MonoBehaviour
         _activeState = false;
         P2Dead = false;
         P2Dialog.Cancel();
-        P2Stats.Shutdown();
+        PackageThrow.Reset();
+        P2Stats.Shutdown();        P2Gamepad.Teardown();
+        _p1Pad = null;
+        _p2Pad = null;
+
         OwnModelHider.Shutdown();
         ViewModeVisibility.Shutdown();
         ProximityToggleVisibility.Shutdown();
@@ -584,11 +542,267 @@ internal sealed class SplitscreenManager : MonoBehaviour
         Plugin.Log.LogInfo("[Splitscreen] Deactivated.");
     }
 
-    private void OnDestroy() => Deactivate();
+    private void OnDestroy()
+    {
+        InputSystem.onDeviceChange -= OnDeviceChange;
+        Deactivate();
+    }
+
+    private static void OnDeviceChange(InputDevice device, InputDeviceChange change)
+    {
+        // Controllers plugged in / out (or switched on / off) while the game runs
+        if (device is Gamepad || device is Joystick)
+        {
+            if (change == InputDeviceChange.Added || change == InputDeviceChange.Removed ||
+                change == InputDeviceChange.Disconnected || change == InputDeviceChange.Reconnected)
+                _devicesDirty = true;
+        }
+    }
+
+    // ── Devices: keyboard and controllers ───────────────────────────────────
+    //
+    //   no controller   : P1 keyboard (WASD), P2 keyboard (arrows)
+    //   one controller  : P1 keyboard + mouse, P2 the controller
+    //   two or more     : P1 the first controller, P2 the second one
+    // Controllers are tracked by device (not list position) and re-checked whenever one is plugged in or out.
+
+    private void AssignDevices(bool initial)
+    {
+        var pads = new List<Gamepad>(Gamepad.all);
+        if (initial)
+        {
+            _p1Pad = null;
+            _p2Pad = null;
+            LogDevices();
+            LogBindings();
+        }
+
+        if (_p1Pad != null && !pads.Contains(_p1Pad)) _p1Pad = null;
+        if (_p2Pad != null && !pads.Contains(_p2Pad)) _p2Pad = null;
+
+        if (pads.Count == 1)
+        {
+            _p1Pad = null;
+            _p2Pad = pads[0];
+        }
+        else if (pads.Count >= 2)
+        {
+            if (_p1Pad == null) _p1Pad = pads.Find(pad => pad != _p2Pad);
+            if (_p2Pad == null) _p2Pad = pads.Find(pad => pad != _p1Pad);
+        }
+        else
+        {
+            _p1Pad = null;
+            _p2Pad = null;
+        }
+
+        _p2GamepadIndex = _p2Pad != null ? pads.IndexOf(_p2Pad) : 0;
+        LockPlayer1Input(pads.Count);
+
+        if (_p2Pad != null && _p1Input != null) P2Gamepad.Setup(_p1Input.actions, _p2Pad, _p1Input);
+        else P2Gamepad.Teardown();
+
+        string p1 = _p1Pad != null ? $"controller '{_p1Pad.displayName}'" : (pads.Count > 0 ? "keyboard & mouse" : "keyboard (WASD)");
+        string p2 = _p2Pad != null ? $"controller '{_p2Pad.displayName}'" : "keyboard (arrow keys)";
+        Plugin.Log.LogInfo($"[Devices] {pads.Count} controller(s) -> P1: {p1}, P2: {p2}.");
+    }
+
+    /// <summary>Pins Player 1's game input to the right device so P2's controller / the keyboard doesn't leak into P1.</summary>
+    private void LockPlayer1Input(int padCount)
+    {
+        if (_p1Input == null) return;
+        try
+        {
+            if (_p1Pad != null)
+            {
+                _p1Input.neverAutoSwitchControlSchemes = true;
+                _p1Input.SwitchCurrentControlScheme(SchemeFor("<Gamepad>", "Gamepad"), new InputDevice[] { _p1Pad });
+                _p1InputLocked = true;
+            }
+            else if (padCount > 0)
+            {
+                var kb = new List<InputDevice>();
+                if (Keyboard.current != null) kb.Add(Keyboard.current);
+                if (Mouse.current != null) kb.Add(Mouse.current);
+
+                _p1Input.neverAutoSwitchControlSchemes = true;
+                if (kb.Count > 0) _p1Input.SwitchCurrentControlScheme(SchemeFor("<Keyboard>", "Keyboard"), kb.ToArray());
+                else _p1Input.SwitchCurrentControlScheme(SchemeFor("<Keyboard>", "Keyboard"));
+                _p1InputLocked = true;
+            }
+            else if (_p1InputLocked)
+            {
+                ReleasePlayer1Input(); // the last controller went away
+            }
+        }
+        catch (Exception ex)
+        {
+            Plugin.Log.LogWarning($"[Devices] Could not pin Player 1's input: {ex.Message}");
+        }
+    }
+
+    private void ReleasePlayer1Input()
+    {
+        if (_p1Input == null) return;
+        try
+        {
+            _p1Input.neverAutoSwitchControlSchemes = false;
+            var all = InputSystem.devices.ToArray();
+            if (all.Length > 0) _p1Input.SwitchCurrentControlScheme(all);
+        }
+        catch (Exception ex)
+        {
+            Plugin.Log.LogWarning($"[Devices] Could not release Player 1's input: {ex.Message}");
+        }
+        _p1InputLocked = false;
+    }
+
+    /// <summary>The name of the game's control scheme that uses the given device (its schemes are not named the same in every build).</summary>
+    private string SchemeFor(string devicePath, string fallbackName)
+    {
+        try
+        {
+            foreach (var scheme in _p1Input!.actions.controlSchemes)
+                foreach (var requirement in scheme.deviceRequirements)
+                    if (requirement.controlPath != null && requirement.controlPath.Contains(devicePath))
+                        return scheme.name;
+        }
+        catch { }
+        return fallbackName;
+    }
+
+    /// <summary>The game's own button bindings, so any "this button does something else for P2" can be checked against P1's.</summary>
+    private void LogBindings()
+    {
+        try
+        {
+            var asset = _p1Input?.actions;
+            if (asset == null) return;
+            foreach (var scheme in asset.controlSchemes)
+            {
+                var devices = new List<string>();
+                foreach (var r in scheme.deviceRequirements) devices.Add(r.controlPath);
+                Plugin.Log.LogInfo($"[Bindings] scheme '{scheme.name}': {string.Join(", ", devices)}");
+            }
+            foreach (var map in asset.actionMaps)
+            {
+                foreach (var action in map.actions)
+                {
+                    var parts = new List<string>();
+                    foreach (var b in action.bindings)
+                    {
+                        if (b.isComposite) continue;
+                        parts.Add(string.IsNullOrEmpty(b.groups) ? b.effectivePath : $"{b.effectivePath} [{b.groups}]");
+                    }
+                    Plugin.Log.LogInfo($"[Bindings] {map.name}/{action.name}: {string.Join(" | ", parts)}");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Plugin.Log.LogWarning($"[Bindings] Could not list the bindings: {ex.Message}");
+        }
+    }
+
+    /// <summary>Everything the Input System knows about, so "my controller is not detected" can be answered from the log.</summary>
+    private static void LogDevices()
+    {
+        try
+        {
+            Plugin.Log.LogInfo($"[Devices] {InputSystem.devices.Count} input device(s); Gamepad.all = {Gamepad.all.Count}, Joystick.all = {Joystick.all.Count}.");
+            foreach (var d in InputSystem.devices)
+            {
+                if (d is Mouse || d is Keyboard) continue;
+                string kind = d is Gamepad ? "Gamepad" : d is Joystick ? "Joystick" : "other";
+                Plugin.Log.LogInfo($"[Devices]   {kind}: '{d.displayName}' layout={d.layout} product='{d.description.product}' interface={d.description.interfaceName}");
+            }
+            if (Gamepad.all.Count == 0 && Joystick.all.Count > 0)
+                Plugin.Log.LogWarning("[Devices] A controller is connected but the Input System does not treat it as a gamepad (it is a generic joystick), so the game cannot map it.");
+        }
+        catch (Exception ex)
+        {
+            Plugin.Log.LogWarning($"[Devices] Device listing failed: {ex.Message}");
+        }
+    }
+
+    // ── Per-player helpers (throwing, lights) ───────────────────────────────
+
+    internal static UnityEngine.InputSystem.InputActionAsset? P1Actions => _instance?._p1Input?.actions;
+
+    internal static sCharacterInteraction? GuyOf(int player)
+    {
+        var go = player == 1 ? P1CharacterObject : P2CharacterObject;
+        return go != null ? go.GetComponent<sCharacterInteraction>() : null;
+    }
+
+    /// <summary>On foot (not sitting in the truck).</summary>
+    internal static bool OnFoot(int player)
+    {
+        if (player == 2) return !_p2InCar;
+        var car = _car ?? FindAnyObjectByType<sCarController>();
+        return car == null || car.GuyActive;
+    }
+
+    internal static bool IsDown(int player) => player == 2 ? P2Dead : P1IsDying;
+
+    /// <summary>The headlights button of a player (also the throw button on foot): is it held right now?</summary>
+    internal static void ThrowButton(int player, out bool held)
+    {
+        held = false;
+        // The keyboard belongs to Player 2 while the F6 test mode is on; its actions are Player 1's
+        if (player == 1 && ControlP2) return;
+        if (player == 1 || ControlP2)
+        {
+            var action = P1Actions?.FindAction("Headlights", throwIfNotFound: false);
+            held = action != null && action.IsPressed();
+            return;
+        }
+        if (P2Gamepad.Active) held = P2Gamepad.HeadlightsHeld;
+    }
+
+    /// <summary>The change-camera button (C / pressing the left stick), pressed this frame: calls a thrown package back on foot.</summary>
+    internal static bool RecallButton(int player)
+    {
+        if (player == 1 && ControlP2) return false;
+        if (player == 1 || ControlP2)
+        {
+            var action = P1Actions?.FindAction("ChangeCamera", throwIfNotFound: false);
+            return action != null && action.WasPressedThisFrame();
+        }
+        return P2Gamepad.Active && P2Gamepad.CameraPressed;
+    }
+
+    public static bool GetP2HeadlightsPressed()
+    {
+        if (!_activeState) return false;
+        if (ControlP2) { bool v = Raw.HeadlightsPressed; Raw.HeadlightsPressed = false; return v; }
+        return P2Gamepad.Active && P2Gamepad.HeadlightsPressed;
+    }
+
+    public static bool GetP2HornPressed()
+    {
+        if (!_activeState) return false;
+        if (ControlP2) { bool v = Raw.HornPressed; Raw.HornPressed = false; return v; }
+        return P2Gamepad.Active && P2Gamepad.HornPressed;
+    }
+
+    /// <summary>Seated characters stand still: the walking animation must not keep playing inside the truck.</summary>
+    private static void SettleSeatedAnimations()
+    {
+        if (_p2InCar) StopWalking(_p2Character);
+        if (P1Seat != CarSeat.None) StopWalking(P1CharacterObject);
+    }
+
+    private static void StopWalking(GameObject? character)
+    {
+        if (character == null) return;
+        var anim = character.GetComponent<Animator>();
+        if (anim != null && anim.GetBool("Move")) anim.SetBool("Move", false);
+    }
 
     // ── Input Query Methods for P2 ──────────────────────────────────────────
 
-    private static bool P2UsesPad => _p2GamepadIndex < Gamepad.all.Count;
+    private static bool P2UsesPad => _p2Pad != null && _p2Pad.added;
 
     /// <summary>P2 movement. forDriving reads the truck input instead of the on-foot input.</summary>
     public static Vector2 GetP2MovementInput(bool forDriving = false)
@@ -601,9 +815,13 @@ internal sealed class SplitscreenManager : MonoBehaviour
         {
             move = forDriving ? Raw.DriveInput : Raw.PlayerInput;
         }
+        else if (P2Gamepad.Active)
+        {
+            move = P2Gamepad.Movement(forDriving);
+        }
         else if (P2UsesPad)
         {
-            var pad = Gamepad.all[_p2GamepadIndex];
+            var pad = _p2Pad!;
             move = pad.leftStick.ReadValue();
             if (move.sqrMagnitude < 0.01f)
                 move = pad.dpad.ReadValue();
@@ -634,9 +852,13 @@ internal sealed class SplitscreenManager : MonoBehaviour
         {
             look = Raw.CameraLook;
         }
+        else if (P2Gamepad.Active)
+        {
+            look = P2Gamepad.Look;
+        }
         else if (P2UsesPad)
         {
-            look = Gamepad.all[_p2GamepadIndex].rightStick.ReadValue();
+            look = _p2Pad!.rightStick.ReadValue();
         }
         else
         {
@@ -657,10 +879,11 @@ internal sealed class SplitscreenManager : MonoBehaviour
     {
         if (!_activeState) return false;
         if (ControlP2) return Raw.SelectPressed;
+        if (P2Gamepad.Active) return P2Gamepad.SelectPressed;
 
         if (P2UsesPad)
         {
-            var pad = Gamepad.all[_p2GamepadIndex];
+            var pad = _p2Pad!;
             if (pad.buttonSouth.wasPressedThisFrame ||   // 'A' on Xbox / 'Cross' on PS
                 pad.buttonWest.wasPressedThisFrame ||    // 'X' on Xbox / 'Square' on PS
                 pad.rightTrigger.wasPressedThisFrame ||   // RT / R2
@@ -691,10 +914,11 @@ internal sealed class SplitscreenManager : MonoBehaviour
     {
         if (!_activeState) return false;
         if (ControlP2) return Raw.BackPressed;
+        if (P2Gamepad.Active) return P2Gamepad.BackPressed;
 
         if (P2UsesPad)
         {
-            var pad = Gamepad.all[_p2GamepadIndex];
+            var pad = _p2Pad!;
             if (pad.buttonEast.wasPressedThisFrame || pad.leftTrigger.wasPressedThisFrame) // 'B' on Xbox / 'Circle' on PS
                 return true;
         }
@@ -715,7 +939,8 @@ internal sealed class SplitscreenManager : MonoBehaviour
     {
         if (!_activeState) return false;
         if (ControlP2) { bool v = Raw.CameraPressed; Raw.CameraPressed = false; return v; }
-        return P2UsesPad && Gamepad.all[_p2GamepadIndex].rightStickButton.wasPressedThisFrame;
+        if (P2Gamepad.Active) return P2Gamepad.CameraPressed;
+        return P2UsesPad && _p2Pad!.rightStickButton.wasPressedThisFrame;
     }
 
     /// <summary>Brake held (truck driving). Unlike GetP2BackPressed this is true every frame it is held.</summary>
@@ -723,9 +948,10 @@ internal sealed class SplitscreenManager : MonoBehaviour
     {
         if (!_activeState) return false;
         if (ControlP2) return Raw.BreakHeld;
+        if (P2Gamepad.Active) return P2Gamepad.BrakeHeld;
         if (P2UsesPad)
         {
-            var pad = Gamepad.all[_p2GamepadIndex];
+            var pad = _p2Pad!;
             return pad.buttonEast.isPressed || pad.leftTrigger.isPressed;
         }
         return false;
@@ -757,7 +983,7 @@ internal sealed class SplitscreenManager : MonoBehaviour
 
     private static P2WorldInteraction? ComputeP2WorldInteraction()
     {
-        string btn = (_p2GamepadIndex < Gamepad.all.Count || CountConnectedJoysticks() > 0) ? "A" : "E";
+        string btn = P2UsesPad ? "A" : "E";
 
         // P1 gets no prompt while sitting in the truck, and neither does P2
         if (_p2InCar) return null;
@@ -1304,6 +1530,11 @@ internal sealed class SplitscreenManager : MonoBehaviour
             {
                 var npc = bestIP.listener.GetComponent<sTransactionNPC>();
                 if (npc != null && P2Dialog.Start(npc))
+                    return;
+
+                // The job-giving NPC (sShopNPC) would teleport Player 1 in front of it, so P2 gets its own talk
+                var jobNpc = bestIP.listener.GetComponent<sShopNPC>();
+                if (jobNpc != null && P2Dialog.Start(jobNpc, jobNpc.npcDataIndex, 0f))
                     return;
             }
 

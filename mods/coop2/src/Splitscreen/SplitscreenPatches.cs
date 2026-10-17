@@ -528,6 +528,74 @@ public static class SplitscreenPatches
     }
 
     /// <summary>
+    /// The camera rig turns in first person with sInputManager.players[0].cameraLook, which is Player 1's look
+    /// input. Player 2's rig is a clone of it, so it followed P1's stick / mouse. For the duration of Player 2's
+    /// rig Update the look input is Player 2's own; Player 1's rig keeps reading Player 1's.
+    /// </summary>
+    [HarmonyPatch(typeof(sCameraController), "Update")]
+    public static class P2CameraLookPatch
+    {
+        private static Vector2 _saved;
+
+        [HarmonyPrefix]
+        public static void Prefix(sCameraController __instance, out bool __state)
+        {
+            __state = false;
+            if (!SplitscreenManager.SplitActive || __instance != SplitscreenManager.P2Rig) return;
+            var players = sInputManager.players;
+            if (players == null || players.Length == 0) return;
+
+            _saved = players[0].cameraLook;
+            players[0].cameraLook = SplitscreenManager.GetP2LookInput();
+            __state = true;
+        }
+
+        [HarmonyPostfix]
+        public static void Postfix(bool __state)
+        {
+            if (!__state) return;
+            var players = sInputManager.players;
+            if (players != null && players.Length > 0) players[0].cameraLook = _saved;
+        }
+    }
+
+    /// <summary>
+    /// The truck lights and horn are the driver's. The game's Headlights script only listens to Player 1 and
+    /// only while P1 is in the truck, so: when Player 2 is the driver P2's lights and horn buttons work them
+    /// (whatever P1 does), and a passenger Player 1 cannot touch them.
+    /// </summary>
+    [HarmonyPatch(typeof(Headlights), "Update")]
+    public static class HeadlightsDriverOnlyPatch
+    {
+        private const BindingFlags F = BindingFlags.Instance | BindingFlags.NonPublic;
+        private static readonly FieldInfo? SourceField = typeof(Headlights).GetField("source", F);
+        private static readonly FieldInfo? HornField = typeof(Headlights).GetField("horn", F);
+
+        [HarmonyPrefix]
+        public static bool Prefix(Headlights __instance)
+        {
+            if (!SplitscreenManager.SplitActive) return true;
+
+            if (SplitscreenManager.IsP2InCar && SplitscreenManager.P2Seat == SplitscreenManager.CarSeat.Driver)
+            {
+                if (SplitscreenManager.GetP2HeadlightsPressed())
+                    __instance.Toggle();
+
+                if (SplitscreenManager.GetP2HornPressed() && !PauseSystem.paused)
+                {
+                    var source = SourceField?.GetValue(__instance) as AudioSource;
+                    var horn = HornField?.GetValue(__instance) as AudioClip;
+                    if (source != null && horn != null) source.PlayOneShot(horn);
+                }
+                return false; // P1's buttons are not the driver's
+            }
+
+            // P1 sitting as the passenger: not the driver, so no lights and no horn
+            return SplitscreenManager.P1Seat != SplitscreenManager.CarSeat.Passenger;
+        }
+    }
+
+    /// <summary>
     /// NPC heads (sNPCAppearence) look at the character they found at level load (Player 1) or at the
     /// truck when P1 is in it. With two players an NPC looks at the nearest player who is on foot, and
     /// only at the truck when nobody is.
@@ -590,6 +658,40 @@ public static class SplitscreenPatches
             _smoothed[id] = current;
             head.rotation = current;
             return false;
+        }
+    }
+
+    /// <summary>
+    /// In first person (inside the truck) the camera rig turns with sInputManager.players[0].cameraLook, which is
+    /// Player 1's input. P2's cloned rig reads the same value, so P1's look stick / mouse also turned P2's view.
+    /// For the duration of P2's rig Update it gets P2's own look input instead.
+    /// </summary>
+    [HarmonyPatch(typeof(sCameraController), "Update")]
+    public static class CameraLookInputPatch
+    {
+        private static Vector2 _saved;
+        private static bool _swapped;
+
+        [HarmonyPrefix]
+        public static void Prefix(sCameraController __instance)
+        {
+            _swapped = false;
+            if (!SplitscreenManager.SplitActive || __instance != SplitscreenManager.P2Rig) return;
+            if (sInputManager.players == null || sInputManager.players.Length == 0) return;
+
+            var p1 = sInputManager.players[0];
+            _saved = p1.cameraLook;
+            p1.cameraLook = SplitscreenManager.GetP2LookInput();
+            _swapped = true;
+        }
+
+        [HarmonyPostfix]
+        public static void Postfix()
+        {
+            if (!_swapped) return;
+            _swapped = false;
+            if (sInputManager.players != null && sInputManager.players.Length > 0)
+                sInputManager.players[0].cameraLook = _saved;
         }
     }
 
@@ -661,6 +763,8 @@ public static class SplitscreenPatches
                 BackPressed = __instance.backPressed,
                 BreakHeld = __instance.breakPressed,
                 CameraPressed = __instance.cameraPressed || SplitscreenManager.Raw.CameraPressed,
+                HeadlightsPressed = __instance.headlightsPressed || SplitscreenManager.Raw.HeadlightsPressed,
+                HornPressed = __instance.hornPressed || SplitscreenManager.Raw.HornPressed,
             };
 
             __instance.driveInput = Vector2.zero;

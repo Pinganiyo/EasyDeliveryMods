@@ -17,7 +17,7 @@ internal static class P2Dialog
 {
     internal static bool Active { get; private set; }
 
-    private static sTransactionNPC? _npc;
+    private static Component? _npc;
     private static string _name = "";
     private static readonly List<string> Pages = new();
     private static int _page;
@@ -41,13 +41,19 @@ internal static class P2Dialog
     /// <summary>Returns false if this NPC has no custom lines (the caller then does what it did before).</summary>
     internal static bool Start(sTransactionNPC npc)
     {
+        var look = npc.GetComponent<sNPCAppearence>();
+        return look != null && Start(npc, look.npcIndex, npc.price);
+    }
+
+    /// <summary>Starts a conversation with any talking NPC; npcIndex is its entry in sNPCInformation.</summary>
+    internal static bool Start(Component npc, int npcIndex, float price)
+    {
         if (Active) return true;
 
         var info = UnityEngine.Object.FindFirstObjectByType<sNPCInformation>();
-        var look = npc.GetComponent<sNPCAppearence>();
-        if (info == null || look == null || look.npcIndex < 0 || look.npcIndex >= info.npcData.Count) return false;
+        if (info == null || npcIndex < 0 || npcIndex >= info.npcData.Count) return false;
 
-        string name = info.npcData[look.npcIndex].name;
+        string name = info.npcData[npcIndex].name;
         bool duo = SplitscreenManager.BothNear(npc.transform.position);
         var set = CoopDialogs.Get(name, duo) ?? CoopDialogs.Get(name, false);
         if (set == null) return false;
@@ -56,19 +62,20 @@ internal static class P2Dialog
 
         Pages.Clear();
         _voice = null;
-        if (info.IsDead(look.npcIndex))
+        if (info.IsDead(npcIndex))
         {
             Pages.Add("..."); // a terminated NPC has nothing to say, same as for P1
         }
         else
         {
-            npc.SendMessage("UpdatePrice", npc, SendMessageOptions.DontRequireReceiver);
+            if (npc is sTransactionNPC)
+                npc.SendMessage("UpdatePrice", npc, SendMessageOptions.DontRequireReceiver);
             string interaction = CoopDialogs.NextInteraction(name, duo);
             Pages.Add(set.Greeting);
             if (interaction.Length > 0)
-                Pages.AddRange(SplitIntoPages(WithPrice(interaction, npc.price)));
+                Pages.AddRange(SplitIntoPages(WithPrice(interaction, price)));
             if (set.Sendoff.Length > 0) Pages.Add(set.Sendoff);
-            try { _voice = info.GetVoice(look.npcIndex); } catch { _voice = null; }
+            try { _voice = info.GetVoice(npcIndex); } catch { _voice = null; }
         }
         Pages.RemoveAll(p => p.Trim().Length == 0);
         if (Pages.Count == 0) return false;
